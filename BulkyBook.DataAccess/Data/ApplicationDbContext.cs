@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkyBook.DataAccess;
-
-public class ApplicationDbContext :IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -17,5 +16,5 @@ public class ApplicationDbContext :IdentityDbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<OrderHeader> OrderHeaders { get; set; }
-    public DbSet<OrderDetail> OrderDetails { get; set; }
+    public DbSet<OrderDetail> OrderDetail { get; set; }
 }
