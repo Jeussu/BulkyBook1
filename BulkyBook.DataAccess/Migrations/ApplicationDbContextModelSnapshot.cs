@@ -121,7 +121,7 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("BulkyBook.Models.OrderHeader", b =>

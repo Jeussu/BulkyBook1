@@ -4,7 +4,7 @@
 
 namespace BulkyBook.DataAccess.Migrations
 {
-    public partial class updateAll : Migration
+    public partial class TryToFixBug : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
