@@ -12,9 +12,8 @@
 ![image](https://user-images.githubusercontent.com/94780400/152688809-ebbe6eb8-2462-4dcd-8e91-297556f4a423.png)
 ![image](https://user-images.githubusercontent.com/94780400/152916012-1c6c5c8b-a7b1-4a4c-b3b8-39c1475d0a0c.png)
 ![image](https://user-images.githubusercontent.com/94780400/153004482-5a037533-e389-47f0-aa7f-9febb26880a2.png)
-<h1>https://bulkybookwebv1406.azurewebsites.net/
-The website is under development and created by me
-</h1>
+<h1>https://mybulkybook.azurewebsites.net/</h1>
+<h1>https://bulkybookwebv1406.azurewebsites.net/The website is under development and created by me</h1>
 
 
 
