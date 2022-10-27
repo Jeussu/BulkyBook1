@@ -1,6 +1,6 @@
 # BulkyBook
 <h1>https://mybulkybook.azurewebsites.net/website is under development and created by me</h1>
-<h1>https://bulkybookwebv1406.azurewebsites.net/The</h1>
+<h1>https://bulkybookwebv1406.azurewebsites.net/</h1>
 <h2>https://bootswatch.com/solar/</h2>
 <h2>https://getbootstrap.com/docs/5.0/getting-started/introduction/</h2>
 <h2>https://www.dotnetmastery.com/Home/Vlog</h2>
