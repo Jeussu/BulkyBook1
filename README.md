@@ -8,15 +8,23 @@
 
 ![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/17d4208f-2654-4c6a-ae41-fae675891627)
 ![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/afe9fac6-69b1-4d11-a96e-baf672164fe5)
-![image](https://user-images.githubusercontent.com/94780400/152472643-e915ab86-642b-4309-b7ba-8e942255f85a.png)
-![image](https://user-images.githubusercontent.com/94780400/152551562-23586394-74c7-4a18-b6ca-1f64a3229bc0.png)
-![image](https://user-images.githubusercontent.com/94780400/152551607-17e6975c-0530-48cd-820c-968d0ff4f792.png)
-![image](https://user-images.githubusercontent.com/94780400/152646043-3bd56f36-fa5c-41f5-aa7d-78184a904bb7.png)
-![image](https://user-images.githubusercontent.com/94780400/152646706-6b318c91-4171-4de8-a93f-57ce12be77fb.png)
-![image](https://user-images.githubusercontent.com/94780400/152647020-065aded1-1af4-47a9-9923-fa621dfaa987.png)
-![image](https://user-images.githubusercontent.com/94780400/152647860-cc48af94-ca6d-458d-a277-63cb1214b5d4.png)
-![image](https://user-images.githubusercontent.com/94780400/152688803-db104f61-2bf3-4993-a37c-dea717c7898f.png)
-![image](https://user-images.githubusercontent.com/94780400/152688809-ebbe6eb8-2462-4dcd-8e91-297556f4a423.png)
-![image](https://user-images.githubusercontent.com/94780400/152916012-1c6c5c8b-a7b1-4a4c-b3b8-39c1475d0a0c.png)
-![image](https://user-images.githubusercontent.com/94780400/153004482-5a037533-e389-47f0-aa7f-9febb26880a2.png)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/7091fb10-1d0a-4bdc-a8af-e1497b097243)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/7afbbf26-68bb-4254-b46a-adca56ed1ed4)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/55862ca0-8f28-44c9-8fbd-41fb449d85b3)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/bd80fb44-f286-4a29-b51e-23f6819119ec)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/e04308ab-07a1-46a6-b399-15e770d1d008)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/3951425d-14f8-4149-9383-2561b7a637c6)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/95249da0-6c3f-4afd-8e71-9ff391b0c5ba)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/085611ff-c86e-4648-aab6-5388096d13a3)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/90bd34e7-de17-4287-b493-43906f03ca5b)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/71d32820-3681-4e2f-8d87-6e540c9204cf)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/acaad51f-7f9e-45aa-bfe3-a5f9bcffa106)
+![image](https://github.com/Jeussu/BulkyBook1/assets/94780400/956a83c4-a5b7-4f8c-9aca-3ab1b2f5cf2f)
+
+
+
+
+
+
+
 
