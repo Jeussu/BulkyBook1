@@ -20,13 +20,21 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProvid
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IDemoDataSeeder, DemoDataSeeder>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-builder.Services.AddAuthentication().AddFacebook(options =>
+
+var facebookAppId = builder.Configuration["Authentication:Facebook:AppId"];
+var facebookAppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+if (!string.IsNullOrWhiteSpace(facebookAppId) && !string.IsNullOrWhiteSpace(facebookAppSecret))
 {
-    options.AppId = "826073905258622";
-    options.AppSecret = "503fb0d24cd5a918b02d8aab70dd5057";
-});
+    builder.Services.AddAuthentication().AddFacebook(options =>
+    {
+        options.AppId = facebookAppId;
+        options.AppSecret = facebookAppSecret;
+    });
+}
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -57,8 +65,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+var stripeSecretKey = builder.Configuration["Stripe:SecretKey"];
+if (!string.IsNullOrWhiteSpace(stripeSecretKey))
+{
+    StripeConfiguration.ApiKey = stripeSecretKey;
+}
 SeedDatabase();
+SeedDemoData();
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -76,5 +89,19 @@ void SeedDatabase()
     {
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         dbInitializer.Initialize();
+    }
+}
+
+void SeedDemoData()
+{
+    if (!app.Environment.IsDevelopment() || !app.Configuration.GetValue<bool>("SeedData:EnableDemoData"))
+    {
+        return;
+    }
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var demoDataSeeder = scope.ServiceProvider.GetRequiredService<IDemoDataSeeder>();
+        demoDataSeeder.Seed();
     }
 }

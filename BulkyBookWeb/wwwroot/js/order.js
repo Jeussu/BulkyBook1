@@ -1,28 +1,9 @@
 ﻿var dataTable;
 
 $(document).ready(function () {
-    var url = window.location.search;
-    if (url.includes("inprocess")) {
-        loadDataTable("inprocess");
-    }
-    else {
-        if (url.includes("comleted")) {
-            loadDataTable("comleted");
-        }
-        else {
-            if (url.includes("pending")) {
-                loadDataTable("pending");
-            }
-            else {
-                if (url.includes("approved")) {
-                    loadDataTable("approved");
-                }
-                else {
-                    loadDataTable("all");
-                }
-            }
-        }
-    }
+    const status = new URLSearchParams(window.location.search).get("status") || "all";
+    const allowedStatuses = ["inprocess", "completed", "pending", "approved", "cancelled", "all"];
+    loadDataTable(allowedStatuses.includes(status) ? status : "all");
 });
 
 function loadDataTable(status) {
@@ -50,7 +31,10 @@ function loadDataTable(status) {
                 },
                 "width": "5%"
             }
-        ]
+        ],
+        "language": {
+            "emptyTable": "No orders match this filter."
+        }
     });
 }
 

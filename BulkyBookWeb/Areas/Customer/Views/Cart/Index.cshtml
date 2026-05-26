@@ -1,76 +1,99 @@
-﻿@model BulkyBook.Models.ViewModels.ShoppingCartVM
-<form method="post">
-    <br />
-    <div class="container">
-        <div class="card">
-            <div class="card-header bg-dark text-light ml-0">
-                <div class="row">
-                    <div class="col-6  pt-2">
-                        <i class="fa fa-shopping-cart"></i> &nbsp;
-                        Shopping Cart
-                    </div>
-                    <div class="col-6 text-end">
-                        <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-info btn-sm">Continue Shopping</a>
-                    </div>
+@model BulkyBook.Models.ViewModels.ShoppingCartVM
+@using BulkyBook.Utility
+
+<br />
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-dark text-light ml-0">
+            <div class="row">
+                <div class="col-6 pt-2">
+                    <i class="fa fa-shopping-cart"></i> &nbsp;
+                    Shopping Cart
+                </div>
+                <div class="col-6 text-end">
+                    <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-info btn-sm">Continue Shopping</a>
                 </div>
             </div>
+        </div>
 
-            <div class="card-body">
+        <div class="card-body">
+            @if (!Model.ListCart.Any())
+            {
+                <div class="alert alert-info mb-0">
+                    Your cart is empty. Add a book from the storefront to continue checkout.
+                </div>
+            }
+            else
+            {
                 @foreach (var item in Model.ListCart)
                 {
-                        <div class="row">
-                            <div class="d-none d-lg-block col-lg-1 text-center py-2">
-                                <img src="@item.Product.ImageUrl" class="rounded" width="100%" />
+                    <div class="row">
+                        <div class="d-none d-lg-block col-lg-1 text-center py-2">
+                            <img src="@item.Product.ImageUrl" class="rounded" width="100%" alt="@item.Product.Title" />
+                        </div>
+                        <div class="col-12 col-lg-6 pt-md-3">
+                            <h5><strong>@item.Product.Title</strong></h5>
+                            <p><small>@Html.Raw(SafeHtml.Sanitize(item.Product.Description))</small></p>
+                        </div>
+                        <div class="col-12 col-lg-5 text-center row">
+                            <div class="col-4 text-md-right pt-4">
+                                <h6>
+                                    <strong>@item.Price.ToString("c")
+                                        <span class="text-muted">&nbsp;x&nbsp;</span>@item.Count
+                                    </strong>
+                                </h6>
                             </div>
-                            <div class="col-12 col-lg-6 pt-md-3">
-                                <h5><strong>@item.Product.Title</strong></h5>
-                                <p><small>@Html.Raw(item.Product.Description)</small></p>
-                            </div>
-                            <div class="col-12  col-lg-5 text-center row">
-                                <div class="col-4 text-md-right pt-4">
-                                    <h6><strong>@item.Price.ToString("c")
-                                        <span class="text-muted">&nbsp;x&nbsp;</span>@item.Count </strong></h6>
-                                </div>
-                                <div class="col-6 col-sm-4 col-lg-6 pt-2">
-                                    <div class="w-75 btn-group" role="group">
-                                        <a asp-action="plus" asp-route-cartId="@item.Id" class="btn btn-primary">
+                            <div class="col-6 col-sm-4 col-lg-6 pt-2">
+                                <div class="w-75 btn-group" role="group">
+                                    <form method="post" asp-action="Plus" asp-route-cartId="@item.Id" class="d-inline">
+                                        <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-plus-square"></i>
-                                        </a> &nbsp;
-                                        <a asp-action="minus" asp-route-cartId="@item.Id" class="btn btn-warning">
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-action="Minus" asp-route-cartId="@item.Id" class="d-inline ms-1">
+                                        <button type="submit" class="btn btn-warning">
                                             <i class="bi bi-dash-square"></i>
-                                        </a>
-                                    </div>
-
+                                        </button>
+                                    </form>
                                 </div>
-                                <div class="col-2 col-sm-4 col-lg-2 text-right pt-2">
-                                    <a asp-action="remove" asp-route-cartId="@item.Id" class="btn btn-danger">
+                            </div>
+                            <div class="col-2 col-sm-4 col-lg-2 text-right pt-2">
+                                <form method="post" asp-action="Remove" asp-route-cartId="@item.Id">
+                                    <button type="submit" class="btn btn-danger">
                                         <i class="bi bi-trash-fill"></i>
-                                    </a>
-                                </div>
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        <hr />
+                    </div>
+                    <hr />
                 }
                 <div class="row">
                     <div class="col-12 col-md-6 offset-md-6 col-lg-4 offset-lg-8 pr-4">
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between bg-light">
-                                <span class="text-info"> Total (USD)</span>
+                                <span class="text-info">Total (USD)</span>
                                 <strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
                             </li>
                         </ul>
                     </div>
                 </div>
+            }
+        </div>
 
-            </div>
-
-            <div class="card-footer">
-                <div class="card-footer row">
-                    <div class="col-sm-12 col-lg-4 col-md-6 offset-lg-8 offset-md-6 ">
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-sm-12 col-lg-4 col-md-6 offset-lg-8 offset-md-6">
+                    @if (Model.ListCart.Any())
+                    {
                         <a asp-action="Summary" class="btn btn-success form-control">Summary</a>
-                    </div>
+                    }
+                    else
+                    {
+                        <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-success form-control">Browse Books</a>
+                    }
                 </div>
             </div>
         </div>
     </div>
-</form>
+</div>

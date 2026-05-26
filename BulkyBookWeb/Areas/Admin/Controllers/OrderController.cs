@@ -8,6 +8,7 @@ using Stripe;
 using Stripe.Checkout;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
@@ -16,11 +17,17 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<OrderController> _logger;
         [BindProperty]
-        public OrderVm OrderVM { get; set; }
-        public OrderController(IUnitOfWork unitOfWork)
+        public OrderVm OrderVM { get; set; } = new();
+        public OrderController(IUnitOfWork unitOfWork, IConfiguration configuration, IWebHostEnvironment environment, ILogger<OrderController> logger)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
+            _environment = environment;
+            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -29,9 +36,21 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Details(int orderId)
         {
+            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderId, includeProperties: "ApplicationUser");
+            if (orderHeader == null)
+            {
+                return NotFound();
+            }
+
+            if (!CanAccessOrder(orderHeader))
+            {
+                _logger.LogWarning("Unauthorized order details access attempt. User {UserId}, Order {OrderId}.", GetCurrentUserId(), orderId);
+                return Forbid();
+            }
+
             OrderVM = new OrderVm()
             {
-                OrderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderId, includeProperties: "ApplicationUser"),
+                OrderHeader = orderHeader,
                 OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderId == orderId, includeProperties: "Product"),
             };
             return View(OrderVM);
@@ -43,10 +62,42 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult Details_PAY_NOW()
         {
             OrderVM.OrderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
+            if (OrderVM.OrderHeader == null)
+            {
+                return NotFound();
+            }
+
+            if (!CanAccessOrder(OrderVM.OrderHeader))
+            {
+                _logger.LogWarning("Unauthorized order pay-now attempt. User {UserId}, Order {OrderId}.", GetCurrentUserId(), OrderVM.OrderHeader.Id);
+                return Forbid();
+            }
+
             OrderVM.OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
 
+            if (UseLocalStripeFallback())
+            {
+                _logger.LogInformation("Using local payment fallback for order {OrderId}.", OrderVM.OrderHeader.Id);
+                _unitOfWork.OrderHeader.UpdateStripePaymentID(
+                    OrderVM.OrderHeader.Id,
+                    BuildLocalStripeId("local_demo_session", OrderVM.OrderHeader.Id),
+                    BuildLocalStripeId("local_demo_pi", OrderVM.OrderHeader.Id));
+                _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, OrderVM.OrderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+
+                TempData["Success"] = "Local development payment completed without Stripe.";
+                return RedirectToAction("PaymentConfirmation", "Order", new { orderHeaderid = OrderVM.OrderHeader.Id });
+            }
+
+            if (!HasStripeApiKey())
+            {
+                _logger.LogWarning("Order payment blocked because Stripe is not configured. Order {OrderId}.", OrderVM.OrderHeader.Id);
+                TempData["error"] = "Stripe is not configured. Add a Stripe test secret key or enable the local checkout fallback in Development.";
+                return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
+            }
+
             //stripe settings
-            var domain = "https://localhost:44368/";
+            var domain = GetApplicationBaseUrl();
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string>
@@ -83,21 +134,45 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _unitOfWork.OrderHeader.UpdateStripePaymentID(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
             _unitOfWork.Save();
 
-            Response.Headers.Add("Location", session.Url);
+            Response.Headers.Location = session.Url;
             return new StatusCodeResult(303);        
         }
 
         public IActionResult PaymentConfirmation(int orderHeaderid)
         {
             OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderHeaderid);
+            if (orderHeader == null)
+            {
+                return NotFound();
+            }
+
+            if (!CanAccessOrder(orderHeader))
+            {
+                _logger.LogWarning("Unauthorized payment confirmation access attempt. User {UserId}, Order {OrderId}.", GetCurrentUserId(), orderHeaderid);
+                return Forbid();
+            }
+
             if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
             {
+                if (UseLocalStripeFallback())
+                {
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderid, orderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
+                    _unitOfWork.Save();
+                    return View(orderHeaderid);
+                }
+
+                if (!HasStripeApiKey())
+                {
+                    TempData["error"] = "Stripe is not configured. Payment confirmation was skipped.";
+                    return RedirectToAction("Details", "Order", new { orderId = orderHeaderid });
+                }
+
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);
                 //checkthe stripe status
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
-                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderid, orderHeader.OrderStatus, SD.PaymentStatusApproved);
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderid, orderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
                     _unitOfWork.Save();
                 }
             }
@@ -110,6 +185,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult UpdateOrderDetail()
         {
             var orderHEaderFromDb = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
+            if (orderHEaderFromDb == null)
+            {
+                return NotFound();
+            }
+
             orderHEaderFromDb.Name = OrderVM.OrderHeader.Name;
             orderHEaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
             orderHEaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
@@ -135,8 +215,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult StartProcessing()
         {
+            if (_unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false) == null)
+            {
+                return NotFound();
+            }
+
             _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, SD.StatusInProcess);
             _unitOfWork.Save();
+            _logger.LogInformation("Order {OrderId} marked Processing by user {UserId}.", OrderVM.OrderHeader.Id, GetCurrentUserId());
             TempData["Success"] = "Order Status Updated Successfully.";
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
@@ -147,6 +233,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult ShipOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
+            if (orderHeader == null)
+            {
+                return NotFound();
+            }
+
             orderHeader.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
             orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
             orderHeader.OrderStatus = SD.StatusShipped;
@@ -157,6 +248,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
             _unitOfWork.OrderHeader.Update(orderHeader);
             _unitOfWork.Save();
+            _logger.LogInformation("Order {OrderId} shipped by user {UserId}.", OrderVM.OrderHeader.Id, GetCurrentUserId());
             TempData["Success"] = "Order Shipped Successfully.";
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
@@ -167,18 +259,37 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult CancelOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
+            if (orderHeader == null)
+            {
+                return NotFound();
+            }
+
             if (orderHeader.PaymentStatus == SD.PaymentStatusApproved)
             {
-                var options = new RefundCreateOptions
+                if (UseLocalStripeFallback())
                 {
-                    Reason = RefundReasons.RequestedByCustomer,
-                    PaymentIntent = orderHeader.PaymentIntentId
-                };
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusRefunded);
+                }
+                else
+                {
+                    if (!HasStripeApiKey())
+                    {
+                        _logger.LogWarning("Order refund blocked because Stripe is not configured. Order {OrderId}.", OrderVM.OrderHeader.Id);
+                        TempData["error"] = "Stripe is not configured. Refund was skipped.";
+                        return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
+                    }
 
-                var service = new RefundService();
-                Refund refund = service.Create(options);
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentId
+                    };
 
-                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusRefunded);
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusRefunded);
+                }
             }
             else
             {
@@ -186,6 +297,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
             _unitOfWork.Save();
 
+            _logger.LogInformation("Order {OrderId} cancelled by user {UserId}.", OrderVM.OrderHeader.Id, GetCurrentUserId());
             TempData["Success"] = "Order Cancelled Successfully.";
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
@@ -203,21 +315,31 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
             else
             {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                orderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == claim.Value, includeProperties: "ApplicationUser");
+                var userId = GetCurrentUserId();
+                if (userId == null)
+                {
+                    return Challenge();
+                }
+
+                orderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
             }
 
             switch (status)
             {
                 case "pending":
-                    orderHeaders = orderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusDelayedPayment);
+                    orderHeaders = orderHeaders.Where(u =>
+                        u.OrderStatus == SD.StatusPending ||
+                        u.PaymentStatus == SD.PaymentStatusPending ||
+                        u.PaymentStatus == SD.PaymentStatusDelayedPayment);
                     break;
                 case "inprocess":
                     orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess);
                     break;
                 case "completed":
                     orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusShipped);
+                    break;
+                case "cancelled":
+                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusCancelled || u.OrderStatus == SD.StatusRefunded);
                     break;
                 case "approved":
                     orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusApproved);
@@ -229,5 +351,49 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return Json(new { data = orderHeaders });
         }
         #endregion
+
+        private string GetApplicationBaseUrl()
+        {
+            var configuredBaseUrl = _configuration["Application:BaseUrl"];
+            var baseUrl = string.IsNullOrWhiteSpace(configuredBaseUrl)
+                ? $"{Request.Scheme}://{Request.Host}"
+                : configuredBaseUrl;
+
+            return baseUrl.TrimEnd('/') + "/";
+        }
+
+        private bool HasStripeApiKey()
+        {
+            return !string.IsNullOrWhiteSpace(_configuration["Stripe:SecretKey"]);
+        }
+
+        private bool UseLocalStripeFallback()
+        {
+            return _environment.IsDevelopment()
+                && _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback")
+                && !HasStripeApiKey();
+        }
+
+        private static string BuildLocalStripeId(string prefix, int orderId)
+        {
+            return $"{prefix}_{orderId}";
+        }
+
+        private string? GetCurrentUserId()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            return claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        private bool CanAccessOrder(OrderHeader orderHeader)
+        {
+            if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+            {
+                return true;
+            }
+
+            var userId = GetCurrentUserId();
+            return !string.IsNullOrWhiteSpace(userId) && orderHeader.ApplicationUserId == userId;
+        }
     }
 }

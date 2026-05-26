@@ -3,6 +3,7 @@
 
 
 <form method="post">
+    @Html.AntiForgeryToken()
     <input asp-for="OrderHeader.Id" hidden />
     <br />
     <div class="container">

@@ -55,7 +55,8 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Product.ImageUrl"></label>
-                    <input type="file" id="uploadBox" name="file" class="form-control" />
+                    <input type="file" id="uploadBox" name="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" />
+                    <span class="text-danger">@Html.ValidationMessage("file")</span>
                 </div>
 
                 <div class="mb-3 col-6">
@@ -90,8 +91,11 @@
             </div>
         </div>
         <div class="col-2 pt-4">
-            <img src="@Model.Product.ImageUrl"
-                 width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            @if (!string.IsNullOrWhiteSpace(Model.Product.ImageUrl))
+            {
+                <img src="@Model.Product.ImageUrl"
+                     width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
         </div>
     </div>
 

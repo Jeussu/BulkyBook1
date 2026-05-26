@@ -1,13 +1,14 @@
-﻿@model BulkyBook.Models.ViewModels.ShoppingCartVM
-@using Microsoft.Extensions.Options
-@inject IOptions<BulkyBook.Utility.StripeSettings> Stripe
+@model BulkyBook.Models.ViewModels.ShoppingCartVM
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment
 
 <form method="post">
+	@Html.AntiForgeryToken()
 	<br />
 	<div class="container">
 		<div class="card">
 			<div class="card-header bg-dark text-light ml-0">
-				<div class=" row container">
+				<div class="row container">
 					<div class="col-6">
 						<i class="fa fa-shopping-cart"></i> &nbsp;
 						Order Summary
@@ -86,15 +87,15 @@
 								<span class="text-info">Order Summary:</span>
 							</h4>
 							<ul class="list-group mb-3">
-								@foreach(var details in Model.ListCart)
+								@foreach (var details in Model.ListCart)
 								{
-								<li class="list-group-item d-flex justify-content-between">
-									<div>
-										<h6 class="my-0">@details.Product.Title</h6>
-										<small class="text-muted">Quantity: @details.Count</small>
-									</div>
-									<span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
-								</li>
+									<li class="list-group-item d-flex justify-content-between">
+										<div>
+											<h6 class="my-0">@details.Product.Title</h6>
+											<small class="text-muted">Quantity: @details.Count</small>
+										</div>
+										<span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
+									</li>
 								}
 								<li class="list-group-item d-flex justify-content-between bg-light">
 									<small class="text-info">Total (USD)</small>
@@ -108,8 +109,15 @@
 			<div class="card-footer">
 				<div class="row">
 					<div class="col-12 col-md-8 pt-2">
+						@if (Model.OrderHeader.ApplicationUser?.CompanyId.GetValueOrDefault() == 0 &&
+							string.Equals(Environment.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase) &&
+							string.Equals(Configuration["Stripe:EnableLocalCheckoutFallback"], "true", StringComparison.OrdinalIgnoreCase) &&
+							string.IsNullOrWhiteSpace(Configuration["Stripe:SecretKey"]))
+						{
+							<p class="text-info mb-1" style="font-size:14px;">Local checkout fallback is enabled because Stripe is not configured.</p>
+						}
 						<p style="color:maroon; font-size:14px;">Estimate Arrival Date:
-						@DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()	
+							@DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
 						</p>
 					</div>
 					<div class="col-12 col-md-4">

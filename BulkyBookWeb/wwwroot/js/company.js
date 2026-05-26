@@ -47,6 +47,9 @@ function Delete(url) {
             $.ajax({
                 url: url,
                 type: 'DELETE',
+                headers: {
+                    "RequestVerificationToken": $('meta[name="request-verification-token"]').attr('content')
+                },
                 success: function (data) {
                     if (data.success) {
                         dataTable.ajax.reload();

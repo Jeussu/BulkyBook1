@@ -85,6 +85,7 @@ public class CompanyController : Controller
 
     //POST
     [HttpDelete]
+    [ValidateAntiForgeryToken]
     public IActionResult Delete(int? id)
     {
         var obj = _unitOfWork.Company.GetFirstOrDefault(u => u.Id == id);

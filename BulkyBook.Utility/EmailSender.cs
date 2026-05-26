@@ -1,50 +1,52 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BulkyBook.Utility
 {
     public class EmailSender : IEmailSender
     {
-        //public string SendGridSecret { get; set; }
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailSender> _logger;
 
-        //public EmailSender(IConfiguration _config)
-        //{
-        //    SendGridSecret = _config.GetValue<string>("SendGrid:SecretKey");
-        //}
-
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public EmailSender(IConfiguration configuration, ILogger<EmailSender> logger)
         {
+            _configuration = configuration;
+            _logger = logger;
+        }
+
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            var host = _configuration["Email:Smtp:Host"];
+            var username = _configuration["Email:Smtp:Username"];
+            var password = _configuration["Email:Smtp:Password"];
+            var from = _configuration["Email:Smtp:From"];
+            var port = _configuration.GetValue<int?>("Email:Smtp:Port") ?? 587;
+
+            if (string.IsNullOrWhiteSpace(host) ||
+                string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(from))
+            {
+                _logger.LogWarning("SMTP settings are not configured. Skipping email to {Email}.", email);
+                return;
+            }
+
             var emailToSend = new MimeMessage();
-            emailToSend.From.Add(MailboxAddress.Parse("hello@dotnetmastery.com"));
+            emailToSend.From.Add(MailboxAddress.Parse(from));
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;
             emailToSend.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = htmlMessage };
 
-            //send email
             using (var emailClient = new SmtpClient())
             {
-                emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                emailClient.Authenticate("vinhdtgch17230@fpt.edu.vn", "Vinh140698");
-                emailClient.Send(emailToSend);
-                emailClient.Disconnect(true);
+                await emailClient.ConnectAsync(host, port, MailKit.Security.SecureSocketOptions.StartTls);
+                await emailClient.AuthenticateAsync(username, password);
+                await emailClient.SendAsync(emailToSend);
+                await emailClient.DisconnectAsync(true);
             }
-
-            return Task.CompletedTask;
-
-            //var client = new SendGridClient(SendGridSecret);
-            //var from = new EmailAddress("hello@dotnetmastery.com", "Bulky Book");
-            //var to = new EmailAddress(email);
-            //var msg = MailHelper.CreateSingleEmail(from, to, subject, "", htmlMessage);
-            //return client.SendEmailAsync(msg);
         }
     }
 }

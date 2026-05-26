@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BulkyBookWeb.Areas.Customer.Controllers
 {
@@ -17,23 +18,32 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<CartController> _logger;
         [BindProperty]
-        public ShoppingCartVM ShoppingCartVM { get; set; }
+        public ShoppingCartVM ShoppingCartVM { get; set; } = new();
         //total price
         public int OrderTotal { get; set; }
-        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender, IConfiguration configuration, IWebHostEnvironment environment, ILogger<CartController> logger)
         {
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
+            _configuration = configuration;
+            _environment = environment;
+            _logger = logger;
         }
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Challenge();
+            }
 
             ShoppingCartVM = new ShoppingCartVM()
             {
-                ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
+                ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                 includeProperties: "Product"),
                 OrderHeader = new()
             };
@@ -48,24 +58,38 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Challenge();
+            }
 
             ShoppingCartVM = new ShoppingCartVM()
             {
-                ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
+                ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                 includeProperties: "Product"),
                 OrderHeader = new()
             };
-            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(
-                u => u.Id == claim.Value);
+            if (!ShoppingCartVM.ListCart.Any())
+            {
+                TempData["info"] = "Your cart is empty.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
-            ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
-            ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress;
-            ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
-            ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State;
-            ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(
+                u => u.Id == userId);
+
+            if (ShoppingCartVM.OrderHeader.ApplicationUser == null)
+            {
+                return Challenge();
+            }
+
+            ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name ?? string.Empty;
+            ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber ?? string.Empty;
+            ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress ?? string.Empty;
+            ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City ?? string.Empty;
+            ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State ?? string.Empty;
+            ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode ?? string.Empty;
 
 
 
@@ -83,14 +107,23 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SummaryPOST()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Challenge();
+            }
 
-            ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
-                includeProperties: "Product");
+            ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
+                includeProperties: "Product").ToList();
+
+            if (!ShoppingCartVM.ListCart.Any())
+            {
+                TempData["error"] = "Your cart is empty.";
+                return RedirectToAction(nameof(Index));
+            }
 
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
-            ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
+            ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
             foreach (var cart in ShoppingCartVM.ListCart)
             {
@@ -98,7 +131,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     cart.Product.Price50, cart.Product.Price100);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
-            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == userId);
+            if (applicationUser == null)
+            {
+                return Challenge();
+            }
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
 
@@ -112,6 +149,12 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
 
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0 && !HasStripeApiKey() && !UseLocalStripeFallback())
+            {
+                _logger.LogWarning("Checkout blocked because Stripe is not configured for user {UserId}.", userId);
+                TempData["error"] = "Stripe is not configured. Add a Stripe test secret key or enable the local checkout fallback in Development.";
+                return RedirectToAction(nameof(Summary));
+            }
 
             _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitOfWork.Save();
@@ -132,8 +175,22 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
+                if (UseLocalStripeFallback())
+                {
+                    _logger.LogInformation("Using local checkout fallback for order {OrderId}.", ShoppingCartVM.OrderHeader.Id);
+                    _unitOfWork.OrderHeader.UpdateStripePaymentID(
+                        ShoppingCartVM.OrderHeader.Id,
+                        BuildLocalStripeId("local_demo_session", ShoppingCartVM.OrderHeader.Id),
+                        BuildLocalStripeId("local_demo_pi", ShoppingCartVM.OrderHeader.Id));
+                    _unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
+                    _unitOfWork.Save();
+
+                    TempData["success"] = "Local development checkout completed without Stripe.";
+                    return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+                }
+
                 //stripe settings
-                var domain = "https://localhost:44368/";
+                var domain = GetApplicationBaseUrl();
                 var options = new SessionCreateOptions
                 {
                     PaymentMethodTypes = new List<string>
@@ -167,10 +224,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
                 var service = new SessionService();
                 Session session = service.Create(options);
-                _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+                _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
                 _unitOfWork.Save();
 
-                Response.Headers.Add("Location", session.Url);
+                Response.Headers.Location = session.Url;
                 return new StatusCodeResult(303);
             }
             else
@@ -182,38 +239,81 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public IActionResult OrderConfirmation(int id)
         {
             OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id, includeProperties: "ApplicationUser");
-            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+            if (orderHeader == null)
             {
+                return NotFound();
+            }
+
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Challenge();
+            }
+
+            if (orderHeader.ApplicationUserId != userId && !User.IsInRole(SD.Role_Admin) && !User.IsInRole(SD.Role_Employee))
+            {
+                _logger.LogWarning("Unauthorized order confirmation access attempt. User {UserId}, Order {OrderId}.", userId, id);
+                return Forbid();
+            }
+
+            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment && orderHeader.PaymentStatus != SD.PaymentStatusApproved)
+            {
+                if (!HasStripeApiKey())
+                {
+                    TempData["error"] = "Stripe is not configured. The order was created, but payment verification was skipped.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);
                 //checkthe stripe status
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
-                    _unitOfWork.OrderHeader.UpdateStripePaymentID(id, orderHeader.SessionId, session.PaymentIntentId);
+                    _unitOfWork.OrderHeader.UpdateStripePaymentID(id, orderHeader.SessionId ?? string.Empty, session.PaymentIntentId ?? string.Empty);
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitOfWork.Save();
                 }
             }
-            _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Bulky Book", "<p>New Order Created</p>");
-            List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
-            orderHeader.ApplicationUserId).ToList();
-            HttpContext.Session.Clear();
-            _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
-            _unitOfWork.Save();
+            if (!string.IsNullOrWhiteSpace(orderHeader.ApplicationUser.Email))
+            {
+                _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Bulky Book", "<p>New Order Created</p>");
+            }
+            if (orderHeader.ApplicationUserId == userId)
+            {
+                List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
+                orderHeader.ApplicationUserId).ToList();
+                HttpContext.Session.Clear();
+                _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+                _unitOfWork.Save();
+            }
             return View(id);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Plus(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
+            var cart = GetOwnedCartItem(cartId);
+            if (cart == null)
+            {
+                return CartAccessDenied(cartId);
+            }
+
             _unitOfWork.ShoppingCart.IncrementCount(cart, 1);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Minus(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
+            var cart = GetOwnedCartItem(cartId);
+            if (cart == null)
+            {
+                return CartAccessDenied(cartId);
+            }
+
             if (cart.Count <= 1)
             {
                 _unitOfWork.ShoppingCart.Remove(cart);
@@ -228,9 +328,16 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Remove(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
+            var cart = GetOwnedCartItem(cartId);
+            if (cart == null)
+            {
+                return CartAccessDenied(cartId);
+            }
+
             _unitOfWork.ShoppingCart.Remove(cart);
             _unitOfWork.Save();
             var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
@@ -252,6 +359,63 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 }
                 return price100;
             }
+        }
+
+        private string GetApplicationBaseUrl()
+        {
+            var configuredBaseUrl = _configuration["Application:BaseUrl"];
+            var baseUrl = string.IsNullOrWhiteSpace(configuredBaseUrl)
+                ? $"{Request.Scheme}://{Request.Host}"
+                : configuredBaseUrl;
+
+            return baseUrl.TrimEnd('/') + "/";
+        }
+
+        private bool HasStripeApiKey()
+        {
+            return !string.IsNullOrWhiteSpace(_configuration["Stripe:SecretKey"]);
+        }
+
+        private bool UseLocalStripeFallback()
+        {
+            return _environment.IsDevelopment()
+                && _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback")
+                && !HasStripeApiKey();
+        }
+
+        private static string BuildLocalStripeId(string prefix, int orderId)
+        {
+            return $"{prefix}_{orderId}";
+        }
+
+        private string? GetCurrentUserId()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            return claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        private ShoppingCart? GetOwnedCartItem(int cartId)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return null;
+            }
+
+            return _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId && u.ApplicationUserId == userId);
+        }
+
+        private IActionResult CartAccessDenied(int cartId)
+        {
+            var userId = GetCurrentUserId();
+            var cartExists = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId, tracked: false) != null;
+            if (cartExists)
+            {
+                _logger.LogWarning("Unauthorized cart mutation attempt. User {UserId}, Cart {CartId}.", userId, cartId);
+                return Forbid();
+            }
+
+            return NotFound();
         }
     }
 }

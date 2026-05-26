@@ -59,19 +59,19 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = string.Empty;
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -86,7 +86,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -96,7 +96,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
-            public string Password { get; set; }
+            public string Password { get; set; } = string.Empty;
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -105,10 +105,10 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword { get; set; } = string.Empty;
 
             [Required]
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
             public string? StreetAddress { get; set; }
             public string? City { get; set; }
             public string? State { get; set; }
@@ -117,36 +117,29 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             public string? Role { get; set; }
             public int? CompanyId { get; set; }
             [ValidateNever]
-            public IEnumerable<SelectListItem> RoleList { get; set; }
+            public IEnumerable<SelectListItem> RoleList { get; set; } = new List<SelectListItem>();
             [ValidateNever]
-            public IEnumerable<SelectListItem> CompanyList { get; set; }
+            public IEnumerable<SelectListItem> CompanyList { get; set; } = new List<SelectListItem>();
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
 
-            ReturnUrl = returnUrl;
+            ReturnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                }),
-                CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                }),
-            };
+            Input = new InputModel();
+            PopulateInputLists();
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            PopulateInputLists();
+
+            var selectedRole = GetValidatedRegistrationRole();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -159,7 +152,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                 user.PostalCode = Input.PostalCode;
                 user.Name = Input.Name;
                 user.PhoneNumber = Input.PhoneNumber;
-                if (Input.Role == SD.Role_User_Comp)
+                if (User.IsInRole(SD.Role_Admin) && selectedRole == SD.Role_User_Comp)
                 {
                     user.CompanyId = Input.CompanyId;
                 }
@@ -169,14 +162,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (Input.Role == null)
-                    {
-                        await _userManager.AddToRoleAsync(user, SD.Role_User_Indi);
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
-                    }
+                    await _userManager.AddToRoleAsync(user, selectedRole);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -188,7 +174,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -239,6 +225,58 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<IdentityUser>)_userStore;
+        }
+
+        private void PopulateInputLists()
+        {
+            Input ??= new InputModel();
+            Input.RoleList = _roleManager.Roles
+                .Where(x => x.Name != null)
+                .Select(x => x.Name!)
+                .Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                });
+
+            Input.CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+        }
+
+        private string GetValidatedRegistrationRole()
+        {
+            if (!User.IsInRole(SD.Role_Admin))
+            {
+                Input.Role = SD.Role_User_Indi;
+                Input.CompanyId = null;
+                return SD.Role_User_Indi;
+            }
+
+            var allowedRoles = new[] { SD.Role_Admin, SD.Role_Employee, SD.Role_User_Indi, SD.Role_User_Comp };
+            var requestedRole = string.IsNullOrWhiteSpace(Input.Role) ? SD.Role_User_Indi : Input.Role;
+
+            if (!allowedRoles.Contains(requestedRole))
+            {
+                ModelState.AddModelError("Input.Role", "Invalid role selection.");
+                return SD.Role_User_Indi;
+            }
+
+            if (requestedRole == SD.Role_User_Comp)
+            {
+                if (!Input.CompanyId.HasValue || _unitOfWork.Company.GetFirstOrDefault(u => u.Id == Input.CompanyId.Value) == null)
+                {
+                    ModelState.AddModelError("Input.CompanyId", "A valid company is required for company users.");
+                }
+            }
+            else
+            {
+                Input.CompanyId = null;
+            }
+
+            return requestedRole;
         }
     }
 }
