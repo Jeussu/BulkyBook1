@@ -1,40 +1,77 @@
 @model BulkyBook.Models.ViewModels.ProductListVM
+@using System.Globalization
+@{
+    var usdCulture = CultureInfo.GetCultureInfo("en-US");
+    Func<double, string> usd = value => value.ToString("C", usdCulture);
+    Func<BulkyBook.Models.Product, string> stockLabel = product =>
+        product.StockQuantity <= 0 ? "Out of stock" :
+        product.StockQuantity <= 5 ? $"Low stock: {product.StockQuantity}" :
+        "In stock";
+    Func<BulkyBook.Models.Product, string> stockClass = product =>
+        product.StockQuantity <= 0 ? "badge-stock-out" :
+        product.StockQuantity <= 5 ? "badge-stock-low" :
+        "badge-stock";
+}
 
-<form method="get" asp-area="Customer" asp-controller="Home" asp-action="Index" class="border rounded p-3 mt-3 mb-4 bg-light">
-    <div class="row g-2 align-items-end">
-        <div class="col-12 col-md-4">
+<section class="bookstore-hero mt-3 mb-4">
+    <div class="bookstore-hero__copy">
+        <p class="text-uppercase small fw-bold mb-2">BulkyBook technical bookstore</p>
+        <h1>Practical books for modern .NET teams.</h1>
+        <p class="mb-3">Curated demo titles for building, deploying, securing, and maintaining ASP.NET Core applications.</p>
+        <a class="btn btn-hero" href="#catalog">Browse catalog</a>
+    </div>
+    <div class="hero-cover-showcase" aria-hidden="true">
+        <img class="hero-cover hero-cover-back" src="/images/products/book-covers/clean-architecture-with-dotnet.svg" alt="" />
+        <img class="hero-cover hero-cover-mid" src="/images/products/book-covers/microservices-with-aspnet-core.svg" alt="" />
+        <img class="hero-cover hero-cover-front" src="/images/products/book-covers/practical-devops-for-developers.svg" alt="" />
+    </div>
+</section>
+
+<form id="catalog" method="get" asp-area="Customer" asp-controller="Home" asp-action="Index" class="book-filter mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-12 col-lg-3">
             <label asp-for="SearchTerm" class="form-label">Search</label>
             <input asp-for="SearchTerm" class="form-control" placeholder="Title, author, or ISBN" />
         </div>
-        <div class="col-12 col-md-2">
+        <div class="col-12 col-md-4 col-lg-2">
             <label asp-for="CategoryId" class="form-label">Category</label>
             <select asp-for="CategoryId" asp-items="Model.CategoryList" class="form-select">
-                <option value="">All</option>
+                <option value="">All categories</option>
             </select>
         </div>
-        <div class="col-12 col-md-2">
+        <div class="col-12 col-md-4 col-lg-2">
             <label asp-for="CoverTypeId" class="form-label">Cover</label>
             <select asp-for="CoverTypeId" asp-items="Model.CoverTypeList" class="form-select">
-                <option value="">All</option>
+                <option value="">All covers</option>
             </select>
         </div>
-        <div class="col-6 col-md-1">
+        <div class="col-6 col-md-2 col-lg-1">
             <label asp-for="MinPrice" class="form-label">Min</label>
             <input asp-for="MinPrice" class="form-control" type="number" min="0" step="1" />
         </div>
-        <div class="col-6 col-md-1">
+        <div class="col-6 col-md-2 col-lg-1">
             <label asp-for="MaxPrice" class="form-label">Max</label>
             <input asp-for="MaxPrice" class="form-control" type="number" min="0" step="1" />
         </div>
-        <div class="col-6 col-md-1">
-            <label asp-for="PageSize" class="form-label">Page</label>
+        <div class="col-6 col-md-3 col-lg-1">
+            <label asp-for="SortBy" class="form-label">Sort</label>
+            <select asp-for="SortBy" class="form-select">
+                <option value="newest">Newest first</option>
+                <option value="title_asc">Title A-Z</option>
+                <option value="title_desc">Title Z-A</option>
+                <option value="price_asc">Price low</option>
+                <option value="price_desc">Price high</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-3 col-lg-1">
+            <label asp-for="PageSize" class="form-label">Page size</label>
             <select asp-for="PageSize" class="form-select">
                 <option value="8">8</option>
                 <option value="12">12</option>
                 <option value="20">20</option>
             </select>
         </div>
-        <div class="col-6 col-md-1 d-grid">
+        <div class="col-12 col-md-6 col-lg-1 d-grid">
             <input type="hidden" name="page" value="1" />
             <button type="submit" class="btn btn-primary">Apply</button>
         </div>
@@ -46,42 +83,48 @@
 
 @if (!Model.Products.Any())
 {
-    <div class="alert alert-info">
-        No books match the current search or filters.
+    <div class="empty-state">
+        <h5>No books found</h5>
+        <p>Try clearing filters, widening the price range, or searching another title, author, or ISBN.</p>
     </div>
 }
 else
 {
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="text-muted">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="page-count-text">
             Showing page @Model.Page of @Model.TotalPages (@Model.TotalItems book@(Model.TotalItems == 1 ? "" : "s"))
         </div>
     </div>
 
-    <div class="row pb-3 g-3">
+    <div class="row pb-3 g-4">
         @foreach (var product in Model.Products)
         {
             <div class="col-sm-6 col-lg-3 d-flex">
-                <div class="product-card card h-100 w-100 shadow-sm">
-                    <div class="product-card-img-wrapper">
+                <article class="book-card card h-100 w-100 shadow-sm">
+                    <div class="book-card-cover">
                         <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" />
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <p class="card-title h6 text-primary product-card-title">@product.Title</p>
-                        <p class="text-info small mb-2">by <b>@product.Author</b></p>
-                        <p class="mb-1 small">List Price: <strike><b>$@product.ListPrice.ToString("0.00")</b></strike></p>
-                        <p class="mb-3 small">As low as: <b>$@product.Price100.ToString("0.00")</b></p>
+                        <div class="product-meta-row d-flex gap-2 flex-wrap mb-2">
+                            <span class="badge badge-soft">@product.Category?.Name</span>
+                            <span class="badge badge-soft">@product.CoverType?.Name</span>
+                        </div>
+                        <h2 class="book-card-title h6">@product.Title</h2>
+                        <p class="book-card-author small text-muted mb-2">by @product.Author</p>
+                        <span class="badge @stockClass(product) align-self-start mb-3">@stockLabel(product)</span>
+                        <p class="mb-1 small text-muted">List Price: <span class="text-decoration-line-through">@usd(product.ListPrice)</span></p>
+                        <p class="book-card-price mb-3">From @usd(product.Price100)</p>
                         <a asp-action="Details" class="btn btn-primary mt-auto" asp-route-productId="@product.Id">
                             Details
                         </a>
                     </div>
-                </div>
+                </article>
             </div>
         }
     </div>
 
     <nav aria-label="Product pages">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center flex-wrap">
             <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
                 <a class="page-link"
                    asp-action="Index"
@@ -90,6 +133,7 @@ else
                    asp-route-coverTypeId="@Model.CoverTypeId"
                    asp-route-minPrice="@Model.MinPrice"
                    asp-route-maxPrice="@Model.MaxPrice"
+                   asp-route-sortBy="@Model.SortBy"
                    asp-route-pageSize="@Model.PageSize"
                    asp-route-page="@(Model.Page - 1)">Previous</a>
             </li>
@@ -103,6 +147,7 @@ else
                        asp-route-coverTypeId="@Model.CoverTypeId"
                        asp-route-minPrice="@Model.MinPrice"
                        asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sortBy="@Model.SortBy"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="@i">@i</a>
                 </li>
@@ -115,6 +160,7 @@ else
                    asp-route-coverTypeId="@Model.CoverTypeId"
                    asp-route-minPrice="@Model.MinPrice"
                    asp-route-maxPrice="@Model.MaxPrice"
+                   asp-route-sortBy="@Model.SortBy"
                    asp-route-pageSize="@Model.PageSize"
                    asp-route-page="@(Model.Page + 1)">Next</a>
             </li>

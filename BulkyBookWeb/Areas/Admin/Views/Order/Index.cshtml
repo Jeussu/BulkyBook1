@@ -2,7 +2,7 @@
     var status = Context.Request.Query["status"];
     var pending = "text-primary";
     var inprocess = "text-primary";
-    var completed = "text-primary";
+    var shipped = "text-primary";
     var approved = "text-primary";
     var cancelled = "text-primary";
     var all = "text-primary";
@@ -15,8 +15,8 @@
             case "inprocess":
             inprocess = "active text-white";
             break;
-            case "completed":
-            completed = "active text-white";
+            case "shipped":
+            shipped = "active text-white";
             break;
             case "approved":
             approved = "active text-white";
@@ -34,7 +34,7 @@
 <div class="p-3">
     <div class="flex-md justify-content-between pt-4">
         <div class="p-2">
-            <h2 class="text-primary">Order List</h2>
+            <h2 class="text-primary">@(User.IsInRole(BulkyBook.Utility.SD.Role_Admin) || User.IsInRole(BulkyBook.Utility.SD.Role_Employee) ? "Order List" : "My Orders")</h2>
         </div>
         <div class="p-2">
             <ul class="list-group list-group-horizontal-sm">
@@ -47,8 +47,8 @@
                     <li class="list-group-item @pending">Payment Pending</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="completed">
-                    <li class="list-group-item @completed">Completed</li>
+                    asp-action="Index" asp-route-status="shipped">
+                    <li class="list-group-item @shipped">Shipped</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order"
                     asp-action="Index" asp-route-status="approved">

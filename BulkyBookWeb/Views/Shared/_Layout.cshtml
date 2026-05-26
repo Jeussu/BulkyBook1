@@ -4,6 +4,8 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
 	var requestToken = Xsrf.GetAndStoreTokens(Context).RequestToken;
+	var isAuthenticated = User.Identity?.IsAuthenticated == true;
+	var isStaff = User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -20,9 +22,12 @@
 </head>
 <body>
 	<header>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Bulky</a>
+		<nav class="navbar navbar-expand-lg navbar-dark bb-navbar">
+			<div class="container">
+				<a class="navbar-brand bb-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">
+					<span>BulkyBook</span>
+					<small>Press</small>
+				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -35,7 +40,7 @@
 						@if (User.IsInRole(SD.Role_Admin))
 						{
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Managment</a>
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Management</a>
 								<div class="dropdown-menu">
 									<a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
 									<a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
@@ -47,17 +52,23 @@
 								</div>
 							</li>
 						}
-						<li class="nav-item">
-							<a class=nav-link asp-area="Admin" asp-controller="Order" asp-action="Index">
-								Manage Order
-							</a>
-						</li>
+						@if (isAuthenticated)
+						{
+							<li class="nav-item">
+								<a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+									@(isStaff ? "Manage Orders" : "My Orders")
+								</a>
+							</li>
+						}
 
-						<li class="nav-item">
-							<a class=nav-link asp-area="Customer" asp-controller="Cart" asp-action="Index">
-								@await Component.InvokeAsync("ShoppingCart")
-							</a>
-						</li>
+						@if (isAuthenticated)
+						{
+							<li class="nav-item">
+								<a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
+									@await Component.InvokeAsync("ShoppingCart")
+								</a>
+							</li>
+						}
 					</ul>
 					<partial name="_LoginPartial" />
 				</div>
@@ -65,16 +76,17 @@
 		</nav>
 
 	</header>
-	<div class="container">
-		<main role="main" class="pb-3">
+	<div class="container page-shell">
+		<main role="main" class="pb-4">
 			<partial name="_Notification" />
 			@RenderBody()
 		</main>
 	</div>
 
-	<footer class="footer text-muted bg-primary">
+	<footer class="footer bb-footer">
 		<div class="container">
-			&copy; 2026 - BulkyBookWeb
+			<span>&copy; 2026 BulkyBook</span>
+			<span class="footer-muted">Technical books for local demos</span>
 		</div>
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -83,7 +95,6 @@
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="//cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-	<script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

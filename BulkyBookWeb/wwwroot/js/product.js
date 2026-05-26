@@ -5,6 +5,11 @@ $(document).ready(function () {
 });
 
 function loadDataTable() {
+    const currencyFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+
     dataTable = $('#tblData').DataTable({
         "ajax": {
             "url": "/Admin/Product/GetAll"
@@ -12,9 +17,29 @@ function loadDataTable() {
         "columns": [
             { "data": "title", "width": "15%" },
             { "data": "isbn", "width": "15%" },
-            { "data": "price", "width": "15%" },
+            {
+                "data": "price",
+                "render": function (data) {
+                    return currencyFormatter.format(data || 0);
+                },
+                "width": "10%"
+            },
             { "data": "author", "width": "15%" },
             { "data": "category.name", "width": "15%" },
+            {
+                "data": "stockQuantity",
+                "render": function (data) {
+                    return data <= 0 ? `<span class="badge bg-danger">Out</span>` : data;
+                },
+                "width": "8%"
+            },
+            {
+                "data": "isActive",
+                "render": function (data) {
+                    return data ? `<span class="badge bg-success">Active</span>` : `<span class="badge bg-secondary">Hidden</span>`;
+                },
+                "width": "8%"
+            },
             {
                 "data": "id",
                 "render": function (data) {
@@ -27,7 +52,7 @@ function loadDataTable() {
 					</div>
                         `
                 },
-                "width": "15%"
+                "width": "14%"
             }
         ]
     });

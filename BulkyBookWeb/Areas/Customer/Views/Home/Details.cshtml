@@ -1,86 +1,104 @@
-@model ShoppingCart
+@model BulkyBook.Models.ViewModels.ProductDetailsVM
 @using BulkyBook.Utility
+@using System.Globalization
+@{
+    var product = Model.ShoppingCart.Product;
+    var usdCulture = CultureInfo.GetCultureInfo("en-US");
+    Func<double, string> usd = value => value.ToString("C", usdCulture);
+    var isOutOfStock = product.StockQuantity <= 0 || !product.IsActive;
+    var stockLabel = !product.IsActive ? "Unavailable" :
+        product.StockQuantity <= 0 ? "Out of stock" :
+        product.StockQuantity <= 5 ? $"Low stock: {product.StockQuantity}" :
+        $"In stock: {product.StockQuantity}";
+    var stockClass = !product.IsActive || product.StockQuantity <= 0 ? "bg-danger" :
+        product.StockQuantity <= 5 ? "bg-warning text-dark" :
+        "bg-success";
+    stockClass = !product.IsActive || product.StockQuantity <= 0 ? "badge-stock-out" :
+        product.StockQuantity <= 5 ? "badge-stock-low" :
+        "badge-stock";
+}
 
-<form method="post">
-    <input hidden asp-for="ProductId" />
-    <div class="card container pt-4">
-        <div class="card-header bg-primary text-light ml-0 row">
-            <div class="col-12 col-md-6">
-                <h1 class="text-white-50">@Model.Product.Title</h1>
-                <p class="text-warning">by @Model.Product.Author</p>
-            </div>
-            <div class="col-12 col-md-6 text-end pt-4">
-                <span class="badge bg-info pt-2" style="height:30px;">@Model.Product.CoverType.Name</span>
-                <span class="badge bg-warning pt-2" style="height:30px;">@Model.Product.Category.Name</span>
+<form method="post" class="book-detail mt-4">
+    @Html.AntiForgeryToken()
+    <input hidden asp-for="ShoppingCart.ProductId" />
+    <section class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="book-detail-cover">
+                <img src="@product.ImageUrl" alt="@product.Title" />
             </div>
         </div>
-        <div class="card-body row container">
-            <div class="container rounded p-2">
-                <div class="row">
-                    <div class="col-8 col-lg-8">
-                        <div class="row pl-2">
-                            <h5 class="text-muted">ISBN : @Model.Product.ISBN</h5>
-                        </div>
-                        <div class="row pl-2">
-                            <h5 class="text-muted pb-2">List Price: <strike>@Model.Product.ListPrice.ToString("c")</strike></h5>
-                        </div>
-                        <div class="row text-center pl-2">
-                            <div class="p-1 col-2 bg-secondary border-bottom">
-                                <div>Quantity</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary border-bottom">
-                                <div>1-50</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary border-bottom">
-                                <div>51-100</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary border-bottom">
-                                <div>100+</div>
-                            </div>
-                        </div>
-                        <div class="row text-center pl-2" style="color:maroon; font-weight:bold">
-                            <div class="p-1 col-2 bg-secondary">
-                                <div>Price</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price.ToString("c")</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price50.ToString("c")</div>
-                            </div>
-                            <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price100.ToString("c")</div>
-                            </div>
-                        </div>
-                        <div class="row pl-2">
-                            <p class="text-secondary">@Html.Raw(SafeHtml.Sanitize(Model.Product.Description))</p>
-                        </div>
-                        <div class="row pl-2">
-                            <div class="col-2 text-primary"><h4>Count</h4></div>
-                            <div class="col-10">
-                                <input asp-for="Count" class="form-control" />
-                                <span asp-validation-for="Count" class="text-danger"></span>
-                            </div>
-                        </div>
+        <div class="col-12 col-lg-7">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-soft">@product.CoverType.Name</span>
+                <span class="badge badge-soft">@product.Category.Name</span>
+                <span class="badge @stockClass">@stockLabel</span>
+            </div>
+            <h1 class="book-detail-title">@product.Title</h1>
+            <p class="book-detail-author">by @product.Author</p>
+            <p class="text-muted mb-3">ISBN: @product.ISBN</p>
+
+            <div class="book-price-panel mb-4">
+                <div>
+                    <span class="text-muted">List price</span>
+                    <strong class="text-decoration-line-through">@usd(product.ListPrice)</strong>
+                </div>
+                <div>
+                    <span>1-50</span>
+                    <strong>@usd(product.Price)</strong>
+                </div>
+                <div>
+                    <span>51-100</span>
+                    <strong>@usd(product.Price50)</strong>
+                </div>
+                <div>
+                    <span>100+</span>
+                    <strong>@usd(product.Price100)</strong>
+                </div>
+            </div>
+
+            <div class="book-description mb-4">
+                @Html.Raw(SafeHtml.Sanitize(product.Description))
+            </div>
+
+            <div class="bb-panel p-3">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label asp-for="ShoppingCart.Count" class="form-label">Quantity</label>
+                        <input asp-for="ShoppingCart.Count" class="form-control" min="1" max="@Math.Max(product.StockQuantity, 1)" disabled="@isOutOfStock" />
+                        <span asp-validation-for="ShoppingCart.Count" class="text-danger"></span>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     </div>
-                    <div class="col-12 col-lg-3 offset-lg-1 text-center">
-                        <img src="@Model.Product.ImageUrl" width="100%" class="rounded" alt="@Model.Product.Title" />
+                    <div class="col-12 col-md-4">
+                        <a class="btn btn-outline-secondary w-100" asp-action="Index">Back to catalog</a>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" value="Add to Cart" class="btn btn-primary w-100" disabled="@isOutOfStock">Add to Cart</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer">
-            <div class="row">
-                <div class="col-12 col-md-6 pb-1">
-                    <a class="btn btn-success form-control" style="height:50px;" asp-action="Index">Back to Home</a>
-                </div>
-                <div class="col-12 col-md-6 pb-1">
-                    <button type="submit" value="Add to Cart" class="btn btn-primary form-control" style="height:50px;">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 </form>
+
+@if (Model.RelatedProducts.Any())
+{
+    <section class="related-books mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 mb-0">Related books</h2>
+        </div>
+        <div class="row g-3">
+            @foreach (var related in Model.RelatedProducts)
+            {
+                <div class="col-6 col-md-3">
+                    <a class="related-book" asp-action="Details" asp-route-productId="@related.Id">
+                        <img src="@related.ImageUrl" alt="@related.Title" />
+                        <span>@related.Title</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

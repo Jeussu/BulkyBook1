@@ -2,11 +2,16 @@
 
 $(document).ready(function () {
     const status = new URLSearchParams(window.location.search).get("status") || "all";
-    const allowedStatuses = ["inprocess", "completed", "pending", "approved", "cancelled", "all"];
+    const allowedStatuses = ["inprocess", "shipped", "pending", "approved", "cancelled", "all"];
     loadDataTable(allowedStatuses.includes(status) ? status : "all");
 });
 
 function loadDataTable(status) {
+    const currencyFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+
     dataTable = $('#tblData').DataTable({
         "ajax": {
             "url": "/Admin/Order/GetAll?status=" + status
@@ -17,7 +22,13 @@ function loadDataTable(status) {
             { "data": "phoneNumber", "width": "15%" },
             { "data": "applicationUser.email", "width": "15%" },
             { "data": "orderStatus", "width": "15%" },
-            { "data": "orderTotal", "width": "10%" },
+            {
+                "data": "orderTotal",
+                "render": function (data) {
+                    return currencyFormatter.format(data || 0);
+                },
+                "width": "10%"
+            },
             {
                 "data": "id",
                 "render": function (data) {
