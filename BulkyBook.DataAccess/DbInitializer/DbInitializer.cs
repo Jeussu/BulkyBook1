@@ -36,18 +36,24 @@ namespace BulkyBook.DataAccess.DbInitializer
 
         public void Initialize()
         {
-            //migrations if they are not applied
-            try
+            if (_configuration.GetValue<bool>("Database:AutoMigrate"))
             {
-                if (_db.Database.GetPendingMigrations().Count() > 0)
+                try
                 {
-                    _db.Database.Migrate();
+                    if (_db.Database.GetPendingMigrations().Any())
+                    {
+                        _db.Database.Migrate();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Database migration failed during startup.");
+                    throw;
                 }
             }
-            catch (Exception ex)
+            else if (_db.Database.GetPendingMigrations().Any())
             {
-                _logger.LogError(ex, "Database migration failed during startup.");
-                throw;
+                _logger.LogWarning("Database auto-migration is disabled and pending migrations exist. Apply migrations manually before running this environment.");
             }
 
             // create roles if they are not created
