@@ -18,6 +18,7 @@ namespace BulkyBook.Models.ViewModels
         public int? CoverTypeId { get; set; }
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
+        public string? SortBy { get; set; }
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 8;
         public int TotalItems { get; set; }

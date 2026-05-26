@@ -27,7 +27,7 @@ public class HomeController : Controller
         _db = db;
     }
 
-    public IActionResult Index(string? searchTerm, int? categoryId, int? coverTypeId, double? minPrice, double? maxPrice, int page = 1, int pageSize = 8)
+    public IActionResult Index(string? searchTerm, int? categoryId, int? coverTypeId, double? minPrice, double? maxPrice, string? sortBy, int page = 1, int pageSize = 8)
     {
         pageSize = pageSize is 8 or 12 or 20 ? pageSize : 8;
         page = Math.Max(1, page);
@@ -36,6 +36,7 @@ public class HomeController : Controller
             .AsNoTracking()
             .Include(p => p.Category)
             .Include(p => p.CoverType)
+            .Where(p => p.IsActive)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -67,12 +68,20 @@ public class HomeController : Controller
             query = query.Where(p => p.Price <= maxPrice.Value);
         }
 
+        query = sortBy switch
+        {
+            "title_asc" => query.OrderBy(p => p.Title),
+            "title_desc" => query.OrderByDescending(p => p.Title),
+            "price_asc" => query.OrderBy(p => p.Price),
+            "price_desc" => query.OrderByDescending(p => p.Price),
+            _ => query.OrderByDescending(p => p.Id)
+        };
+
         var totalItems = query.Count();
         var totalPages = Math.Max(1, (int)Math.Ceiling(totalItems / (double)pageSize));
         page = Math.Min(page, totalPages);
 
         var productList = query
-            .OrderBy(p => p.Title)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -95,6 +104,7 @@ public class HomeController : Controller
             CoverTypeId = coverTypeId,
             MinPrice = minPrice,
             MaxPrice = maxPrice,
+            SortBy = sortBy,
             Page = page,
             PageSize = pageSize,
             TotalItems = totalItems
@@ -111,24 +121,19 @@ public class HomeController : Controller
             return NotFound();
         }
 
-        ShoppingCart cartObj = new()
-        {
-            Count = 1,
-            ProductId = productId,
-            Product = product,
-        };
-        return View(cartObj);
+        return View(BuildProductDetailsVm(product));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize]
-    public IActionResult Details(ShoppingCart shoppingCart)
+    public IActionResult Details(ProductDetailsVM model)
     {
+        var shoppingCart = model.ShoppingCart;
         var invalidCount = shoppingCart.Count is < 1 or > 1000;
         if (invalidCount)
         {
-            ModelState.AddModelError(nameof(ShoppingCart.Count), "Please enter a value between 1 and 1000.");
+            ModelState.AddModelError("ShoppingCart.Count", "Please enter a value between 1 and 1000.");
         }
 
         var product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == shoppingCart.ProductId, includeProperties: "Category,CoverType");
@@ -137,11 +142,23 @@ public class HomeController : Controller
             return NotFound();
         }
 
-        if (invalidCount)
+        var unavailable = false;
+        if (!product.IsActive)
+        {
+            unavailable = true;
+            ModelState.AddModelError("ShoppingCart.ProductId", "This book is not currently available.");
+        }
+
+        if (product.StockQuantity <= 0)
+        {
+            unavailable = true;
+            ModelState.AddModelError("ShoppingCart.Count", "This book is currently out of stock.");
+        }
+
+        if (invalidCount || unavailable)
         {
             shoppingCart.Count = Math.Clamp(shoppingCart.Count, 1, 1000);
-            shoppingCart.Product = product;
-            return View(shoppingCart);
+            return View(BuildProductDetailsVm(product, shoppingCart.Count));
         }
 
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
@@ -155,6 +172,13 @@ public class HomeController : Controller
 
         ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.GetFirstOrDefault(
             u => u.ApplicationUserId == claim.Value && u.ProductId == shoppingCart.ProductId);
+
+        var requestedQuantity = shoppingCart.Count + (cartFromDb?.Count ?? 0);
+        if (requestedQuantity > product.StockQuantity)
+        {
+            ModelState.AddModelError("ShoppingCart.Count", $"Only {product.StockQuantity} copies are available.");
+            return View(BuildProductDetailsVm(product, shoppingCart.Count));
+        }
 
         if (cartFromDb == null)
         {
@@ -170,6 +194,27 @@ public class HomeController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    private ProductDetailsVM BuildProductDetailsVm(Product product, int count = 1)
+    {
+        return new ProductDetailsVM
+        {
+            ShoppingCart = new ShoppingCart
+            {
+                Count = count,
+                ProductId = product.Id,
+                Product = product
+            },
+            RelatedProducts = _db.Products
+                .AsNoTracking()
+                .Include(p => p.Category)
+                .Include(p => p.CoverType)
+                .Where(p => p.IsActive && p.CategoryId == product.CategoryId && p.Id != product.Id)
+                .OrderBy(p => p.Title)
+                .Take(4)
+                .ToList()
+        };
     }
 
     public IActionResult Privacy()
