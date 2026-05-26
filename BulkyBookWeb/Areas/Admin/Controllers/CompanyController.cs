@@ -94,6 +94,12 @@ public class CompanyController : Controller
             return Json(new { success = false, message = "Error while deleting" });
         }
 
+        var hasUsers = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.CompanyId == obj.Id, tracked: false) != null;
+        if (hasUsers)
+        {
+            return Json(new { success = false, message = "Company cannot be deleted because users are assigned to it." });
+        }
+
         _unitOfWork.Company.Remove(obj);
         _unitOfWork.Save();
         return Json(new { success = true, message = "Delete Successful" });

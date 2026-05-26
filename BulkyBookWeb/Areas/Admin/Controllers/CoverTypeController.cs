@@ -105,6 +105,13 @@ public class CoverTypeController : Controller
             return NotFound();
         }
 
+        var hasProducts = _unitOfWork.Product.GetFirstOrDefault(u => u.CoverTypeId == obj.Id, tracked: false) != null;
+        if (hasProducts)
+        {
+            TempData["error"] = "Cover type cannot be deleted because it has products. Reassign or remove those products first.";
+            return RedirectToAction("Index");
+        }
+
         _unitOfWork.CoverType.Remove(obj);
         _unitOfWork.Save();
         TempData["success"] = "CoverType deleted successfully";

@@ -114,6 +114,13 @@ namespace BulkyBookWeb.Controllers;
                 return NotFound();
             }
 
+            var hasProducts = _unitOfWork.Product.GetFirstOrDefault(u => u.CategoryId == obj.Id, tracked: false) != null;
+            if (hasProducts)
+            {
+                TempData["error"] = "Category cannot be deleted because it has products. Reassign or remove those products first.";
+                return RedirectToAction("Index");
+            }
+
             _unitOfWork.Category.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";

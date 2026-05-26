@@ -158,6 +158,18 @@ public class ProductController : Controller
             return Json(new { success = false, message = "Error while deleting" });
         }
 
+        var hasOrderHistory = _unitOfWork.OrderDetail.GetFirstOrDefault(u => u.ProductId == obj.Id, tracked: false) != null;
+        if (hasOrderHistory)
+        {
+            return Json(new { success = false, message = "Product cannot be deleted because it appears in order history. Mark it inactive instead." });
+        }
+
+        var hasCartRows = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.ProductId == obj.Id, tracked: false) != null;
+        if (hasCartRows)
+        {
+            return Json(new { success = false, message = "Product cannot be deleted because it is currently in a shopping cart. Mark it inactive instead." });
+        }
+
         TryDeleteProductImage(obj.ImageUrl);
 
         _unitOfWork.Product.Remove(obj);
@@ -228,6 +240,11 @@ public class ProductController : Controller
 
         var uploadDirectory = Path.GetFullPath(Path.Combine(_hostEnvironment.WebRootPath, "images", "products")) + Path.DirectorySeparatorChar;
         var relativePath = imageUrl.TrimStart('\\', '/').Replace('/', Path.DirectorySeparatorChar);
+        if (relativePath.StartsWith(Path.Combine("images", "products", "book-covers"), StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
         var imagePath = Path.GetFullPath(Path.Combine(_hostEnvironment.WebRootPath, relativePath));
 
         if (!imagePath.StartsWith(uploadDirectory, StringComparison.OrdinalIgnoreCase))
