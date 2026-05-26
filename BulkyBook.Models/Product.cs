@@ -40,6 +40,13 @@ namespace BulkyBook.Models
         [ValidateNever]
         public string ImageUrl { get; set; }
 
+        [Display(Name = "Stock Quantity")]
+        [Range(0, 100000)]
+        public int StockQuantity { get; set; } = 25;
+
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; } = true;
+
         [Required]
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
