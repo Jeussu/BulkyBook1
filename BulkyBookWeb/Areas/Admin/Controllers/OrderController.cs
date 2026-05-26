@@ -131,7 +131,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             var service = new SessionService();
             Session session = service.Create(options);
-            _unitOfWork.OrderHeader.UpdateStripePaymentID(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.OrderHeader.UpdateStripePaymentID(OrderVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
             _unitOfWork.Save();
 
             Response.Headers.Location = session.Url;
@@ -161,9 +161,9 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     return View(orderHeaderid);
                 }
 
-                if (!HasStripeApiKey())
+                if (!HasStripeApiKey() || string.IsNullOrWhiteSpace(orderHeader.SessionId))
                 {
-                    TempData["error"] = "Stripe is not configured. Payment confirmation was skipped.";
+                    TempData["error"] = "Stripe is not configured or this order has no Stripe session. Payment confirmation was skipped.";
                     return RedirectToAction("Details", "Order", new { orderId = orderHeaderid });
                 }
 
@@ -336,6 +336,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess);
                     break;
                 case "completed":
+                case "shipped":
                     orderHeaders = orderHeaders.Where(u => u.OrderStatus == SD.StatusShipped);
                     break;
                 case "cancelled":

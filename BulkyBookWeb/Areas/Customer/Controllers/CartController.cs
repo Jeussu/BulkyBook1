@@ -1,5 +1,6 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
+using BulkyBook.DataAccess;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
@@ -21,17 +22,19 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<CartController> _logger;
+        private readonly ApplicationDbContext _db;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; } = new();
         //total price
         public int OrderTotal { get; set; }
-        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender, IConfiguration configuration, IWebHostEnvironment environment, ILogger<CartController> logger)
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender, IConfiguration configuration, IWebHostEnvironment environment, ILogger<CartController> logger, ApplicationDbContext db)
         {
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
             _configuration = configuration;
             _environment = environment;
             _logger = logger;
+            _db = db;
         }
         public IActionResult Index()
         {
@@ -136,6 +139,22 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 return Challenge();
             }
+
+            foreach (var cart in ShoppingCartVM.ListCart)
+            {
+                if (!cart.Product.IsActive || cart.Product.StockQuantity <= 0)
+                {
+                    TempData["error"] = $"'{cart.Product.Title}' is no longer available.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (cart.Count > cart.Product.StockQuantity)
+                {
+                    TempData["error"] = $"Only {cart.Product.StockQuantity} copies of '{cart.Product.Title}' are available.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
 
@@ -156,83 +175,98 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 return RedirectToAction(nameof(Summary));
             }
 
-            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
-            _unitOfWork.Save();
-
-            foreach (var cart in ShoppingCartVM.ListCart)
+            try
             {
-                OrderDetail orderDetail = new()
-                {
-                    ProductId = cart.ProductId,
-                    OrderId = ShoppingCartVM.OrderHeader.Id,
-                    Price = cart.Price,
-                    Count = cart.Count
-                };
-                _unitOfWork.OrderDetail.Add(orderDetail);
+                using var transaction = _db.Database.BeginTransaction();
+
+                _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
                 _unitOfWork.Save();
-            }
 
-
-            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
-            {
-                if (UseLocalStripeFallback())
+                foreach (var cart in ShoppingCartVM.ListCart)
                 {
-                    _logger.LogInformation("Using local checkout fallback for order {OrderId}.", ShoppingCartVM.OrderHeader.Id);
-                    _unitOfWork.OrderHeader.UpdateStripePaymentID(
-                        ShoppingCartVM.OrderHeader.Id,
-                        BuildLocalStripeId("local_demo_session", ShoppingCartVM.OrderHeader.Id),
-                        BuildLocalStripeId("local_demo_pi", ShoppingCartVM.OrderHeader.Id));
-                    _unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
-                    _unitOfWork.Save();
+                    cart.Product.StockQuantity -= cart.Count;
+                    OrderDetail orderDetail = new()
+                    {
+                        ProductId = cart.ProductId,
+                        OrderId = ShoppingCartVM.OrderHeader.Id,
+                        Price = cart.Price,
+                        Count = cart.Count
+                    };
+                    _unitOfWork.OrderDetail.Add(orderDetail);
+                }
 
-                    TempData["success"] = "Local development checkout completed without Stripe.";
+                _unitOfWork.Save();
+
+                if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+                {
+                    if (UseLocalStripeFallback())
+                    {
+                        _logger.LogInformation("Using local checkout fallback for order {OrderId}.", ShoppingCartVM.OrderHeader.Id);
+                        _unitOfWork.OrderHeader.UpdateStripePaymentID(
+                            ShoppingCartVM.OrderHeader.Id,
+                            BuildLocalStripeId("local_demo_session", ShoppingCartVM.OrderHeader.Id),
+                            BuildLocalStripeId("local_demo_pi", ShoppingCartVM.OrderHeader.Id));
+                        _unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
+                        _unitOfWork.Save();
+                        transaction.Commit();
+
+                        TempData["success"] = "Local development checkout completed without Stripe.";
+                        return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+                    }
+
+                    //stripe settings
+                    var domain = GetApplicationBaseUrl();
+                    var options = new SessionCreateOptions
+                    {
+                        PaymentMethodTypes = new List<string>
+                        {
+                            "card",
+                        },
+                        LineItems = new List<SessionLineItemOptions>(),
+                        Mode = "payment",
+                        SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+                        CancelUrl = domain + $"customer/cart/index",
+                    };
+
+                    foreach (var item in ShoppingCartVM.ListCart)
+                    {
+                        var sessionLineItem = new SessionLineItemOptions
+                        {
+                            PriceData = new SessionLineItemPriceDataOptions
+                            {
+                                UnitAmount = (long)(item.Price * 100),//20.00 ->2000
+                                Currency = "usd",
+                                ProductData = new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Name = item.Product.Title
+                                },
+
+                            },
+                            Quantity = item.Count,
+                        };
+                        options.LineItems.Add(sessionLineItem);
+                    }
+
+                    var service = new SessionService();
+                    Session session = service.Create(options);
+                    _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
+                    _unitOfWork.Save();
+                    transaction.Commit();
+
+                    Response.Headers.Location = session.Url;
+                    return new StatusCodeResult(303);
+                }
+                else
+                {
+                    transaction.Commit();
                     return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
                 }
-
-                //stripe settings
-                var domain = GetApplicationBaseUrl();
-                var options = new SessionCreateOptions
-                {
-                    PaymentMethodTypes = new List<string>
-                {
-                    "card",
-                },
-                    LineItems = new List<SessionLineItemOptions>(),
-                    Mode = "payment",
-                    SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-                    CancelUrl = domain + $"customer/cart/index",
-                };
-
-                foreach (var item in ShoppingCartVM.ListCart)
-                {
-                    var sessionLineItem = new SessionLineItemOptions
-                    {
-                        PriceData = new SessionLineItemPriceDataOptions
-                        {
-                            UnitAmount = (long)(item.Price * 100),//20.00 ->2000
-                            Currency = "usd",
-                            ProductData = new SessionLineItemPriceDataProductDataOptions
-                            {
-                                Name = item.Product.Title
-                            },
-
-                        },
-                        Quantity = item.Count,
-                    };
-                    options.LineItems.Add(sessionLineItem);
-                }
-
-                var service = new SessionService();
-                Session session = service.Create(options);
-                _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
-                _unitOfWork.Save();
-
-                Response.Headers.Location = session.Url;
-                return new StatusCodeResult(303);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+                _logger.LogError(ex, "Checkout failed for user {UserId}.", userId);
+                TempData["error"] = "Checkout could not be completed. Please review your cart and try again.";
+                return RedirectToAction(nameof(Summary));
             }
         }
 
@@ -258,7 +292,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment && orderHeader.PaymentStatus != SD.PaymentStatusApproved)
             {
-                if (!HasStripeApiKey())
+                if (!HasStripeApiKey() || string.IsNullOrWhiteSpace(orderHeader.SessionId))
                 {
                     TempData["error"] = "Stripe is not configured. The order was created, but payment verification was skipped.";
                     return RedirectToAction(nameof(Index));
@@ -293,10 +327,16 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Plus(int cartId)
         {
-            var cart = GetOwnedCartItem(cartId);
+            var cart = GetOwnedCartItem(cartId, includeProduct: true);
             if (cart == null)
             {
                 return CartAccessDenied(cartId);
+            }
+
+            if (!cart.Product.IsActive || cart.Count >= cart.Product.StockQuantity)
+            {
+                TempData["error"] = $"Only {cart.Product.StockQuantity} copies of '{cart.Product.Title}' are available.";
+                return RedirectToAction(nameof(Index));
             }
 
             _unitOfWork.ShoppingCart.IncrementCount(cart, 1);
@@ -394,7 +434,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
-        private ShoppingCart? GetOwnedCartItem(int cartId)
+        private ShoppingCart? GetOwnedCartItem(int cartId, bool includeProduct = false)
         {
             var userId = GetCurrentUserId();
             if (userId == null)
@@ -402,7 +442,9 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 return null;
             }
 
-            return _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId && u.ApplicationUserId == userId);
+            return _unitOfWork.ShoppingCart.GetFirstOrDefault(
+                u => u.Id == cartId && u.ApplicationUserId == userId,
+                includeProperties: includeProduct ? "Product" : null);
         }
 
         private IActionResult CartAccessDenied(int cartId)
