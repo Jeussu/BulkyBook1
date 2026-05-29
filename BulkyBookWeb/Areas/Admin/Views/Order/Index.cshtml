@@ -30,56 +30,48 @@
     }
 }
 
-
-<div class="p-3">
-    <div class="flex-md justify-content-between pt-4">
-        <div class="p-2">
-            <h2 class="text-primary">@(User.IsInRole(BulkyBook.Utility.SD.Role_Admin) || User.IsInRole(BulkyBook.Utility.SD.Role_Employee) ? "Order List" : "My Orders")</h2>
-        </div>
-        <div class="p-2">
-            <ul class="list-group list-group-horizontal-sm">
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="inprocess">
-                    <li class="list-group-item @inprocess">In Process</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="pending">
-                    <li class="list-group-item @pending">Payment Pending</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="shipped">
-                    <li class="list-group-item @shipped">Shipped</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="approved">
-                    <li class="list-group-item @approved">Approved</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="cancelled">
-                    <li class="list-group-item @cancelled">Cancelled</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order"
-                    asp-action="Index" asp-route-status="all">
-                    <li class="list-group-item @all">All</li>
-                </a>
-            </ul>
+<div class="admin-order-shell mt-4">
+    <div class="admin-page-header">
+        <div>
+            <p class="admin-page-kicker mb-2">Order operations</p>
+            <h1>@(User.IsInRole(BulkyBook.Utility.SD.Role_Admin) || User.IsInRole(BulkyBook.Utility.SD.Role_Employee) ? "Order Management" : "My Orders")</h1>
+            <p>Review customer orders, payment state, fulfillment status, and totals.</p>
         </div>
     </div>
-    <br /><br />
 
-    <table id="tblData" class="table table-bordered table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
-        </thead>
-    </table>
+    <div class="bb-panel admin-table-panel admin-order-panel">
+        <div class="admin-table-panel-header">
+            <div>
+                <span class="admin-section-label">Order list</span>
+                <h2>Status queue</h2>
+            </div>
+        </div>
+
+        <nav class="admin-status-tabs" aria-label="Order status filters">
+            <a asp-controller="Order" asp-action="Index" asp-route-status="all" class="admin-status-tab @all">All</a>
+            <a asp-controller="Order" asp-action="Index" asp-route-status="inprocess" class="admin-status-tab @inprocess">In Process</a>
+            <a asp-controller="Order" asp-action="Index" asp-route-status="pending" class="admin-status-tab @pending">Payment Pending</a>
+            <a asp-controller="Order" asp-action="Index" asp-route-status="shipped" class="admin-status-tab @shipped">Shipped</a>
+            <a asp-controller="Order" asp-action="Index" asp-route-status="approved" class="admin-status-tab @approved">Approved</a>
+            <a asp-controller="Order" asp-action="Index" asp-route-status="cancelled" class="admin-status-tab @cancelled">Cancelled</a>
+        </nav>
+
+        <div class="admin-table-scroll">
+            <table id="tblData" class="table table-hover admin-data-table admin-order-table mb-0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
 
 @section Scripts{

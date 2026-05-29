@@ -1704,7 +1704,9 @@ table.dataTable tbody tr:hover {
 }
 
 .admin-product-shell,
-.admin-upsert-shell {
+.admin-upsert-shell,
+.admin-order-shell,
+.admin-order-detail-shell {
     max-width: 1280px;
     margin-inline: auto;
 }
@@ -1792,67 +1794,84 @@ table.dataTable tbody tr:hover {
     -webkit-overflow-scrolling: touch;
 }
 
-.admin-product-shell .dataTables_wrapper {
+.admin-product-shell .dataTables_wrapper,
+.admin-order-shell .dataTables_wrapper {
     padding: 18px 20px 20px;
     overflow-x: auto;
 }
 
 .admin-product-shell .dataTables_wrapper .dataTables_length,
-.admin-product-shell .dataTables_wrapper .dataTables_filter {
+.admin-product-shell .dataTables_wrapper .dataTables_filter,
+.admin-order-shell .dataTables_wrapper .dataTables_length,
+.admin-order-shell .dataTables_wrapper .dataTables_filter {
     margin-bottom: 16px;
 }
 
-.admin-product-shell .dataTables_wrapper .dataTables_filter input {
+.admin-product-shell .dataTables_wrapper .dataTables_filter input,
+.admin-order-shell .dataTables_wrapper .dataTables_filter input {
     min-height: 40px;
     margin-left: 8px;
 }
 
-.admin-product-shell .dataTables_wrapper .dataTables_length select {
+.admin-product-shell .dataTables_wrapper .dataTables_length select,
+.admin-order-shell .dataTables_wrapper .dataTables_length select {
     min-height: 38px;
     margin-inline: 6px;
 }
 
 .admin-data-table,
-.admin-product-shell table.dataTable {
+.admin-product-shell table.dataTable,
+.admin-order-shell table.dataTable {
     min-width: 980px;
 }
 
 .admin-data-table thead th,
-.admin-product-shell table.dataTable thead th {
+.admin-product-shell table.dataTable thead th,
+.admin-order-shell table.dataTable thead th {
     border-bottom: 1px solid var(--bb-border) !important;
     white-space: nowrap;
 }
 
-.admin-product-shell table.dataTable tbody td {
+.admin-product-shell table.dataTable tbody td,
+.admin-order-shell table.dataTable tbody td {
     color: var(--bb-text);
     vertical-align: middle;
 }
 
-.admin-product-shell table.dataTable tbody td:first-child {
+.admin-product-shell table.dataTable tbody td:first-child,
+.admin-order-shell table.dataTable tbody td:first-child {
     color: var(--bb-navy);
     font-weight: 750;
 }
 
 .admin-product-shell table.dataTable tbody td:nth-child(2),
 .admin-product-shell table.dataTable tbody td:nth-child(3),
-.admin-product-shell table.dataTable tbody td:nth-child(6) {
+.admin-product-shell table.dataTable tbody td:nth-child(6),
+.admin-order-shell table.dataTable tbody td:nth-child(1),
+.admin-order-shell table.dataTable tbody td:nth-child(3),
+.admin-order-shell table.dataTable tbody td:nth-child(5),
+.admin-order-shell table.dataTable tbody td:nth-child(6) {
     font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: .88rem;
 }
 
-.admin-product-shell table.dataTable tbody td:last-child {
+.admin-product-shell table.dataTable tbody td:last-child,
+.admin-order-shell table.dataTable tbody td:last-child {
     white-space: nowrap;
 }
 
-.admin-product-shell .btn-group.w-75 {
+.admin-product-shell .btn-group.w-75,
+.admin-order-shell .btn-group.w-75 {
     display: inline-flex;
     width: auto !important;
     gap: 8px;
 }
 
-.admin-product-shell .btn-group .btn {
+.admin-product-shell .btn-group .btn,
+.admin-order-shell .btn-group .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     margin-inline: 0 !important;
     padding: .42rem .66rem;
@@ -2042,6 +2061,109 @@ table.dataTable tbody tr:hover {
     border-radius: var(--bb-radius) !important;
 }
 
+.admin-order-panel {
+    background: #fff;
+}
+
+.admin-status-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--bb-border);
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-status-tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 14px;
+    color: var(--bb-text-muted);
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .86rem;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+
+.admin-status-tab:hover,
+.admin-status-tab:focus {
+    color: var(--bb-navy);
+    background: #f8fafc;
+}
+
+.admin-status-tab.text-primary {
+    color: var(--bb-text-muted) !important;
+}
+
+.admin-status-tab.text-primary:hover,
+.admin-status-tab.text-primary:focus {
+    color: var(--bb-navy) !important;
+}
+
+.admin-status-tab.active {
+    color: #fff !important;
+    background: var(--bb-navy);
+    border-color: var(--bb-navy);
+}
+
+.admin-order-shell .dataTables_wrapper {
+    background: #fff;
+}
+
+.admin-order-shell table.dataTable {
+    min-width: 1040px;
+}
+
+.admin-order-shell table.dataTable tbody td:nth-child(5) {
+    color: var(--bb-navy);
+    font-weight: 750;
+}
+
+.admin-order-shell table.dataTable tbody td:nth-child(6) {
+    color: var(--bb-navy);
+    font-weight: 800;
+    text-align: right;
+}
+
+.admin-order-detail-shell .admin-page-header {
+    margin-bottom: 20px;
+}
+
+.order-status-overview {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.order-status-card {
+    min-width: 0;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--bb-border);
+    border-radius: 12px;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, .05);
+}
+
+.order-status-card strong {
+    display: block;
+    margin-top: 7px;
+    color: var(--bb-navy);
+    font-size: 1.05rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.order-detail-card {
+    overflow: hidden;
+}
+
 .order-detail-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(340px, .85fr);
@@ -2055,7 +2177,33 @@ table.dataTable tbody tr:hover {
     padding: 12px;
     background: #f8fafc;
     border: 1px solid var(--bb-line);
-    border-radius: 10px;
+    border-radius: 12px;
+}
+
+.status-strip .badge {
+    padding: .5rem .65rem;
+    border: 1px solid #c7d4e5;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .78rem;
+}
+
+.order-section-heading,
+.order-summary-heading {
+    margin-bottom: 16px;
+}
+
+.order-section-heading h2,
+.order-summary-heading h2 {
+    margin: 4px 0 0;
+    color: var(--bb-navy);
+    font-size: 1.18rem;
+    font-weight: 820;
+}
+
+.order-section-heading--payment {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--bb-border);
 }
 
 .order-field {
@@ -2065,29 +2213,72 @@ table.dataTable tbody tr:hover {
 .order-field label,
 .detail-label {
     display: block;
-    color: var(--bb-muted);
+    color: var(--bb-text-muted);
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: .8rem;
     font-weight: 750;
     margin-bottom: 5px;
 }
 
-.readonly-value {
-    min-height: 38px;
-    padding: 8px 12px;
-    border: 1px solid var(--bb-line);
-    border-radius: 7px;
+.admin-order-detail-shell .form-control {
+    min-height: 44px;
     background: #f8fafc;
-    color: var(--bb-ink);
+}
+
+.readonly-value {
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--bb-border);
+    border-radius: var(--bb-radius);
+    background: #f8fafc;
+    color: var(--bb-text);
+    overflow-wrap: anywhere;
+}
+
+.readonly-value--code {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .82rem;
 }
 
 .order-summary-panel {
     position: sticky;
-    top: 18px;
+    top: 96px;
+}
+
+.order-summary-panel.shadow-none {
+    box-shadow: 0 18px 42px rgba(15, 23, 42, .06) !important;
+}
+
+.order-books-list .list-group-item {
+    padding: 13px 0;
+    border-inline: 0;
+    border-color: var(--bb-border);
+}
+
+.order-books-list .list-group-item:first-child {
+    border-top: 0;
+}
+
+.order-books-list h3 {
+    color: var(--bb-navy);
+    line-height: 1.3;
+}
+
+.order-total-row {
+    padding-top: 16px !important;
+    border-top: 1px solid var(--bb-navy) !important;
 }
 
 .order-action-stack {
     display: grid;
     gap: 10px;
+}
+
+.order-action-stack .btn,
+.order-action-stack input[type="submit"] {
+    min-height: 44px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    text-transform: uppercase;
 }
 
 .auth-shell {
@@ -2190,6 +2381,14 @@ table.dataTable tbody tr:hover {
         max-width: 320px;
         margin-inline: auto;
     }
+
+    .order-status-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .order-summary-panel {
+        position: static;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -2283,18 +2482,22 @@ table.dataTable tbody tr:hover {
         padding: 20px 18px;
     }
 
-    .admin-product-shell .dataTables_wrapper {
+    .admin-product-shell .dataTables_wrapper,
+    .admin-order-shell .dataTables_wrapper {
         padding: 14px;
     }
 
     .admin-product-shell .dataTables_wrapper .dataTables_length,
-    .admin-product-shell .dataTables_wrapper .dataTables_filter {
+    .admin-product-shell .dataTables_wrapper .dataTables_filter,
+    .admin-order-shell .dataTables_wrapper .dataTables_length,
+    .admin-order-shell .dataTables_wrapper .dataTables_filter {
         float: none;
         text-align: left;
         width: 100%;
     }
 
-    .admin-product-shell .dataTables_wrapper .dataTables_filter input {
+    .admin-product-shell .dataTables_wrapper .dataTables_filter input,
+    .admin-order-shell .dataTables_wrapper .dataTables_filter input {
         display: block;
         width: 100%;
         margin: 8px 0 0;
@@ -2307,6 +2510,18 @@ table.dataTable tbody tr:hover {
 
     .admin-form-actions {
         flex-direction: column;
+    }
+
+    .admin-status-tabs {
+        padding-inline: 12px;
+    }
+
+    .order-status-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-order-detail-shell .admin-form-card-header {
+        align-items: flex-start;
     }
 }
 
