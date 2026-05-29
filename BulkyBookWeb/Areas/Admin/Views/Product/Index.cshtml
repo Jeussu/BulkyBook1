@@ -1,32 +1,41 @@
-﻿<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">Product List</h2>
+<div class="admin-product-shell mt-4">
+    <div class="admin-page-header">
+        <div>
+            <p class="admin-page-kicker mb-2">Inventory</p>
+            <h1>Product Inventory</h1>
+            <p>Manage catalog records, stock levels, visibility, and pricing.</p>
         </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> &nbsp; Create new Product
-            </a>
+        <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary admin-primary-action">
+            <i class="bi bi-plus-lg"></i>
+            <span>Create New Product</span>
+        </a>
+    </div>
+
+    <div class="bb-panel admin-table-panel">
+        <div class="admin-table-panel-header">
+            <div>
+                <span class="admin-section-label">Product list</span>
+                <h2>Catalog records</h2>
+            </div>
+        </div>
+
+        <div class="admin-table-scroll">
+            <table id="tblData" class="table table-hover admin-data-table mb-0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>ISBN</th>
+                        <th>Price</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
-    <br /><br />
-
-
-
-    <table id="tblData" class="table table-bordered table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>ISBN</th>
-                <th>Price</th>
-                <th>Author</th>
-                <th>Category</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-    </table>
 </div>
 
 @section Scripts{
