@@ -965,7 +965,7 @@ table.dataTable tbody tr:hover {
 
 .book-card-cover {
     position: relative;
-    aspect-ratio: 4 / 3.55;
+    aspect-ratio: 3 / 4;
     background:
         radial-gradient(circle at 50% 10%, rgba(255, 255, 255, .18), transparent 36%),
         linear-gradient(145deg, #203a59, #0f172a);
@@ -2900,7 +2900,7 @@ table.dataTable tbody tr:hover {
     }
 
     .book-card-cover {
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 3 / 4;
         padding: 18px;
     }
 

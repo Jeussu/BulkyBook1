@@ -287,26 +287,26 @@ namespace BulkyBook.DataAccess.DbInitializer
         {
             var specs = new[]
             {
-                new ProductSpec("DEMO-978-000000001", "ASP.NET Core MVC Fundamentals", "Anika Patel", "Programming", "Paperback", 59, 49, 45, 39, "aspnet-core-mvc-fundamentals.svg", 80, "MVC routing, Razor views, validation, and local deployment."),
-                new ProductSpec("DEMO-978-000000002", "Entity Framework Core in Action", "Marcus Lee", "Database", "Hardcover", 69, 57, 52, 47, "ef-core-in-action.svg", 75, "DbContext design, migrations, relationships, and query performance."),
-                new ProductSpec("DEMO-978-000000003", "SQL Server for Developers", "Diana Nguyen", "Database", "Paperback", 54, 44, 40, 36, "sql-server-for-developers.svg", 70, "LocalDB setup, indexing, stored data, and troubleshooting."),
-                new ProductSpec("DEMO-978-000000004", "Clean Architecture with .NET", "Owen Carter", "Software Architecture", "Hardcover", 79, 65, 59, 53, "clean-architecture-with-dotnet.svg", 200, "layered design, boundaries, use cases, and testability."),
-                new ProductSpec("DEMO-978-000000005", "Practical C# 12", "Nora Tran", "Programming", "Kindle", 49, 39, 35, 31, "practical-csharp-12.svg", 220, "modern C# syntax, LINQ, async code, and maintainable patterns."),
-                new ProductSpec("DEMO-978-000000006", "JavaScript for Razor Developers", "Leo Martin", "Web Development", "Paperback", 52, 42, 38, 34, "javascript-for-razor-developers.svg", 90, "browser scripting, validation, tables, and Razor-friendly interactions."),
-                new ProductSpec("DEMO-978-000000007", "Azure App Service Deployment", "Priya Shah", "Cloud", "Paperback", 64, 52, 48, 43, "azure-app-service-deployment.svg", 120, "configuration, slots, connection strings, and deployment checks."),
-                new ProductSpec("DEMO-978-000000008", "Stripe Payments for .NET", "Henry Brooks", "Business", "Kindle", 46, 37, 33, 29, "stripe-payments-for-dotnet.svg", 60, "checkout sessions, payment states, local fallback, and webhook planning."),
-                new ProductSpec("DEMO-978-000000009", "Identity and Security in ASP.NET Core", "Grace Kim", "Web Development", "Hardcover", 72, 60, 55, 50, "identity-and-security-aspnet-core.svg", 85, "Identity roles, authorization checks, CSRF, and secure defaults."),
-                new ProductSpec("DEMO-978-000000010", "Docker for .NET Developers", "Mateo Silva", "DevOps", "Paperback", 58, 47, 43, 38, "docker-for-dotnet-developers.svg", 160, "containers, compose files, environment variables, and build pipelines."),
-                new ProductSpec("DEMO-978-000000011", "Git and GitHub Workflow", "Lena Fischer", "DevOps", "Spiral Bound", 39, 31, 28, 25, "git-and-github-workflow.svg", 50, "branching, review, pull requests, and release discipline."),
-                new ProductSpec("DEMO-978-000000012", "System Design Notes", "Jon Bell", "Software Architecture", "Hardcover", 74, 61, 56, 51, "system-design-notes.svg", 160, "scalability tradeoffs, queues, APIs, and data modeling."),
-                new ProductSpec("DEMO-978-000000013", "Domain-Driven Design Basics", "Sofia Rossi", "Software Architecture", "Paperback", 63, 51, 47, 42, "domain-driven-design-basics.svg", 130, "entities, aggregates, bounded contexts, and ubiquitous language."),
-                new ProductSpec("DEMO-978-000000014", "Refactoring Legacy Code", "Mina Park", "Programming", "Paperback", 56, 46, 41, 37, "refactoring-legacy-code.svg", 200, "safe changes, seams, characterization tests, and cleanup strategy."),
-                new ProductSpec("DEMO-978-000000015", "E-Commerce Patterns", "Victor Chen", "Business", "Hardcover", 68, 55, 50, 45, "e-commerce-patterns.svg", 140, "catalogs, carts, checkout, orders, and operational workflows."),
-                new ProductSpec("DEMO-978-000000016", "Data Structures in C#", "Ivy Johnson", "Programming", "Paperback", 50, 40, 36, 32, "data-structures-in-csharp.svg", 110, "arrays, trees, graphs, queues, and practical complexity analysis."),
-                new ProductSpec("DEMO-978-000000017", "Cloud Native .NET", "Sam Wilson", "Cloud", "Kindle", 66, 54, 49, 44, "cloud-native-dotnet.svg", 95, "resilience, configuration, observability, and distributed apps."),
-                new ProductSpec("DEMO-978-000000018", "Microservices with ASP.NET Core", "Elena Garcia", "Cloud", "Hardcover", 82, 68, 62, 56, "microservices-with-aspnet-core.svg", 90, "service boundaries, APIs, messaging, and deployment topology."),
-                new ProductSpec("DEMO-978-000000019", "Debugging Production Apps", "Noah Brown", "DevOps", "Audio Book", 48, 39, 35, 31, "debugging-production-apps.svg", 220, "logs, traces, incidents, and practical root-cause analysis."),
-                new ProductSpec("DEMO-978-000000020", "Practical DevOps for Developers", "Maya Roberts", "DevOps", "Paperback", 55, 45, 41, 36, "practical-devops-for-developers.svg", 0, "CI, release hygiene, infrastructure, and team feedback loops.")
+                new ProductSpec("DEMO-978-000000001", "ASP.NET Core MVC Fundamentals", "Anika Patel", "Programming", "Paperback", 59, 49, 45, 39, "aspnet-core-mvc-fundamentals.png", 80, "MVC routing, Razor views, validation, and local deployment."),
+                new ProductSpec("DEMO-978-000000002", "Entity Framework Core in Action", "Marcus Lee", "Database", "Hardcover", 69, 57, 52, 47, "ef-core-in-action.png", 75, "DbContext design, migrations, relationships, and query performance.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000003", "SQL Server for Developers", "Diana Nguyen", "Database", "Paperback", 54, 44, 40, 36, "sql-server-for-developers.png", 70, "LocalDB setup, indexing, stored data, and troubleshooting."),
+                new ProductSpec("DEMO-978-000000004", "Clean Architecture with .NET", "Owen Carter", "Software Architecture", "Hardcover", 79, 65, 59, 53, "clean-architecture-with-dotnet.png", 200, "layered design, boundaries, use cases, and testability."),
+                new ProductSpec("DEMO-978-000000005", "Practical C# 12", "Nora Tran", "Programming", "Kindle", 49, 39, 35, 31, "practical-csharp-12.png", 220, "modern C# syntax, LINQ, async code, and maintainable patterns."),
+                new ProductSpec("DEMO-978-000000006", "JavaScript for Razor Developers", "Leo Martin", "Web Development", "Paperback", 52, 42, 38, 34, "javascript-for-razor-developers.png", 90, "browser scripting, validation, tables, and Razor-friendly interactions."),
+                new ProductSpec("DEMO-978-000000007", "Azure App Service Deployment", "Priya Shah", "Cloud", "Paperback", 64, 52, 48, 43, "azure-app-service-deployment.png", 120, "configuration, slots, connection strings, and deployment checks.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000008", "Stripe Payments for .NET", "Henry Brooks", "Business", "Kindle", 46, 37, 33, 29, "stripe-payments-for-dotnet.png", 60, "checkout sessions, payment states, local fallback, and webhook planning."),
+                new ProductSpec("DEMO-978-000000009", "Identity and Security in ASP.NET Core", "Grace Kim", "Web Development", "Hardcover", 72, 60, 55, 50, "identity-and-security-aspnet-core.png", 85, "Identity roles, authorization checks, CSRF, and secure defaults."),
+                new ProductSpec("DEMO-978-000000010", "Docker for .NET Developers", "Mateo Silva", "DevOps", "Paperback", 58, 47, 43, 38, "docker-for-dotnet-developers.png", 160, "containers, compose files, environment variables, and build pipelines.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000011", "Git and GitHub Workflow", "Lena Fischer", "DevOps", "Spiral Bound", 39, 31, 28, 25, "git-and-github-workflow.png", 50, "branching, review, pull requests, and release discipline."),
+                new ProductSpec("DEMO-978-000000012", "System Design Notes", "Jon Bell", "Software Architecture", "Hardcover", 74, 61, 56, 51, "system-design-notes.png", 160, "scalability tradeoffs, queues, APIs, and data modeling."),
+                new ProductSpec("DEMO-978-000000013", "Domain-Driven Design Basics", "Sofia Rossi", "Software Architecture", "Paperback", 63, 51, 47, 42, "domain-driven-design-basics.png", 130, "entities, aggregates, bounded contexts, and ubiquitous language.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000014", "Refactoring Legacy Code", "Mina Park", "Programming", "Paperback", 56, 46, 41, 37, "refactoring-legacy-code.png", 200, "safe changes, seams, characterization tests, and cleanup strategy."),
+                new ProductSpec("DEMO-978-000000015", "E-Commerce Patterns", "Victor Chen", "Business", "Hardcover", 68, 55, 50, 45, "e-commerce-patterns.png", 140, "catalogs, carts, checkout, orders, and operational workflows.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000016", "Data Structures in C#", "Ivy Johnson", "Programming", "Paperback", 50, 40, 36, 32, "data-structures-in-csharp.png", 110, "arrays, trees, graphs, queues, and practical complexity analysis."),
+                new ProductSpec("DEMO-978-000000017", "Cloud Native .NET", "Sam Wilson", "Cloud", "Kindle", 66, 54, 49, 44, "cloud-native-dotnet.png", 95, "resilience, configuration, observability, and distributed apps.", "book-covers-modern"),
+                new ProductSpec("DEMO-978-000000018", "Microservices with ASP.NET Core", "Elena Garcia", "Cloud", "Hardcover", 82, 68, 62, 56, "microservices-with-aspnet-core.png", 90, "service boundaries, APIs, messaging, and deployment topology."),
+                new ProductSpec("DEMO-978-000000019", "Debugging Production Apps", "Noah Brown", "DevOps", "Audio Book", 48, 39, 35, 31, "debugging-production-apps.png", 220, "logs, traces, incidents, and practical root-cause analysis."),
+                new ProductSpec("DEMO-978-000000020", "Practical DevOps for Developers", "Maya Roberts", "DevOps", "Paperback", 55, 45, 41, 36, "practical-devops-for-developers.png", 0, "CI, release hygiene, infrastructure, and team feedback loops.", "book-covers-modern")
             };
 
             return specs.Select(spec => new Product
@@ -321,7 +321,7 @@ namespace BulkyBook.DataAccess.DbInitializer
                 Price100 = spec.Price100,
                 CategoryId = categories[spec.CategoryName].Id,
                 CoverTypeId = coverTypes[spec.CoverTypeName].Id,
-                ImageUrl = $"/images/products/book-covers/{spec.ImageFileName}",
+                ImageUrl = $"/images/products/{spec.ImageFolder}/{spec.ImageFileName}",
                 StockQuantity = spec.StockQuantity,
                 IsActive = true
             }).ToArray();
@@ -478,7 +478,8 @@ namespace BulkyBook.DataAccess.DbInitializer
             double Price100,
             string ImageFileName,
             int StockQuantity,
-            string DescriptionFocus);
+            string DescriptionFocus,
+            string ImageFolder = "book-covers-modern");
 
         private sealed record DemoCart(string Email, string ISBN, int Count);
 
