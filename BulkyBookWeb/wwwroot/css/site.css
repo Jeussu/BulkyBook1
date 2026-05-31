@@ -173,10 +173,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bb-user-link {
-    max-width: 260px;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    max-width: 230px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.bb-user-prefix {
+    flex: 0 0 auto;
+}
+
+.bb-user-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
 }
 
 .bb-nav-action {
@@ -847,6 +861,7 @@ table.dataTable tbody tr:hover {
 .pagination .page-item.active .page-link {
     background: var(--bb-primary);
     border-color: var(--bb-primary);
+    color: #fff;
 }
 
 .catalog-hero {
@@ -3209,8 +3224,8 @@ table.dataTable tbody tr:hover {
 
 .catalog-toolbar {
     display: grid;
-    grid-template-columns: 2.1fr 1.12fr 1.12fr .68fr .68fr 1.12fr .72fr auto;
-    gap: 11px;
+    grid-template-columns: minmax(240px, 2fr) minmax(148px, 1fr) minmax(148px, 1fr) minmax(86px, .55fr) minmax(86px, .55fr) minmax(142px, 1fr) minmax(104px, .62fr) minmax(188px, auto);
+    gap: 10px;
     align-items: end;
 }
 
@@ -3250,7 +3265,8 @@ table.dataTable tbody tr:hover {
 .catalog-toolbar__actions {
     display: flex;
     gap: 8px;
-    min-width: 196px;
+    min-width: 188px;
+    justify-content: flex-end;
 }
 
 .catalog-toolbar__actions .btn {
@@ -3300,9 +3316,9 @@ table.dataTable tbody tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 218px;
+    height: 204px;
     aspect-ratio: auto;
-    padding: 18px;
+    padding: 12px;
     background: linear-gradient(180deg, #f7f9fc, #eef3f8);
     border-bottom: 1px solid var(--bb-border);
 }
@@ -3314,7 +3330,7 @@ table.dataTable tbody tr:hover {
 .catalog-grid .book-card-cover img {
     width: auto;
     height: 100%;
-    max-width: 76%;
+    max-width: 88%;
     max-height: 100%;
     object-fit: contain;
     border-radius: 5px;
@@ -3332,6 +3348,10 @@ table.dataTable tbody tr:hover {
 }
 
 .catalog-grid .book-card .badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
     border-radius: 4px;
     font-size: .68rem;
     line-height: 1.1;
@@ -3421,7 +3441,7 @@ table.dataTable tbody tr:hover {
     }
 
     .catalog-grid .book-card-cover {
-        height: 204px;
+        height: 198px;
     }
 }
 
@@ -3492,11 +3512,93 @@ table.dataTable tbody tr:hover {
     }
 
     .catalog-grid .book-card-cover {
-        height: 202px;
+        height: 210px;
     }
 }
 
 @media (max-width: 575.98px) {
+    .bb-navbar .container,
+    .page-shell {
+        max-width: 100%;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .footer {
+        white-space: normal;
+    }
+
+    .catalog-hero,
+    .book-filter,
+    .auth-shell,
+    .auth-aside,
+    .auth-card {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .catalog-hero,
+    .book-filter,
+    .auth-aside,
+    .auth-card {
+        box-sizing: border-box;
+        width: calc(100vw - 48px) !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .catalog-hero {
+        padding: 24px 16px;
+    }
+
+    .auth-aside,
+    .auth-card {
+        padding: 24px;
+    }
+
+    .catalog-hero p,
+    .auth-aside p,
+    .auth-card-header p {
+        max-width: 290px;
+    }
+
+    .catalog-hero-actions,
+    .catalog-hero .btn-hero,
+    .auth-form,
+    .auth-link-row {
+        max-width: 290px;
+    }
+
+    .auth-shell,
+    .auth-shell > .row,
+    .auth-shell > .row > [class*="col-"] {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .catalog-hero h1,
+    .auth-aside h1,
+    .auth-card-header h2 {
+        overflow-wrap: anywhere;
+    }
+
+    .catalog-hero-actions .btn,
+    .catalog-toolbar__actions,
+    .catalog-toolbar__actions .btn {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .auth-shell > .row {
+        --bs-gutter-x: 0;
+    }
+
+    .auth-aside-grid {
+        grid-template-columns: 1fr;
+    }
+
     .catalog-toolbar {
         grid-template-columns: 1fr;
     }
@@ -3512,10 +3614,10 @@ table.dataTable tbody tr:hover {
     }
 
     .catalog-grid .book-card-cover {
-        height: 188px;
+        height: 206px;
     }
 
     .catalog-grid .book-card-cover img {
-        max-width: 64%;
+        max-width: 86%;
     }
 }

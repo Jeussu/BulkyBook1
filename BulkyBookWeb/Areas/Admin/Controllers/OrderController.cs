@@ -85,14 +85,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, OrderVM.OrderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
                 _unitOfWork.Save();
 
-                TempData["Success"] = "Local development payment completed without Stripe.";
+                TempData["Success"] = "Payment recorded successfully.";
                 return RedirectToAction("PaymentConfirmation", "Order", new { orderHeaderid = OrderVM.OrderHeader.Id });
             }
 
             if (!HasStripeApiKey())
             {
                 _logger.LogWarning("Order payment blocked because Stripe is not configured. Order {OrderId}.", OrderVM.OrderHeader.Id);
-                TempData["error"] = "Stripe is not configured. Add a Stripe test secret key or enable the local checkout fallback in Development.";
+                TempData["error"] = "Payment processing is temporarily unavailable. Please try again later or contact support.";
                 return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
             }
 
@@ -163,7 +163,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
                 if (!HasStripeApiKey() || string.IsNullOrWhiteSpace(orderHeader.SessionId))
                 {
-                    TempData["error"] = "Stripe is not configured or this order has no Stripe session. Payment confirmation was skipped.";
+                    TempData["error"] = "Payment verification is temporarily unavailable. Please review the order details or contact support.";
                     return RedirectToAction("Details", "Order", new { orderId = orderHeaderid });
                 }
 
@@ -275,7 +275,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     if (!HasStripeApiKey())
                     {
                         _logger.LogWarning("Order refund blocked because Stripe is not configured. Order {OrderId}.", OrderVM.OrderHeader.Id);
-                        TempData["error"] = "Stripe is not configured. Refund was skipped.";
+                        TempData["error"] = "Refund processing is temporarily unavailable. Please review the payment configuration or contact support.";
                         return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
                     }
 

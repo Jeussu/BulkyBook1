@@ -171,7 +171,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             if (applicationUser.CompanyId.GetValueOrDefault() == 0 && !HasStripeApiKey() && !UseLocalStripeFallback())
             {
                 _logger.LogWarning("Checkout blocked because Stripe is not configured for user {UserId}.", userId);
-                TempData["error"] = "Stripe is not configured. Add a Stripe test secret key or enable the local checkout fallback in Development.";
+                TempData["error"] = "Payment processing is temporarily unavailable. Please try again later or contact support.";
                 return RedirectToAction(nameof(Summary));
             }
 
@@ -210,7 +210,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                         _unitOfWork.Save();
                         transaction.Commit();
 
-                        TempData["success"] = "Local development checkout completed without Stripe.";
+                        TempData["success"] = "Order placed successfully.";
                         return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
                     }
 
@@ -294,7 +294,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 if (!HasStripeApiKey() || string.IsNullOrWhiteSpace(orderHeader.SessionId))
                 {
-                    TempData["error"] = "Stripe is not configured. The order was created, but payment verification was skipped.";
+                    TempData["error"] = "Payment verification is temporarily unavailable. Please contact support if this order does not update automatically.";
                     return RedirectToAction(nameof(Index));
                 }
 
