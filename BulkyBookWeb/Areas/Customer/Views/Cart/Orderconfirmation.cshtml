@@ -1,15 +1,21 @@
 ﻿@model int
 
-<div class="container row pt-4">
-    <div class="col-12 text-center">
-        <h1 class="text-primary text-center">Order Placed Successfully!</h1>
-        Your Order Number is : @Model <br /><br />
-        <img src="~/images/lawn_leaf.jpg" width="65%" />
+<section class="confirmation-shell confirmation-shell--customer mt-4">
+    <div class="confirmation-panel">
+        <div class="confirmation-icon confirmation-icon--success" aria-hidden="true">
+            <i class="bi bi-check-lg"></i>
+        </div>
+
+        <p class="confirmation-kicker">Order confirmed</p>
+        <h1 class="confirmation-title">Order Placed Successfully!</h1>
+        <p class="confirmation-message">
+            Your order has been placed successfully. We have recorded the order and will process it through the existing checkout workflow.
+        </p>
+
+        <div class="confirmation-order">
+            <span>Order Number</span>
+            <strong>@Model</strong>
+        </div>
     </div>
-    <div class="col-12 text-center" style="color:maroon">
-        <br />
-        Your order has been placed successfully! <br />
-        
-    </div>
-</div> 
+</section>
 
