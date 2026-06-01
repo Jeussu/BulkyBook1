@@ -78,6 +78,18 @@ Use this checklist after running `tools\qa\run-smoke-tests.ps1`. Keep test data 
 - Confirm `Database:AutoMigrate` policy is explicit for the deployment target.
 - Confirm `appsettings.Development.json` is not present in the publish output.
 
+## Final Staging Dry Run
+
+- Generate the final publish output:
+  `dotnet publish BulkyBookWeb\BulkyBookWeb.csproj -c Release -o publish-somee-final`
+- Validate the final publish folder:
+  `powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1 -SkipPublish -PublishDir "publish-somee-final"`
+- Generate the review-only Somee SQL script:
+  `powershell -NoProfile -ExecutionPolicy Bypass -File tools\deployment\generate-somee-migration-script.ps1`
+- Confirm `publish-somee-final/` and `migrate-somee.sql` are not staged for commit.
+- Review `docs\deployment\SOMEE_UPLOAD_STEPS.md` and `docs\deployment\SOMEE_ENVIRONMENT_VARIABLES.md` before upload.
+- After upload, run anonymous Home/Login/Register checks before any authenticated or payment-related staging checks.
+
 ## Post-Fix Regression
 
 - Re-run `dotnet build`.
@@ -94,6 +106,7 @@ Use this checklist after running `tools\qa\run-smoke-tests.ps1`. Keep test data 
 - Login/Register mobile.
 - Admin product list and product upsert.
 - Admin order details.
+- Before staging sign-off, manually spot-check Admin Order Details at 390px and confirm admin tables scroll horizontally on mobile.
 
 ## Do Not Test Destructively
 

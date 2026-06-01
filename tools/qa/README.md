@@ -144,3 +144,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-read
 ```
 
 The default temp publish output is disposable. Do not commit publish output or generated deployment SQL scripts.
+
+## Final Staging Dry Run Helpers
+
+Batch G uses a fixed local publish folder for final upload review:
+
+```powershell
+dotnet publish BulkyBookWeb\BulkyBookWeb.csproj -c Release -o publish-somee-final
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1 -SkipPublish -PublishDir "publish-somee-final"
+```
+
+Generate the review-only Somee SQL migration script with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\deployment\generate-somee-migration-script.ps1
+```
+
+The helper writes `migrate-somee.sql` and does not apply it. Review the SQL before using Somee SQL tools or SSMS, and do not commit publish output or generated SQL unless explicitly requested.

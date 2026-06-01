@@ -72,6 +72,20 @@ This plan separates test foundation from higher-risk behavior fixes. Batch B cre
 | DB data update allowed? | No production data mutation during readiness smoke. |
 | Risk level | Medium-high because environment differences can expose startup/config issues. |
 
+## Batch G: Final Staging Dry Run + Visual QA
+
+| Field | Plan |
+|---|---|
+| Goal | Re-run full local regressions, generate final publish output, validate Somee/IIS package readiness, generate review-only SQL, and perform final visual QA before staging upload. |
+| Allowed files | Final deployment/QA docs, Somee checklist/env docs, migration-script helper, `.gitignore` for generated publish/sql artifacts, and only small proven visual/deployment app fixes. |
+| Disallowed files | Controllers, models, repositories, DbContext, migrations, payment/Identity/business logic, product images unless a missing/broken publish asset is proven. |
+| Test cases covered | Full smoke/customer/admin/security/deployment harnesses plus final visual widths at 1440px, 1280px, 768px, and 390px. |
+| Bug fix scope | Only high-confidence staging blockers or small visual/deployment regressions; larger visual polish is deferred. |
+| Rollback strategy | Remove final docs/helper scripts or revert isolated deployment-only changes; never roll forward schema through the app. |
+| Migration allowed? | No. Only generate idempotent SQL for review. |
+| DB data update allowed? | Local-safe reversible cart data only through harness/visual QA; no production/shared data mutation. |
+| Risk level | Medium because it validates deployment packaging and host readiness without changing backend behavior. |
+
 ## Deferred Issue Register
 
 Use this section after each batch to record deeper findings discovered outside the current allowed scope.
@@ -84,3 +98,5 @@ Use this section after each batch to record deeper findings discovered outside t
 | DEF-004 | E | Customer users could reach the Admin Order list/API at `/Admin/Order/Index` and `/Admin/Order/GetAll?status=all`; the API scoped rows by owner, but the Admin management surface should remain staff-only. | `run-security-tests.ps1` observed HTTP 200 for customer on both routes before fix. | E regression | `BulkyBookWeb/Areas/Admin/Controllers/OrderController.cs`, `tools/qa/run-security-tests.ps1` | Fixed in Batch E by adding Admin/Employee role gates to `Index` and `GetAll` |
 | DEF-005 | E | `CartController.OrderConfirmation` and `OrderController.PaymentConfirmation` are GET endpoints with callback/confirmation side effects. They are tied to checkout/payment redirect behavior and should be reviewed with a payment callback design before route conversion. | Static security scan in `run-security-tests.ps1` flags both as GET mutation candidates. | Future security/payment hardening | `BulkyBookWeb/Areas/Customer/Controllers/CartController.cs`, `BulkyBookWeb/Areas/Admin/Controllers/OrderController.cs` | Deferred; not changed in Batch E to avoid breaking checkout/Stripe redirect semantics |
 | DEF-006 | F | Base `appsettings.json` still carried local fallback copy (`no-reply@localhost`, `Local Admin`, local address defaults) that could appear in publish artifacts even though production overrides were safe. | Batch F publish leakage scan found local fallback strings in published `appsettings.json`. | F regression | `BulkyBookWeb/appsettings.json`, `tools/qa/run-deployment-readiness.ps1`, `DEPLOYMENT_SOMEE.md` | Fixed in Batch F by neutralizing base config fallback values and adding publish leakage validation |
+| DEF-007 | G | Admin DataTables at 390px rely on horizontal scrolling and can show clipped columns in the first mobile viewport. | Batch G visual screenshot `admin-390-admin-order-list.png`. | Future visual polish | `BulkyBookWeb/Areas/Admin/Views/Product/Index.cshtml`, `BulkyBookWeb/Areas/Admin/Views/Order/Index.cshtml`, `BulkyBookWeb/wwwroot/css/site.css` | Deferred; acceptable for staging if horizontal scroll works |
+| DEF-008 | G | Automated visual capture timed out before the final Admin Order Details 390px screenshot. | Batch G visual capture produced 47/48 screenshots; missing `admin-390-admin-order-details.png`. | Manual staging sign-off | `BulkyBookWeb/Areas/Admin/Views/Order/Details.cshtml`, `BulkyBookWeb/wwwroot/css/site.css` | Manual check required before staging sign-off |
