@@ -238,6 +238,13 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if (string.IsNullOrWhiteSpace(OrderVM.OrderHeader.Carrier) ||
+                string.IsNullOrWhiteSpace(OrderVM.OrderHeader.TrackingNumber))
+            {
+                TempData["error"] = "Carrier and tracking number are required before shipping an order.";
+                return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
+            }
+
             orderHeader.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
             orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
             orderHeader.OrderStatus = SD.StatusShipped;

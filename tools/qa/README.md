@@ -87,3 +87,24 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-customer-flow-t
 ```
 
 Use `-PlaceOrder` only against disposable local data and known payment configuration. Without `-PlaceOrder`, the script does not intentionally create orders.
+
+## Admin Flow Harness
+
+Batch D adds `run-admin-flow-tests.ps1` for authenticated admin smoke coverage. It logs in with a local-safe admin account, checks protected admin routes, verifies Product/Company/Order DataTables endpoints and selectors, inspects Product Upsert and Order Details bindings, and checks Category/CoverType/Company admin screens without mutating data by default.
+
+Run the default non-destructive pass:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-admin-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -AdminEmail "admin@bulky.local" -AdminPassword "Admin123!" -ProductId 1 -OrderId 1
+```
+
+If credentials are omitted, the script attempts to read the local development `SeedAdmin` account from `BulkyBookWeb\appsettings.Development.json`, then the demo seed file. It does not create users, run migrations, or seed demo data.
+
+Optional CRUD/destructive modes are intentionally gated:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-admin-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -RunCrud
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-admin-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -RunCrud -RunDestructive -CleanupTestData
+```
+
+Use those flags only against disposable local data. The default run does not create products, delete records, ship orders, cancel orders, or perform payment actions.
