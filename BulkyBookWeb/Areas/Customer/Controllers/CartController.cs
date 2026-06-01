@@ -125,6 +125,12 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == userId);
+            if (applicationUser == null)
+            {
+                return Challenge();
+            }
+
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
@@ -134,10 +140,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     cart.Product.Price50, cart.Product.Price100);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
-            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == userId);
-            if (applicationUser == null)
+
+            if (!ModelState.IsValid)
             {
-                return Challenge();
+                ShoppingCartVM.OrderHeader.ApplicationUser = applicationUser;
+                return View(ShoppingCartVM);
             }
 
             foreach (var cart in ShoppingCartVM.ListCart)

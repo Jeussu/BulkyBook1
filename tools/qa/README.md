@@ -67,3 +67,23 @@ This avoids running migrations and demo seeding through the smoke harness. The a
 - No cart, checkout, product CRUD, order action, payment, upload, CSRF, IDOR, or deployment-host validation.
 
 Use `docs\qa\MANUAL_QA_CHECKLIST.md` for the flows that require authenticated sessions, browser inspection, or local-safe reversible data.
+
+## Customer Flow Harness
+
+Batch C adds `run-customer-flow-tests.ps1` for the customer shopping path. It logs in with a local-safe customer account, adds a product to cart, checks cart count/cart controls, exercises Plus and Minus, verifies checkout summary fields and server-side validation, then cleans up the test-created cart item when safe.
+
+Run with explicit credentials:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-customer-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -CustomerEmail "customer2@bulky.local" -CustomerPassword "Customer123!" -ProductId 1
+```
+
+If credentials are omitted, the script attempts to read local development customer seed credentials from `DemoDataSeeder.cs`. It does not create users and does not run migrations.
+
+Optional local-safe order placement:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-customer-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -CustomerEmail "customer2@bulky.local" -CustomerPassword "Customer123!" -ProductId 1 -PlaceOrder
+```
+
+Use `-PlaceOrder` only against disposable local data and known payment configuration. Without `-PlaceOrder`, the script does not intentionally create orders.

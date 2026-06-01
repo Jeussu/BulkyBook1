@@ -24,6 +24,8 @@ Use this checklist after running `tools\qa\run-smoke-tests.ps1`. Keep test data 
 
 ## Customer Smoke
 
+- Run the customer flow harness first when local-safe credentials are available:
+  `powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-customer-flow-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -CustomerEmail "customer2@bulky.local" -CustomerPassword "Customer123!" -ProductId 1`
 - Login with a local-safe customer account.
 - Open product detail, change quantity, and add to cart.
 - Verify cart count changes.
