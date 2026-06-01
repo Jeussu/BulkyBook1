@@ -68,11 +68,15 @@ Use this checklist after running `tools\qa\run-smoke-tests.ps1`. Keep test data 
 
 ## Deployment Preflight
 
+- Run the deployment readiness harness:
+  `powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1`
 - Confirm appsettings values required for production are supplied by the host/environment.
 - Confirm Stripe/Facebook/email keys are absent from source and publish output unless intentionally configured through the host.
 - Confirm static assets return 200 after publish.
+- Confirm 20 modern PNG product covers under `wwwroot/images/products/book-covers-modern` are included in publish output.
 - Confirm no stale SVG product cover paths are rendered.
 - Confirm `Database:AutoMigrate` policy is explicit for the deployment target.
+- Confirm `appsettings.Development.json` is not present in the publish output.
 
 ## Post-Fix Regression
 

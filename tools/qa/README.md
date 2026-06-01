@@ -126,3 +126,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-security-tests.
 ```
 
 The optional upload check posts an invalid `.txt` file and expects server-side rejection without creating a product. Over-posting and cross-customer IDOR checks are intentionally conservative and skip when disposable local data is not available.
+
+## Deployment Readiness Harness
+
+Batch F adds `run-deployment-readiness.ps1` for IIS/Somee-style publish validation. It publishes the web project to a unique temp folder by default, verifies expected publish files/static assets, confirms `appsettings.Development.json` is excluded, checks production-safe config defaults, and scans text publish artifacts for obvious local/demo credentials or secrets.
+
+Run the default publish validation:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1
+```
+
+Validate an existing publish folder without publishing again:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1 -SkipPublish -PublishDir "C:\path\to\publish"
+```
+
+The default temp publish output is disposable. Do not commit publish output or generated deployment SQL scripts.
