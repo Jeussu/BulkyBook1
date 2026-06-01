@@ -1,3 +1,6 @@
 ﻿@model int
 
-<i class="bi bi-cart"></i> &nbsp; (@Model)
+<span class="bb-cart-indicator" aria-label="Shopping cart with @Model items">
+    <i class="bi bi-cart" aria-hidden="true"></i>
+    <span class="bb-cart-count">@Model</span>
+</span>

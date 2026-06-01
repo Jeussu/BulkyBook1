@@ -18,24 +18,47 @@
         "badge-stock";
 }
 
-<form method="post" class="book-detail mt-4">
+<form method="post" class="book-detail book-detail-shell mt-4">
     @Html.AntiForgeryToken()
     <input hidden asp-for="ShoppingCart.ProductId" />
-    <section class="row g-4">
+    <div class="detail-back-row mb-3">
+        <a class="detail-back-link" asp-action="Index">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Back to catalog
+        </a>
+    </div>
+    <section class="row g-4 align-items-start">
         <div class="col-12 col-lg-5">
             <div class="book-detail-cover">
                 <img src="@product.ImageUrl" alt="@product.Title" />
             </div>
+            <div class="book-detail-facts mt-3">
+                <div>
+                    <span>ISBN</span>
+                    <strong>@product.ISBN</strong>
+                </div>
+                <div>
+                    <span>Cover</span>
+                    <strong>@product.CoverType.Name</strong>
+                </div>
+                <div>
+                    <span>Stock</span>
+                    <strong>@stockLabel</strong>
+                </div>
+            </div>
         </div>
         <div class="col-12 col-lg-7">
-            <div class="d-flex flex-wrap gap-2 mb-3">
+            <div class="detail-badge-row d-flex flex-wrap gap-2 mb-3">
                 <span class="badge badge-soft">@product.CoverType.Name</span>
                 <span class="badge badge-soft">@product.Category.Name</span>
                 <span class="badge @stockClass">@stockLabel</span>
             </div>
             <h1 class="book-detail-title">@product.Title</h1>
-            <p class="book-detail-author">by @product.Author</p>
-            <p class="text-muted mb-3">ISBN: @product.ISBN</p>
+            <div class="book-detail-meta mb-4">
+                <span>by @product.Author</span>
+                <span>@product.Category.Name</span>
+                <span>@product.ISBN</span>
+            </div>
 
             <div class="book-price-panel mb-4">
                 <div>
@@ -57,10 +80,18 @@
             </div>
 
             <div class="book-description mb-4">
+                <h2 class="book-section-title">About this book</h2>
                 @Html.Raw(SafeHtml.Sanitize(product.Description))
             </div>
 
-            <div class="bb-panel p-3">
+            <div class="bb-panel detail-purchase-panel p-3">
+                <div class="detail-purchase-header">
+                    <div>
+                        <span class="catalog-eyebrow catalog-eyebrow--dark">Purchase</span>
+                        <h2 class="h5 mb-0">Add to cart</h2>
+                    </div>
+                    <strong>@usd(product.Price)</strong>
+                </div>
                 <div class="row g-3 align-items-end">
                     <div class="col-12 col-md-4">
                         <label asp-for="ShoppingCart.Count" class="form-label">Quantity</label>
@@ -83,16 +114,20 @@
 @if (Model.RelatedProducts.Any())
 {
     <section class="related-books mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h4 mb-0">Related books</h2>
+        <div class="related-books-header d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+            <div>
+                <span class="catalog-eyebrow catalog-eyebrow--dark">Further reading</span>
+                <h2 class="h4 mb-0">Related books</h2>
+            </div>
         </div>
         <div class="row g-3">
             @foreach (var related in Model.RelatedProducts)
             {
-                <div class="col-6 col-md-3">
+                <div class="col-12 col-sm-6 col-md-3">
                     <a class="related-book" asp-action="Details" asp-route-productId="@related.Id">
                         <img src="@related.ImageUrl" alt="@related.Title" />
                         <span>@related.Title</span>
+                        <small>@related.Category?.Name</small>
                     </a>
                 </div>
             }

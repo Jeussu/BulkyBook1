@@ -5,39 +5,54 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="auth-shell mt-4">
+<div class="auth-shell auth-shell--login mt-4">
     <div class="row g-4 align-items-stretch">
         <div class="col-12 col-lg-5">
             <section class="auth-aside">
-                <p class="text-uppercase small fw-bold mb-2">BulkyBook account</p>
-                <h1 class="display-6 fw-bold mb-3">Welcome back.</h1>
-                <p class="mb-0">Sign in to manage carts, review orders, or test staff workflows with the local demo accounts.</p>
+                <p class="auth-kicker">BulkyBook account</p>
+                <h1>Welcome back.</h1>
+                <p>Sign in to manage your cart, orders, and account.</p>
+
+                <div class="auth-aside-grid">
+                    <div>
+                        <span>Secure</span>
+                        <strong>Identity</strong>
+                    </div>
+                    <div>
+                        <span>Orders</span>
+                        <strong>Tracked</strong>
+                    </div>
+                </div>
             </section>
         </div>
         <div class="col-12 col-lg-7">
             <section class="auth-card">
-                <h2 class="h3 mb-1">Log in</h2>
-                <p class="text-muted mb-4">Use a local account to continue.</p>
-                <form id="account" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    <div class="form-floating mb-3">
+                <div class="auth-card-header">
+                    <span class="auth-kicker">Account access</span>
+                    <h2>Log in</h2>
+                    <p>Use your BulkyBook account to continue.</p>
+                </div>
+
+                <form id="account" method="post" class="auth-form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary"></div>
+                    <div class="form-floating auth-field">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
                         <label asp-for="Input.Email" class="form-label"></label>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="form-floating auth-field">
                         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
                         <label asp-for="Input.Password" class="form-label"></label>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
-                    <div class="form-check mb-4">
+                    <div class="form-check auth-remember">
                         <input class="form-check-input" asp-for="Input.RememberMe" />
                         <label asp-for="Input.RememberMe" class="form-check-label">
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                    <div class="d-flex flex-wrap gap-3 mt-4 small">
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary auth-submit">Log in</button>
+                    <div class="auth-link-row">
                         <a id="forgot-password" asp-page="./ForgotPassword">Forgot password?</a>
                         <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create account</a>
                         <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend confirmation</a>
@@ -46,10 +61,13 @@
 
                 @if ((Model.ExternalLogins?.Count ?? 0) > 0)
                 {
-                    <hr class="my-4" />
-                    <h3 class="h6">External login</h3>
+                    <hr class="auth-divider" />
+                    <div class="auth-external-header">
+                        <span class="auth-kicker">External access</span>
+                        <h3>External login</h3>
+                    </div>
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="auth-provider-list">
                             @foreach (var provider in Model.ExternalLogins!)
                             {
                                 var providerName = provider.DisplayName ?? provider.Name;

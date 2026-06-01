@@ -8,28 +8,61 @@
     Func<DateTime, string, string> formatDate = (value, emptyText) => value == default ? emptyText : value.ToShortDateString();
 }
 
-<form method="post" class="order-shell mt-4">
+<form method="post" class="admin-order-detail-shell mt-4">
     @Html.AntiForgeryToken()
     <input asp-for="OrderHeader.Id" hidden />
 
-    <div class="bb-panel">
-        <div class="bb-panel-header">
+    <div class="admin-page-header">
+        <div>
+            <p class="admin-page-kicker mb-2">Order #@Model.OrderHeader.Id</p>
+            <h1>Order Details</h1>
+            <p>Review fulfillment, shipping, payment metadata, and ordered books.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary admin-secondary-action">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Orders</span>
+        </a>
+    </div>
+
+    <div class="order-status-overview">
+        <div class="order-status-card">
+            <span class="admin-section-label">Order status</span>
+            <strong>@Model.OrderHeader.OrderStatus</strong>
+        </div>
+        <div class="order-status-card">
+            <span class="admin-section-label">Payment status</span>
+            <strong>@Model.OrderHeader.PaymentStatus</strong>
+        </div>
+        <div class="order-status-card">
+            <span class="admin-section-label">Order date</span>
+            <strong>@formatDate(Model.OrderHeader.OrderDate, "Not set")</strong>
+        </div>
+        <div class="order-status-card">
+            <span class="admin-section-label">Shipping date</span>
+            <strong>@formatDate(Model.OrderHeader.ShippingDate, "Pending")</strong>
+        </div>
+    </div>
+
+    <div class="bb-panel admin-form-card order-detail-card">
+        <div class="admin-form-card-header">
             <div>
-                <p class="text-uppercase small text-muted fw-bold mb-1">Order #@Model.OrderHeader.Id</p>
-                <h1 class="h3 bb-panel-title">Order Details</h1>
+                <span class="admin-section-label">Order workspace</span>
+                <h2>Customer, shipping, and actions</h2>
             </div>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Orders</a>
         </div>
 
         <div class="p-4 order-detail-grid">
-            <section>
+            <section class="order-detail-main">
                 <div class="status-strip mb-4">
                     <span class="badge badge-soft">Order: @Model.OrderHeader.OrderStatus</span>
                     <span class="badge badge-soft">Payment: @Model.OrderHeader.PaymentStatus</span>
                     <span class="badge badge-soft">Ordered: @formatDate(Model.OrderHeader.OrderDate, "Not set")</span>
                 </div>
 
-                <h2 class="h5 mb-3">Customer and shipping</h2>
+                <div class="order-section-heading">
+                    <span class="admin-section-label">Customer details</span>
+                    <h2>Customer and shipping</h2>
+                </div>
                 <div class="row">
                     <div class="col-12 col-md-6 order-field">
                         <label>Name</label>
@@ -149,6 +182,10 @@
 
                 @if (isStaff)
                 {
+                    <div class="order-section-heading order-section-heading--payment">
+                        <span class="admin-section-label">Payment metadata</span>
+                        <h2>Gateway record</h2>
+                    </div>
                     <div class="row">
                         <div class="col-12 col-md-6 order-field">
                             <label>Session ID</label>
@@ -159,14 +196,17 @@
                             <div class="readonly-value">@(string.IsNullOrWhiteSpace(Model.OrderHeader.PaymentIntentId) ? "Not set" : Model.OrderHeader.PaymentIntentId)</div>
                         </div>
                     </div>
-                    <button type="submit" asp-action="UpdateOrderDetail" class="btn btn-outline-secondary w-100 mt-2">Update Order Details</button>
+                    <button type="submit" asp-action="UpdateOrderDetail" class="btn btn-outline-secondary admin-secondary-action w-100 mt-2">Update Order Details</button>
                 }
             </section>
 
-            <aside>
-                <div class="bb-panel order-summary-panel p-3 shadow-none">
-                    <h2 class="h5 mb-3">Books in this order</h2>
-                    <ul class="list-group mb-3">
+            <aside class="order-detail-sidebar">
+                <div class="bb-panel admin-form-card order-summary-panel p-3 shadow-none">
+                    <div class="order-summary-heading">
+                        <span class="admin-section-label">Books in order</span>
+                        <h2>Order summary</h2>
+                    </div>
+                    <ul class="list-group order-books-list mb-3">
                         @foreach (var detail in Model.OrderDetail)
                         {
                             <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
@@ -177,7 +217,7 @@
                                 <strong>@usd(detail.Count * detail.Price)</strong>
                             </li>
                         }
-                        <li class="list-group-item px-0 d-flex justify-content-between">
+                        <li class="list-group-item px-0 d-flex justify-content-between order-total-row">
                             <span class="fw-bold">Total</span>
                         <strong class="h5 mb-0">@usd(Model.OrderHeader.OrderTotal)</strong>
                         </li>

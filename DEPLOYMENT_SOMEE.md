@@ -42,7 +42,8 @@ Leave Stripe, Facebook, and SMTP values empty if those integrations are not bein
 dotnet restore BulkyBook.sln
 dotnet build BulkyBook.sln
 dotnet ef migrations list --project BulkyBook.DataAccess --startup-project BulkyBookWeb --context ApplicationDbContext
-dotnet publish BulkyBookWeb -c Release -o ./publish-somee
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1
+dotnet publish BulkyBookWeb\BulkyBookWeb.csproj -c Release -o ./publish-somee
 ```
 
 Do not commit `publish-somee` or any publish output.
@@ -83,7 +84,26 @@ Add that URI in the Facebook Developer Console. Use HTTPS, configure test users 
 
 Product uploads are stored under `wwwroot/images/products` on the hosting filesystem. This is acceptable for a small Somee staging/portfolio demo, but free hosting storage is limited. Move uploads to durable object storage before production use.
 
-Static SVG demo covers under `wwwroot/images/products/book-covers` should be included in publish output.
+Modern PNG demo covers under `wwwroot/images/products/book-covers-modern` should be included in publish output. Legacy SVG/JPG assets may still exist for compatibility, but rendered catalog/detail paths should use the modern PNG assets.
+
+## Publish Package Validation
+
+Before uploading to Somee/IIS, run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-deployment-readiness.ps1
+```
+
+The script publishes to a unique temp folder by default and checks:
+
+- `web.config` exists and targets `BulkyBookWeb.dll`.
+- `appsettings.Development.json` is excluded.
+- `appsettings.Production.json` is present.
+- `site.css`, admin JavaScript files, and 20 modern PNG covers are included.
+- production defaults keep `Database:AutoMigrate=false`, `SeedData:EnableDemoData=false`, and `Stripe:EnableLocalCheckoutFallback=false`.
+- obvious local/demo credentials, LocalDB strings, and Stripe/Facebook/SMTP secrets are not present in text publish artifacts.
+
+If the script reports a temp `PublishDir`, that folder is disposable and should not be committed.
 
 ## Not Production Ready Yet
 

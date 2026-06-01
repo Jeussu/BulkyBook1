@@ -6,25 +6,52 @@
     var isAdmin = User.IsInRole(SD.Role_Admin);
 }
 
-<div class="auth-shell mt-4">
+<div class="auth-shell auth-shell--register mt-4">
     <div class="row g-4 align-items-stretch">
         <div class="col-12 col-lg-4">
             <section class="auth-aside">
-                <p class="text-uppercase small fw-bold mb-2">@(isAdmin ? "Admin portal" : "Reader account")</p>
-                <h1 class="display-6 fw-bold mb-3">@(isAdmin ? "Create a user." : "Create your account.")</h1>
-                <p class="mb-0">
+                <p class="auth-kicker">@(isAdmin ? "Admin portal" : "Reader account")</p>
+                <h1>@(isAdmin ? "Create a user." : "Create your account.")</h1>
+                <p>
                     @(isAdmin
-                        ? "Assign staff, company, or customer roles for local testing."
-                        : "Register as an individual reader and start testing the bookstore flow.")
+                        ? "Create staff, company, or customer accounts with the correct access level."
+                        : "Create an account to manage orders, shipping details, and checkout.")
                 </p>
+
+                <div class="auth-aside-list">
+                    <div>
+                        <span>01</span>
+                        <p>Account credentials</p>
+                    </div>
+                    <div>
+                        <span>02</span>
+                        <p>Shipping profile</p>
+                    </div>
+                    @if (isAdmin)
+                    {
+                        <div>
+                            <span>03</span>
+                            <p>Role assignment</p>
+                        </div>
+                    }
+                </div>
             </section>
         </div>
         <div class="col-12 col-lg-8">
             <section class="auth-card">
-                <h2 class="h3 mb-1">@(isAdmin ? "Register user" : "Register")</h2>
-                <p class="text-muted mb-4">Fill in the account and shipping profile details.</p>
-                <form id="registerForm" class="row g-3" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="auth-card-header">
+                    <span class="auth-kicker">Account setup</span>
+                    <h2>@(isAdmin ? "Register user" : "Register")</h2>
+                    <p>Fill in the account and shipping profile details.</p>
+                </div>
+
+                <form id="registerForm" class="row g-3 auth-form auth-register-form" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary col-12"></div>
+
+                    <div class="col-12 auth-form-section-title">
+                        <span class="auth-kicker">Credentials</span>
+                        <h3>Account details</h3>
+                    </div>
                     <div class="form-floating col-12">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
                         <label asp-for="Input.Email"></label>
@@ -39,6 +66,11 @@
                         <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" />
                         <label asp-for="Input.PhoneNumber"></label>
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 auth-form-section-title auth-form-section-title--spaced">
+                        <span class="auth-kicker">Shipping</span>
+                        <h3>Address profile</h3>
                     </div>
                     <div class="form-floating col-12 col-md-6">
                         <input asp-for="Input.StreetAddress" class="form-control" aria-required="true" />
@@ -60,6 +92,11 @@
                         <label asp-for="Input.PostalCode"></label>
                         <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                     </div>
+
+                    <div class="col-12 auth-form-section-title auth-form-section-title--spaced">
+                        <span class="auth-kicker">Security</span>
+                        <h3>Password</h3>
+                    </div>
                     <div class="form-floating col-12 col-md-6">
                         <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
                         <label asp-for="Input.Password"></label>
@@ -72,13 +109,17 @@
                     </div>
                     @if (isAdmin)
                     {
+                        <div class="col-12 auth-form-section-title auth-form-section-title--spaced">
+                            <span class="auth-kicker">Access</span>
+                            <h3>Role assignment</h3>
+                        </div>
                         <div class="form-floating col-12 col-md-6">
                             <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
                                 <option disabled selected>-Select Role-</option>
                             </select>
                             <label asp-for="Input.Role"></label>
                         </div>
-                        <div class="form-floating col-12 col-md-6">
+                        <div class="form-floating col-12 col-md-6 auth-company-field">
                             <select asp-for="Input.CompanyId" style="display:none;" asp-items="@Model.Input.CompanyList" class="form-select">
                                 <option disabled selected>-Select Company-</option>
                             </select>
@@ -86,16 +127,19 @@
                         </div>
                     }
                     <div class="col-12">
-                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary auth-submit">Register</button>
                     </div>
                 </form>
 
                 @if (!isAdmin && (Model.ExternalLogins?.Count ?? 0) > 0)
                 {
-                    <hr class="my-4" />
-                    <h3 class="h6">External registration</h3>
+                    <hr class="auth-divider" />
+                    <div class="auth-external-header">
+                        <span class="auth-kicker">External access</span>
+                        <h3>External registration</h3>
+                    </div>
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="auth-provider-list">
                             @foreach (var provider in Model.ExternalLogins!)
                             {
                                 var providerName = provider.DisplayName ?? provider.Name;

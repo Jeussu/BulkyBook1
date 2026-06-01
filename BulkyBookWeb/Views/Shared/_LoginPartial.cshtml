@@ -1,27 +1,63 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
+@using BulkyBook.DataAccess
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject ApplicationDbContext Db
 
-<ul class="navbar-nav">
+@{
+    var displayName = "Account";
+    if (SignInManager.IsSignedIn(User))
+    {
+        var userId = UserManager.GetUserId(User);
+        var applicationUser = string.IsNullOrWhiteSpace(userId)
+            ? null
+            : Db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
+        var candidateName = applicationUser?.Name;
+        var unsafeDisplayText = false;
+        var unsafeFragments = new[] { "local", "demo", "test", "bulky.local" };
+
+        if (!string.IsNullOrWhiteSpace(candidateName))
+        {
+            foreach (var fragment in unsafeFragments)
+            {
+                if (candidateName.Contains(fragment, StringComparison.OrdinalIgnoreCase))
+                {
+                    unsafeDisplayText = true;
+                    break;
+                }
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(candidateName) && !unsafeDisplayText)
+        {
+            displayName = candidateName;
+        }
+    }
+}
+
+<ul class="navbar-nav bb-auth-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a id="manage" class="nav-link " asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+        <a id="manage" class="nav-link bb-user-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage account">
+            <span class="bb-user-prefix">Hello</span>
+            <span class="bb-user-name">@displayName</span>
+        </a>
     </li>
     <li class="nav-item">
         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link ">Logout</button>
+            <button id="logout" type="submit" class="nav-link btn btn-link bb-nav-action">Logout</button>
         </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a class="nav-link bb-user-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link bb-user-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
 </ul>

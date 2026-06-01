@@ -5,22 +5,26 @@
 @{
     var usdCulture = CultureInfo.GetCultureInfo("en-US");
     Func<double, string> usd = value => value.ToString("C", usdCulture);
+    var checkoutItemCount = Model.ListCart.Sum(item => item.Count);
 }
 
-<form method="post" class="checkout-shell mt-4">
+<form method="post" class="checkout-shell checkout-page-shell mt-4">
     @Html.AntiForgeryToken()
-    <div class="bb-panel">
-        <div class="bb-panel-header">
+    <div class="bb-panel checkout-panel">
+        <div class="bb-panel-header checkout-panel-header">
             <div>
-                <p class="text-uppercase small text-muted fw-bold mb-1">Step 2 of 3</p>
-                <h1 class="h3 bb-panel-title">Shipping & Summary</h1>
+                <p class="cart-step-label mb-2">Step 2 of 3</p>
+                <h1 class="bb-panel-title checkout-page-title">Shipping & Summary</h1>
             </div>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Cart</a>
+            <a asp-action="Index" class="btn btn-outline-secondary cart-secondary-action">Back to Cart</a>
         </div>
 
-        <div class="p-4 checkout-grid">
-            <section>
-                <h2 class="h5 mb-3">Shipping details</h2>
+        <div class="checkout-grid checkout-grid-modern">
+            <section class="checkout-section checkout-shipping-panel">
+                <div class="checkout-section-header">
+                    <span>Delivery profile</span>
+                    <h2>Shipping details</h2>
+                </div>
                 <div class="row g-3">
                     <div class="col-12">
                         <label asp-for="OrderHeader.Name" class="form-label">Name</label>
@@ -55,39 +59,43 @@
                 </div>
             </section>
 
-            <aside>
-                <h2 class="h5 mb-3">Order summary</h2>
-                <ul class="list-group checkout-summary-list mb-3">
+            <aside class="checkout-summary-panel">
+                <div class="checkout-section-header">
+                    <span>@checkoutItemCount item@(checkoutItemCount == 1 ? "" : "s")</span>
+                    <h2>Order summary</h2>
+                </div>
+                <div class="checkout-summary-list">
                     @foreach (var details in Model.ListCart)
                     {
-                        <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div class="checkout-summary-item">
                             <div>
-                                <h3 class="h6 mb-1">@details.Product.Title</h3>
-                                <small class="text-muted">Quantity: @details.Count</small>
+                                <h3>@details.Product.Title</h3>
+                                <small>Quantity: @details.Count</small>
                             </div>
                             <strong>@usd(details.Price * details.Count)</strong>
-                        </li>
+                        </div>
                     }
-                    <li class="list-group-item d-flex justify-content-between px-0">
-                        <span class="fw-bold">Total (USD)</span>
-                        <strong class="h5 mb-0">@usd(Model.OrderHeader.OrderTotal)</strong>
-                    </li>
-                </ul>
+                </div>
+
+                <div class="checkout-total-row">
+                    <span>Total (USD)</span>
+                    <strong>@usd(Model.OrderHeader.OrderTotal)</strong>
+                </div>
 
                 @if (Model.OrderHeader.ApplicationUser?.CompanyId.GetValueOrDefault() == 0 &&
                     string.Equals(Environment.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(Configuration["Stripe:EnableLocalCheckoutFallback"], "true", StringComparison.OrdinalIgnoreCase) &&
                     string.IsNullOrWhiteSpace(Configuration["Stripe:SecretKey"]))
                 {
-                    <div class="alert alert-info py-2 small">
-                        Local checkout fallback is enabled because Stripe is not configured.
+                    <div class="alert alert-info checkout-fallback-alert">
+                        Online card payment is currently unavailable. You can still place the order for review.
                     </div>
                 }
 
-                <p class="text-muted small mb-3">
+                <p class="checkout-arrival-note">
                     Estimated arrival: @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
                 </p>
-                <button type="submit" value="Place Order" class="btn btn-primary w-100">Place Order</button>
+                <button type="submit" value="Place Order" class="btn btn-primary checkout-place-order">Place Order</button>
             </aside>
         </div>
     </div>

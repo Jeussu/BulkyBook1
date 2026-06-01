@@ -13,47 +13,61 @@
         "badge-stock";
 }
 
-<section class="bookstore-hero mt-3 mb-4">
+<section class="bookstore-hero catalog-hero mt-3 mb-4">
     <div class="bookstore-hero__copy">
-        <p class="text-uppercase small fw-bold mb-2">BulkyBook technical bookstore</p>
-        <h1>Practical books for modern .NET teams.</h1>
-        <p class="mb-3">Curated demo titles for building, deploying, securing, and maintaining ASP.NET Core applications.</p>
-        <a class="btn btn-hero" href="#catalog">Browse catalog</a>
+        <p class="catalog-eyebrow mb-2">Featured technical collection</p>
+        <h1>Modern books for sharper .NET delivery.</h1>
+        <p class="mb-3">A focused catalog of architecture, cloud, data, security, and delivery titles for teams building real ASP.NET Core applications.</p>
+        <div class="catalog-hero-actions">
+            <a class="btn btn-hero" href="#catalog">Browse catalog</a>
+            <span class="catalog-hero-count">@Model.TotalItems book@(Model.TotalItems == 1 ? "" : "s") available</span>
+        </div>
     </div>
-    <div class="hero-cover-showcase" aria-hidden="true">
-        <img class="hero-cover hero-cover-back" src="/images/products/book-covers/clean-architecture-with-dotnet.svg" alt="" />
-        <img class="hero-cover hero-cover-mid" src="/images/products/book-covers/microservices-with-aspnet-core.svg" alt="" />
-        <img class="hero-cover hero-cover-front" src="/images/products/book-covers/practical-devops-for-developers.svg" alt="" />
+    <div class="hero-cover-showcase catalog-hero__feature" aria-hidden="true">
+        <div class="catalog-hero__mat">
+            <img class="hero-cover hero-cover-back" src="/images/products/book-covers-modern/clean-architecture-with-dotnet.png" alt="" />
+            <img class="hero-cover hero-cover-mid" src="/images/products/book-covers-modern/microservices-with-aspnet-core.png" alt="" />
+            <img class="hero-cover hero-cover-front" src="/images/products/book-covers-modern/practical-devops-for-developers.png" alt="" />
+        </div>
     </div>
 </section>
 
 <form id="catalog" method="get" asp-area="Customer" asp-controller="Home" asp-action="Index" class="book-filter mb-4">
-    <div class="row g-3 align-items-end">
-        <div class="col-12 col-lg-3">
-            <label asp-for="SearchTerm" class="form-label">Search</label>
-            <input asp-for="SearchTerm" class="form-control" placeholder="Title, author, or ISBN" />
+    <div class="book-filter__header">
+        <div>
+            <span class="book-filter__kicker">Search and refine</span>
+            <h2>Find the right technical book</h2>
         </div>
-        <div class="col-12 col-md-4 col-lg-2">
+    </div>
+    <div class="catalog-toolbar">
+        <div class="catalog-field catalog-field--search">
+            <label asp-for="SearchTerm" class="form-label">Search</label>
+            <div class="catalog-search">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <input asp-for="SearchTerm" class="form-control" placeholder="Title, author, or ISBN" />
+            </div>
+        </div>
+        <div class="catalog-field">
             <label asp-for="CategoryId" class="form-label">Category</label>
             <select asp-for="CategoryId" asp-items="Model.CategoryList" class="form-select">
                 <option value="">All categories</option>
             </select>
         </div>
-        <div class="col-12 col-md-4 col-lg-2">
+        <div class="catalog-field">
             <label asp-for="CoverTypeId" class="form-label">Cover</label>
             <select asp-for="CoverTypeId" asp-items="Model.CoverTypeList" class="form-select">
                 <option value="">All covers</option>
             </select>
         </div>
-        <div class="col-6 col-md-2 col-lg-1">
+        <div class="catalog-field catalog-field--short">
             <label asp-for="MinPrice" class="form-label">Min</label>
             <input asp-for="MinPrice" class="form-control" type="number" min="0" step="1" />
         </div>
-        <div class="col-6 col-md-2 col-lg-1">
+        <div class="catalog-field catalog-field--short">
             <label asp-for="MaxPrice" class="form-label">Max</label>
             <input asp-for="MaxPrice" class="form-control" type="number" min="0" step="1" />
         </div>
-        <div class="col-6 col-md-3 col-lg-1">
+        <div class="catalog-field">
             <label asp-for="SortBy" class="form-label">Sort</label>
             <select asp-for="SortBy" class="form-select">
                 <option value="newest">Newest first</option>
@@ -63,7 +77,7 @@
                 <option value="price_desc">Price high</option>
             </select>
         </div>
-        <div class="col-6 col-md-3 col-lg-1">
+        <div class="catalog-field catalog-field--short">
             <label asp-for="PageSize" class="form-label">Page size</label>
             <select asp-for="PageSize" class="form-select">
                 <option value="8">8</option>
@@ -71,12 +85,10 @@
                 <option value="20">20</option>
             </select>
         </div>
-        <div class="col-12 col-md-6 col-lg-1 d-grid">
+        <div class="catalog-toolbar__actions">
             <input type="hidden" name="page" value="1" />
             <button type="submit" class="btn btn-primary">Apply</button>
-        </div>
-        <div class="col-12 text-end">
-            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Clear filters</a>
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Clear filters</a>
         </div>
     </div>
 </form>
@@ -90,19 +102,23 @@
 }
 else
 {
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="catalog-results-heading d-flex justify-content-between align-items-end mb-3 flex-wrap gap-3">
+        <div>
+            <span class="catalog-eyebrow catalog-eyebrow--dark">Technical Library</span>
+            <h2 class="h4 mb-0">Technical library</h2>
+        </div>
         <div class="page-count-text">
             Showing page @Model.Page of @Model.TotalPages (@Model.TotalItems book@(Model.TotalItems == 1 ? "" : "s"))
         </div>
     </div>
 
-    <div class="row pb-3 g-4">
+    <div class="row catalog-grid pb-3 g-3 g-xl-4">
         @foreach (var product in Model.Products)
         {
             <div class="col-sm-6 col-lg-3 d-flex">
                 <article class="book-card card h-100 w-100 shadow-sm">
                     <div class="book-card-cover">
-                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" />
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" loading="lazy" />
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="product-meta-row d-flex gap-2 flex-wrap mb-2">
@@ -111,10 +127,20 @@ else
                         </div>
                         <h2 class="book-card-title h6">@product.Title</h2>
                         <p class="book-card-author small text-muted mb-2">by @product.Author</p>
-                        <span class="badge @stockClass(product) align-self-start mb-3">@stockLabel(product)</span>
-                        <p class="mb-1 small text-muted">List Price: <span class="text-decoration-line-through">@usd(product.ListPrice)</span></p>
-                        <p class="book-card-price mb-3">From @usd(product.Price100)</p>
-                        <a asp-action="Details" class="btn btn-primary mt-auto" asp-route-productId="@product.Id">
+                        <div class="book-card-commerce mt-auto">
+                            <span class="badge @stockClass(product)">@stockLabel(product)</span>
+                            <div class="book-card-price-grid">
+                                <div>
+                                    <span>List</span>
+                                    <strong class="text-decoration-line-through">@usd(product.ListPrice)</strong>
+                                </div>
+                                <div>
+                                    <span>100+ qty</span>
+                                    <strong>@usd(product.Price100)</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <a asp-action="Details" class="btn btn-outline-primary book-card-action" asp-route-productId="@product.Id">
                             Details
                         </a>
                     </div>

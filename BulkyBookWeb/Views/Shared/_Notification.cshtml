@@ -1,16 +1,40 @@
-﻿@if(TempData["success"] !=null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        toastr.success('@TempData["success"]');    
-    </script>
+@using System.Text.Json
+@{
+    var successMessage = TempData["success"]?.ToString() ?? TempData["Success"]?.ToString();
+    var errorMessage = TempData["error"]?.ToString() ?? TempData["Error"]?.ToString();
+    var infoMessage = TempData["info"]?.ToString() ?? TempData["Info"]?.ToString();
+    var warningMessage = TempData["warning"]?.ToString() ?? TempData["Warning"]?.ToString();
+    var notifications = new[]
+    {
+        new { toastType = "success", message = successMessage },
+        new { toastType = "error", message = errorMessage },
+        new { toastType = "info", message = infoMessage },
+        new { toastType = "warning", message = warningMessage }
+    }
+    .Where(notification => !string.IsNullOrWhiteSpace(notification.message))
+    .ToList();
 }
-@if(TempData["error"] !=null)
+
+@if (notifications.Any())
 {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript">
-        toastr.error('@TempData["error"]');    
+        (function () {
+            const notifications = @Html.Raw(JsonSerializer.Serialize(notifications));
+
+            function showNotifications() {
+                if (!window.toastr) {
+                    window.setTimeout(showNotifications, 50);
+                    return;
+                }
+
+                notifications.forEach(function (notification) {
+                    if (typeof window.toastr[notification.toastType] === "function") {
+                        window.toastr[notification.toastType](notification.message);
+                    }
+                });
+            }
+
+            showNotifications();
+        })();
     </script>
 }

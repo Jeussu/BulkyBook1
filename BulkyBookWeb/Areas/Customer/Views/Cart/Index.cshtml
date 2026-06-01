@@ -4,22 +4,28 @@
 @{
     var usdCulture = CultureInfo.GetCultureInfo("en-US");
     Func<double, string> usd = value => value.ToString("C", usdCulture);
+    var cartItemCount = Model.ListCart.Sum(item => item.Count);
 }
 
-<div class="cart-shell mt-4">
-    <div class="bb-panel">
-        <div class="bb-panel-header">
+<div class="cart-shell cart-page-shell mt-4">
+    <div class="bb-panel cart-panel">
+        <div class="bb-panel-header cart-panel-header">
             <div>
-                <p class="text-uppercase small text-muted fw-bold mb-1">Step 1 of 3</p>
-                <h1 class="h3 bb-panel-title">Shopping Cart</h1>
+                <p class="cart-step-label mb-2">Step 1 of 3</p>
+                <h1 class="bb-panel-title cart-page-title">Shopping Cart</h1>
             </div>
-            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Continue Shopping</a>
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary cart-secondary-action">
+                Continue Shopping
+            </a>
         </div>
 
-        <div class="p-4">
+        <div class="cart-panel-body">
             @if (!Model.ListCart.Any())
             {
-                <div class="empty-state mb-0">
+                <div class="empty-state cart-empty-state mb-0">
+                    <div class="cart-empty-icon" aria-hidden="true">
+                        <i class="bi bi-cart-x"></i>
+                    </div>
                     <h5>Your cart is empty</h5>
                     <p>Add a book from the catalog to continue checkout.</p>
                     <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-primary">Browse Books</a>
@@ -27,51 +33,76 @@
             }
             else
             {
-                @foreach (var item in Model.ListCart)
-                {
-                    <div class="cart-item">
-                        <img src="@item.Product.ImageUrl" class="cart-cover" alt="@item.Product.Title" />
-                        <div class="cart-item-main">
-                            <h2 class="h5 mb-1">@item.Product.Title</h2>
-                            <p class="cart-description mb-2">@Html.Raw(SafeHtml.Sanitize(item.Product.Description))</p>
-                            <div class="cart-price-line">
-                                <strong>@usd(item.Price)</strong>
-                                <span class="mx-1">x</span>
-                                <span>@item.Count</span>
+                <div class="cart-items-stack">
+                    @foreach (var item in Model.ListCart)
+                    {
+                        <article class="cart-item">
+                            <div class="cart-cover-frame">
+                                <img src="@item.Product.ImageUrl" class="cart-cover" alt="@item.Product.Title" />
                             </div>
-                        </div>
-                        <div class="cart-actions">
-                            <div class="cart-item-total">@usd(item.Price * item.Count)</div>
-                            <div class="qty-control-group" aria-label="Quantity controls">
-                                <form method="post" asp-action="Minus" asp-route-cartId="@item.Id">
-                                    <button type="submit" class="btn btn-qty" title="Decrease quantity">
-                                        <i class="bi bi-dash-lg"></i>
-                                    </button>
-                                </form>
-                                <span class="qty-count">@item.Count</span>
-                                <form method="post" asp-action="Plus" asp-route-cartId="@item.Id">
-                                    <button type="submit" class="btn btn-qty" title="Increase quantity">
-                                        <i class="bi bi-plus-lg"></i>
-                                    </button>
-                                </form>
-                                <form method="post" asp-action="Remove" asp-route-cartId="@item.Id">
-                                    <button type="submit" class="btn btn-remove" title="Remove book">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                            <div class="cart-item-main">
+                                <h2 class="h5 mb-2">@item.Product.Title</h2>
+                                <p class="cart-description mb-3">@Html.Raw(SafeHtml.Sanitize(item.Product.Description))</p>
+                                <div class="cart-price-line">
+                                    <span>@usd(item.Price)</span>
+                                    <span aria-hidden="true">x</span>
+                                    <strong>@item.Count</strong>
+                                </div>
                             </div>
+                            <div class="cart-actions">
+                                <div class="cart-item-total">
+                                    <span>Line total</span>
+                                    <strong>@usd(item.Price * item.Count)</strong>
+                                </div>
+                                <div class="qty-control-group" aria-label="Quantity controls for @item.Product.Title">
+                                    <form method="post" asp-action="Minus" asp-route-cartId="@item.Id">
+                                        <button type="submit" class="btn btn-qty" title="Decrease quantity" aria-label="Decrease quantity">
+                                            <i class="bi bi-dash-lg"></i>
+                                        </button>
+                                    </form>
+                                    <span class="qty-count">@item.Count</span>
+                                    <form method="post" asp-action="Plus" asp-route-cartId="@item.Id">
+                                        <button type="submit" class="btn btn-qty" title="Increase quantity" aria-label="Increase quantity">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-action="Remove" asp-route-cartId="@item.Id">
+                                        <button type="submit" class="btn btn-remove" title="Remove book" aria-label="Remove @item.Product.Title">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+
+                <div class="cart-checkout-bar">
+                    <div class="cart-total-summary">
+                        <span>Order total</span>
+                        <div>
+                            <small>@cartItemCount item@(cartItemCount == 1 ? "" : "s")</small>
+                            <strong>@usd(Model.OrderHeader.OrderTotal)</strong>
                         </div>
                     </div>
-                }
+                    <a asp-action="Summary" class="btn btn-primary cart-checkout-action">Continue to Summary</a>
+                </div>
 
-                <div class="row justify-content-end mt-4">
-                    <div class="col-12 col-md-5 col-lg-4">
-                        <div class="cart-total">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted fw-bold">Total (USD)</span>
-                                <strong class="h4 mb-0">@usd(Model.OrderHeader.OrderTotal)</strong>
-                            </div>
-                            <a asp-action="Summary" class="btn btn-success w-100 mt-3">Continue to Summary</a>
+                <div class="cart-mobile-summary">
+                    <div class="cart-mobile-summary-card">
+                        <h2>Order Summary</h2>
+                        <div class="cart-mobile-summary-row">
+                            <span>Items</span>
+                            <strong>@cartItemCount</strong>
+                        </div>
+                        <div class="cart-mobile-summary-row cart-mobile-summary-total">
+                            <span>Total (USD)</span>
+                            <strong>@usd(Model.OrderHeader.OrderTotal)</strong>
+                        </div>
+                        <a asp-action="Summary" class="btn btn-primary w-100">Continue to Summary</a>
+                        <div class="cart-secure-note">
+                            <i class="bi bi-lock"></i>
+                            <span>Secure checkout</span>
                         </div>
                     </div>
                 </div>
