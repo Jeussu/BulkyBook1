@@ -108,3 +108,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-admin-flow-test
 ```
 
 Use those flags only against disposable local data. The default run does not create products, delete records, ship orders, cancel orders, or perform payment actions.
+
+## Security Harness
+
+Batch E adds `run-security-tests.ps1` for security regression coverage. It performs static checks for anti-forgery, unsafe GET mutation candidates, role gates, sanitized `Html.Raw` usage, upload validation, AJAX CSRF headers, and dynamic checks for anonymous/customer/admin access boundaries.
+
+Run the default security pass:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-security-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -CustomerEmail "customer2@bulky.local" -CustomerPassword "Customer123!" -AdminEmail "admin@bulky.local" -AdminPassword "Admin123!" -ProductId 1 -OrderId 1
+```
+
+Optional local-safe checks:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\qa\run-security-tests.ps1 -BaseUrl "https://localhost:7206" -StartApp -StopApp -CustomerEmail "customer2@bulky.local" -CustomerPassword "Customer123!" -AdminEmail "admin@bulky.local" -AdminPassword "Admin123!" -ProductId 1 -OrderId 1 -RunUploadTests -RunOverpostingTests -RunIdorTests
+```
+
+The optional upload check posts an invalid `.txt` file and expects server-side rejection without creating a product. Over-posting and cross-customer IDOR checks are intentionally conservative and skip when disposable local data is not available.
