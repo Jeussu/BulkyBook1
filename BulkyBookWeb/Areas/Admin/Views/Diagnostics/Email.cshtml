@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Email Diagnostics";
+}
+
+<div class="admin-page-header mt-4">
+    <div>
+        <p class="admin-page-kicker mb-2">Development diagnostics</p>
+        <h1>Email Diagnostics</h1>
+        <p>This page is available only in Development and never displays SMTP passwords or secret values.</p>
+    </div>
+</div>
+
+<div class="bb-panel admin-form-card p-4">
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Environment</dt>
+        <dd class="col-sm-8">@ViewData["EnvironmentName"]</dd>
+
+        <dt class="col-sm-4">Email provider</dt>
+        <dd class="col-sm-8">@ViewData["Provider"]</dd>
+
+        <dt class="col-sm-4">Configured</dt>
+        <dd class="col-sm-8">@ViewData["IsConfigured"]</dd>
+
+        <dt class="col-sm-4">SMTP host</dt>
+        <dd class="col-sm-8">@ViewData["SmtpHost"]</dd>
+
+        <dt class="col-sm-4">SMTP port</dt>
+        <dd class="col-sm-8">@ViewData["SmtpPort"]</dd>
+
+        <dt class="col-sm-4">SecureSocketOptions</dt>
+        <dd class="col-sm-8">@ViewData["SecureSocketOptions"]</dd>
+
+        <dt class="col-sm-4">UseStartTls</dt>
+        <dd class="col-sm-8">@ViewData["UseStartTls"]</dd>
+
+        <dt class="col-sm-4">SMTP username</dt>
+        <dd class="col-sm-8">@ViewData["SmtpUsername"]</dd>
+
+        <dt class="col-sm-4">SMTP password present</dt>
+        <dd class="col-sm-8">@ViewData["SmtpPasswordPresent"]</dd>
+
+        <dt class="col-sm-4">SMTP from</dt>
+        <dd class="col-sm-8">@ViewData["SmtpFrom"]</dd>
+
+        <dt class="col-sm-4">LocalFile directory</dt>
+        <dd class="col-sm-8">@ViewData["LocalFileDirectory"]</dd>
+    </dl>
+</div>

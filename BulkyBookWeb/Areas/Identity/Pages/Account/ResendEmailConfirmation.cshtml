@@ -9,6 +9,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @if (!string.IsNullOrWhiteSpace(Model.DeliveryModeNotice))
+        {
+            <div class="alert alert-info" role="alert">
+                @Model.DeliveryModeNotice
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            <div class="alert alert-info" role="alert">
+                @Model.StatusMessage
+            </div>
+        }
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-floating">

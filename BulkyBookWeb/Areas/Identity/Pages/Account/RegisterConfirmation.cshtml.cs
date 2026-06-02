@@ -5,25 +5,34 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
 
 namespace BulkyBookWeb.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IEmailSender _sender;
+        private const string LocalFileProviderName = "LocalFile";
 
-        public RegisterConfirmationModel(UserManager<IdentityUser> userManager, IEmailSender sender)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailDeliveryService _emailDeliveryService;
+        private readonly IWebHostEnvironment _environment;
+
+        public RegisterConfirmationModel(
+            UserManager<IdentityUser> userManager,
+            IEmailDeliveryService emailDeliveryService,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
-            _sender = sender;
+            _emailDeliveryService = emailDeliveryService;
+            _environment = environment;
         }
 
         /// <summary>
@@ -44,6 +53,9 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
         /// </summary>
         public string EmailConfirmationUrl { get; set; }
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
         {
             if (email == null)
@@ -59,8 +71,8 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
-            DisplayConfirmAccountLink = true;
+            DisplayConfirmAccountLink = _environment.IsDevelopment()
+                && _emailDeliveryService.ProviderName.Equals(LocalFileProviderName, StringComparison.OrdinalIgnoreCase);
             if (DisplayConfirmAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);

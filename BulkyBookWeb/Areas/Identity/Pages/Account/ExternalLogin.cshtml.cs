@@ -8,12 +8,12 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using BulkyBook.Models;
 using BulkyBook.Utility;
@@ -27,22 +27,25 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailDeliveryService _emailDeliveryService;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly IWebHostEnvironment _environment;
 
         public ExternalLoginModel(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailDeliveryService emailDeliveryService,
+            IWebHostEnvironment environment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _logger = logger;
-            _emailSender = emailSender;
+            _emailDeliveryService = emailDeliveryService;
+            _environment = environment;
         }
 
         /// <summary>
@@ -187,8 +190,11 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        var emailResult = await _emailDeliveryService.SendEmailWithResultAsync(
+                            Input.Email,
+                            "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.");
+                        TempData["StatusMessage"] = BuildConfirmationEmailStatusMessage(emailResult);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -209,6 +215,33 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
+        }
+
+        private string BuildConfirmationEmailStatusMessage(EmailDeliveryResult result)
+        {
+            if (result.Succeeded)
+            {
+                if (_environment.IsDevelopment() && !string.IsNullOrWhiteSpace(result.DeliveryPath))
+                {
+                    return $"Development LocalFile mode: confirmation email was saved as a local .html file. Open this file in your browser: {result.DeliveryPath}";
+                }
+
+                return "Confirmation email sent. Please check your email.";
+            }
+
+            if (result.Status == EmailDeliveryStatus.NotConfigured)
+            {
+                return _environment.IsDevelopment()
+                    ? "Email delivery is not configured. Set Email:Provider to LocalFile for development or Smtp for real delivery. Use Resend Email Confirmation after fixing the provider."
+                    : "Email delivery is not configured. Please contact support.";
+            }
+
+            if (_environment.IsDevelopment() && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+            {
+                return $"Email delivery failed. SMTP diagnostic: {result.ErrorMessage}. Check /Admin/Diagnostics/Email for sanitized runtime configuration.";
+            }
+
+            return "Email delivery failed. Use Resend Email Confirmation after the email provider is fixed.";
         }
 
         private ApplicationUser CreateUser()

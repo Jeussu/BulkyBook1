@@ -29,7 +29,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _environment = environment;
             _logger = logger;
         }
-        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult Index()
         {
             return View();
@@ -313,7 +312,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         #region API CALLS
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult GetAll(string status)
         {
             IEnumerable<OrderHeader> orderHeaders;

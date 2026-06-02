@@ -14,27 +14,23 @@ namespace BulkyBookWeb.ViewComponents
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public Task<IViewComponentResult> InvokeAsync()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var claim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
             if (claim != null)
             {
-                if (HttpContext.Session.GetInt32(SD.SessionCart) != null)
-                {
-                    return View(HttpContext.Session.GetInt32(SD.SessionCart));
-                }
-                else
-                {
-                    HttpContext.Session.SetInt32(SD.SessionCart,
-                        _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).ToList().Count);
-                    return View(HttpContext.Session.GetInt32(SD.SessionCart));
-                }
+                var cartQuantity = _unitOfWork.ShoppingCart
+                    .GetAll(u => u.ApplicationUserId == claim.Value)
+                    .Sum(cart => cart.Count);
+
+                HttpContext.Session.SetInt32(SD.SessionCart, cartQuantity);
+                return Task.FromResult<IViewComponentResult>(View(cartQuantity));
             }
             else
             {
-                HttpContext.Session.Clear();
-                return View(0);
+                HttpContext.Session.Remove(SD.SessionCart);
+                return Task.FromResult<IViewComponentResult>(View(0));
             }
         }
     }

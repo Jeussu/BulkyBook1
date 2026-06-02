@@ -7,11 +7,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BulkyBook.Utility;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
 
 namespace BulkyBookWeb.Areas.Identity.Pages.Account.Manage
 {
@@ -19,16 +21,19 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailDeliveryService _emailDeliveryService;
+        private readonly IWebHostEnvironment _environment;
 
         public EmailModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IEmailSender emailSender)
+            IEmailDeliveryService emailDeliveryService,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
+            _emailDeliveryService = emailDeliveryService;
+            _environment = environment;
         }
 
         /// <summary>
@@ -123,12 +128,15 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
+                var emailResult = await _emailDeliveryService.SendEmailWithResultAsync(
                     Input.NewEmail,
                     "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = BuildEmailStatusMessage(
+                    emailResult,
+                    "Confirmation link to change email sent. Please check your email.",
+                    "Development LocalFile mode: change-email confirmation was saved as a local .html file.");
                 return RedirectToPage();
             }
 
@@ -159,13 +167,46 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
+            var emailResult = await _emailDeliveryService.SendEmailWithResultAsync(
                 email,
                 "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = BuildEmailStatusMessage(
+                emailResult,
+                "Verification email sent. Please check your email.",
+                "Development LocalFile mode: verification email was saved as a local .html file.");
             return RedirectToPage();
+        }
+
+        private string BuildEmailStatusMessage(
+            EmailDeliveryResult result,
+            string successMessage,
+            string localFileMessage)
+        {
+            if (result.Succeeded)
+            {
+                if (_environment.IsDevelopment() && !string.IsNullOrWhiteSpace(result.DeliveryPath))
+                {
+                    return $"{localFileMessage} Open this file in your browser: {result.DeliveryPath}";
+                }
+
+                return successMessage;
+            }
+
+            if (result.Status == EmailDeliveryStatus.NotConfigured)
+            {
+                return _environment.IsDevelopment()
+                    ? "Email delivery is not configured. Set Email:Provider to LocalFile for development or Smtp for real delivery."
+                    : "Email delivery is not configured. Please contact support.";
+            }
+
+            if (_environment.IsDevelopment() && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+            {
+                return $"Email delivery failed. SMTP diagnostic: {result.ErrorMessage}. Check /Admin/Diagnostics/Email for sanitized runtime configuration.";
+            }
+
+            return "Email delivery failed. Please contact support or try again later.";
         }
     }
 }

@@ -184,8 +184,6 @@ public class HomeController : Controller
         {
             _unitOfWork.ShoppingCart.Add(shoppingCart);
             _unitOfWork.Save();
-            HttpContext.Session.SetInt32(SD.SessionCart,
-                _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).ToList().Count);
         }
         else
         {
@@ -193,6 +191,7 @@ public class HomeController : Controller
             _unitOfWork.Save();
         }
 
+        SyncCartSession(claim.Value);
         return RedirectToAction(nameof(Index));
     }
 
@@ -226,5 +225,14 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private void SyncCartSession(string userId)
+    {
+        var cartQuantity = _unitOfWork.ShoppingCart
+            .GetAll(u => u.ApplicationUserId == userId)
+            .Sum(cart => cart.Count);
+
+        HttpContext.Session.SetInt32(SD.SessionCart, cartQuantity);
     }
 }

@@ -21,7 +21,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProvid
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IDemoDataSeeder, DemoDataSeeder>();
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<EmailSender>();
+builder.Services.AddSingleton<IEmailSender>(serviceProvider => serviceProvider.GetRequiredService<EmailSender>());
+builder.Services.AddSingleton<IEmailDeliveryService>(serviceProvider => serviceProvider.GetRequiredService<EmailSender>());
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 

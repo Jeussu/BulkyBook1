@@ -25,8 +25,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         private readonly ApplicationDbContext _db;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; } = new();
-        //total price
-        public int OrderTotal { get; set; }
+
         public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender, IConfiguration configuration, IWebHostEnvironment environment, ILogger<CartController> logger, ApplicationDbContext db)
         {
             _unitOfWork = unitOfWork;
@@ -87,12 +86,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 return Challenge();
             }
 
-            ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name ?? string.Empty;
-            ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber ?? string.Empty;
-            ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress ?? string.Empty;
-            ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City ?? string.Empty;
-            ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State ?? string.Empty;
-            ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode ?? string.Empty;
+            if (PopulateShippingDetailsFromProfile(ShoppingCartVM.OrderHeader.ApplicationUser))
+            {
+                TempData["warning"] = "Please review and complete your shipping details before placing the order.";
+            }
 
 
 
@@ -131,8 +128,9 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 return Challenge();
             }
 
-            ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
+            ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+            ShoppingCartVM.OrderHeader.OrderTotal = 0;
 
             foreach (var cart in ShoppingCartVM.ListCart)
             {
@@ -140,6 +138,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     cart.Product.Price50, cart.Product.Price100);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
+
+            NormalizeSubmittedShippingFields();
+            RemoveServerControlledCheckoutModelState();
+            RequireShippingFields();
+            RejectPlaceholderShippingFields();
 
             if (!ModelState.IsValid)
             {
@@ -173,6 +176,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+                ShoppingCartVM.OrderHeader.PaymentDueDate = DateTime.Now.AddDays(30);
             }
 
             if (applicationUser.CompanyId.GetValueOrDefault() == 0 && !HasStripeApiKey() && !UseLocalStripeFallback())
@@ -186,6 +190,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 using var transaction = _db.Database.BeginTransaction();
 
+                UpdateUserShippingProfile(applicationUser, ShoppingCartVM.OrderHeader);
                 _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
                 _unitOfWork.Save();
 
@@ -323,9 +328,9 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
                 orderHeader.ApplicationUserId).ToList();
-                HttpContext.Session.Clear();
                 _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
                 _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart, 0);
             }
             return View(id);
         }
@@ -348,6 +353,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             _unitOfWork.ShoppingCart.IncrementCount(cart, 1);
             _unitOfWork.Save();
+            SyncCartSession(cart.ApplicationUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -364,14 +370,13 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             if (cart.Count <= 1)
             {
                 _unitOfWork.ShoppingCart.Remove(cart);
-                var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count - 1;
-                HttpContext.Session.SetInt32(SD.SessionCart, count);
             }
             else
             {
                 _unitOfWork.ShoppingCart.DecrementCount(cart, 1);
             }
             _unitOfWork.Save();
+            SyncCartSession(cart.ApplicationUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -387,8 +392,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             _unitOfWork.ShoppingCart.Remove(cart);
             _unitOfWork.Save();
-            var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
-            HttpContext.Session.SetInt32(SD.SessionCart, count);
+            SyncCartSession(cart.ApplicationUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -435,6 +439,147 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return $"{prefix}_{orderId}";
         }
 
+        private void SyncCartSession(string userId)
+        {
+            var cartQuantity = _unitOfWork.ShoppingCart
+                .GetAll(u => u.ApplicationUserId == userId)
+                .Sum(cart => cart.Count);
+
+            HttpContext.Session.SetInt32(SD.SessionCart, cartQuantity);
+        }
+
+        private bool PopulateShippingDetailsFromProfile(ApplicationUser applicationUser)
+        {
+            var removedPlaceholder = false;
+            ShoppingCartVM.OrderHeader.Name = GetProfileValue(applicationUser.Name, CheckoutProfileField.Name, ref removedPlaceholder);
+            ShoppingCartVM.OrderHeader.PhoneNumber = GetProfileValue(applicationUser.PhoneNumber, CheckoutProfileField.PhoneNumber, ref removedPlaceholder);
+            ShoppingCartVM.OrderHeader.StreetAddress = GetProfileValue(applicationUser.StreetAddress, CheckoutProfileField.StreetAddress, ref removedPlaceholder);
+            ShoppingCartVM.OrderHeader.City = GetProfileValue(applicationUser.City, CheckoutProfileField.City, ref removedPlaceholder);
+            ShoppingCartVM.OrderHeader.State = GetProfileValue(applicationUser.State, CheckoutProfileField.State, ref removedPlaceholder);
+            ShoppingCartVM.OrderHeader.PostalCode = GetProfileValue(applicationUser.PostalCode, CheckoutProfileField.PostalCode, ref removedPlaceholder);
+            return removedPlaceholder;
+        }
+
+        private static string GetProfileValue(string? value, CheckoutProfileField field, ref bool removedPlaceholder)
+        {
+            var trimmedValue = value?.Trim() ?? string.Empty;
+            if (IsLocalPlaceholderValue(trimmedValue, field))
+            {
+                removedPlaceholder = true;
+                return string.Empty;
+            }
+
+            return trimmedValue;
+        }
+
+        private void NormalizeSubmittedShippingFields()
+        {
+            ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.Name?.Trim() ?? string.Empty;
+            ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.PhoneNumber?.Trim() ?? string.Empty;
+            ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.StreetAddress?.Trim() ?? string.Empty;
+            ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.City?.Trim() ?? string.Empty;
+            ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.State?.Trim() ?? string.Empty;
+            ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.PostalCode?.Trim() ?? string.Empty;
+        }
+
+        private void RemoveServerControlledCheckoutModelState()
+        {
+            string[] serverControlledFields =
+            {
+                "OrderHeader.ApplicationUser",
+                "OrderHeader.ApplicationUserId",
+                "OrderHeader.OrderDate",
+                "OrderHeader.OrderTotal",
+                "OrderHeader.OrderStatus",
+                "OrderHeader.PaymentStatus",
+                "OrderHeader.PaymentDate",
+                "OrderHeader.PaymentDueDate",
+                "OrderHeader.SessionId",
+                "OrderHeader.PaymentIntentId",
+                "OrderHeader.ShippingDate",
+                "OrderHeader.Carrier",
+                "OrderHeader.TrackingNumber",
+                "ListCart"
+            };
+
+            foreach (var field in serverControlledFields)
+            {
+                ModelState.Remove(field);
+                ModelState.Remove($"{nameof(ShoppingCartVM)}.{field}");
+            }
+        }
+
+        private void RejectPlaceholderShippingFields()
+        {
+            AddPlaceholderModelError(CheckoutProfileField.Name, ShoppingCartVM.OrderHeader.Name, "OrderHeader.Name", "Please enter a real recipient name.");
+            AddPlaceholderModelError(CheckoutProfileField.PhoneNumber, ShoppingCartVM.OrderHeader.PhoneNumber, "OrderHeader.PhoneNumber", "Please enter a real phone number.");
+            AddPlaceholderModelError(CheckoutProfileField.StreetAddress, ShoppingCartVM.OrderHeader.StreetAddress, "OrderHeader.StreetAddress", "Please enter a real street address.");
+            AddPlaceholderModelError(CheckoutProfileField.City, ShoppingCartVM.OrderHeader.City, "OrderHeader.City", "Please enter a real city.");
+            AddPlaceholderModelError(CheckoutProfileField.State, ShoppingCartVM.OrderHeader.State, "OrderHeader.State", "Please enter a real state.");
+            AddPlaceholderModelError(CheckoutProfileField.PostalCode, ShoppingCartVM.OrderHeader.PostalCode, "OrderHeader.PostalCode", "Please enter a real postal code.");
+        }
+
+        private void RequireShippingFields()
+        {
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.Name, "OrderHeader.Name", "Name is required.");
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.PhoneNumber, "OrderHeader.PhoneNumber", "Phone number is required.");
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.StreetAddress, "OrderHeader.StreetAddress", "Street address is required.");
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.City, "OrderHeader.City", "City is required.");
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.State, "OrderHeader.State", "State is required.");
+            AddRequiredModelError(ShoppingCartVM.OrderHeader.PostalCode, "OrderHeader.PostalCode", "Postal code is required.");
+        }
+
+        private void AddRequiredModelError(string value, string modelStateKey, string message)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                AddModelErrorIfAbsent(modelStateKey, message);
+            }
+        }
+
+        private void AddPlaceholderModelError(CheckoutProfileField field, string value, string modelStateKey, string message)
+        {
+            if (IsLocalPlaceholderValue(value, field))
+            {
+                AddModelErrorIfAbsent(modelStateKey, message);
+            }
+        }
+
+        private void AddModelErrorIfAbsent(string modelStateKey, string message)
+        {
+            if (ModelState.TryGetValue(modelStateKey, out var entry) &&
+                entry.Errors.Any(error => error.ErrorMessage == message))
+            {
+                return;
+            }
+
+            ModelState.AddModelError(modelStateKey, message);
+        }
+
+        private void UpdateUserShippingProfile(ApplicationUser applicationUser, OrderHeader orderHeader)
+        {
+            applicationUser.Name = orderHeader.Name;
+            applicationUser.PhoneNumber = orderHeader.PhoneNumber;
+            applicationUser.StreetAddress = orderHeader.StreetAddress;
+            applicationUser.City = orderHeader.City;
+            applicationUser.State = orderHeader.State;
+            applicationUser.PostalCode = orderHeader.PostalCode;
+        }
+
+        private static bool IsLocalPlaceholderValue(string value, CheckoutProfileField field)
+        {
+            return field switch
+            {
+                CheckoutProfileField.Name => value.Equals("Local Admin", StringComparison.OrdinalIgnoreCase),
+                CheckoutProfileField.PhoneNumber => value.Equals("0000000000", StringComparison.OrdinalIgnoreCase),
+                CheckoutProfileField.StreetAddress => value.Equals("Local Street", StringComparison.OrdinalIgnoreCase),
+                CheckoutProfileField.City => value.Equals("Local", StringComparison.OrdinalIgnoreCase),
+                CheckoutProfileField.State => value.Equals("Local", StringComparison.OrdinalIgnoreCase),
+                CheckoutProfileField.PostalCode => value.Equals("00000", StringComparison.OrdinalIgnoreCase),
+                _ => false
+            };
+        }
+
         private string? GetCurrentUserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -465,6 +610,16 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             }
 
             return NotFound();
+        }
+
+        private enum CheckoutProfileField
+        {
+            Name,
+            PhoneNumber,
+            StreetAddress,
+            City,
+            State,
+            PostalCode
         }
     }
 }

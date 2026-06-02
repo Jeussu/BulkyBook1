@@ -22,11 +22,21 @@ Use host-level configuration or `web.config` environment variables. Do not put r
 | `Stripe__WebhookSecret` | `<stripe-webhook-secret-if-webhook-is-added>` | Future use; current production webhook is not complete. |
 | `Authentication__Facebook__AppId` | `<facebook-app-id-if-used>` | Optional; Facebook provider is disabled if blank. |
 | `Authentication__Facebook__AppSecret` | `<facebook-app-secret-if-used>` | Optional; keep secret outside source control. |
-| `Email__Smtp__Host` | `<smtp-host-if-used>` | Optional; email sender is no-op if SMTP is incomplete. |
+| `Email__Provider` | `Smtp` | Required for real outbound email. Use `LocalFile` only in local Development, never for Somee/staging/production. |
+| `Email__LocalFile__Directory` | `App_Data/dev-mails` | Local Development only; ignored when `Email__Provider=Smtp`. |
+| `Email__Smtp__Host` | `<smtp-host-if-used>` | Required when `Email__Provider=Smtp`. |
 | `Email__Smtp__Port` | `587` | Optional. |
+| `Email__Smtp__SecureSocketOptions` | `StartTls` | Use `StartTls` for Gmail port 587. Use `SslOnConnect` for providers requiring SSL on port 465. |
+| `Email__Smtp__UseStartTls` | `true` | Set according to the SMTP provider. |
 | `Email__Smtp__Username` | `<smtp-username-if-used>` | Optional. |
 | `Email__Smtp__Password` | `<smtp-password-if-used>` | Optional; keep secret outside source control. |
-| `Email__Smtp__From` | `<sender-email-if-used>` | Optional but needed for real outbound mail. |
+| `Email__Smtp__From` | `<sender-email-if-used>` | Required when `Email__Provider=Smtp`. |
+
+## Related Checklists
+
+- `docs/deployment/SOMEE_PRE_DEPLOY_CHECKLIST.md`
+- `docs/deployment/SOMEE_POST_DEPLOY_SMOKE_TEST.md`
+- `docs/qa/BULKYBOOK_SOMEE_DEPLOYMENT_TEST_CASES.md`
 
 ## Pre-Launch Check
 
@@ -35,3 +45,4 @@ Use host-level configuration or `web.config` environment variables. Do not put r
 - Confirm `SeedData__EnableDemoData=false`.
 - Confirm no Stripe/Facebook/SMTP secret values are stored in committed files.
 - Confirm `Application__BaseUrl` uses the final HTTPS Somee domain.
+- Confirm `Email__Provider=Smtp` before expecting email in Gmail or any real inbox.

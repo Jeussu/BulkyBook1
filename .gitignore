@@ -66,6 +66,7 @@ publish-somee/
 publish-somee-final/
 publish-somee-test/
 migrate-somee.sql
+BulkyBookWeb/App_Data/dev-mails/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -365,3 +366,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local deployment packages
+publish-somee*/
