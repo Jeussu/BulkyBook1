@@ -8,7 +8,6 @@ using Stripe;
 using Stripe.Checkout;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Hosting;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
@@ -18,15 +17,13 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<OrderController> _logger;
         [BindProperty]
         public OrderVm OrderVM { get; set; } = new();
-        public OrderController(IUnitOfWork unitOfWork, IConfiguration configuration, IWebHostEnvironment environment, ILogger<OrderController> logger)
+        public OrderController(IUnitOfWork unitOfWork, IConfiguration configuration, ILogger<OrderController> logger)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
-            _environment = environment;
             _logger = logger;
         }
         public IActionResult Index()
@@ -77,13 +74,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             if (UseLocalStripeFallback())
             {
-                _logger.LogInformation("Using local payment fallback for order {OrderId}.", OrderVM.OrderHeader.Id);
-                _unitOfWork.OrderHeader.UpdateStripePaymentID(
-                    OrderVM.OrderHeader.Id,
-                    BuildLocalStripeId("local_demo_session", OrderVM.OrderHeader.Id),
-                    BuildLocalStripeId("local_demo_pi", OrderVM.OrderHeader.Id));
-                _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, OrderVM.OrderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
-                _unitOfWork.Save();
+                ApplyDemoPaymentFallback(OrderVM.OrderHeader.Id, OrderVM.OrderHeader.OrderStatus);
 
                 TempData["Success"] = "Payment recorded successfully.";
                 return RedirectToAction("PaymentConfirmation", "Order", new { orderHeaderid = OrderVM.OrderHeader.Id });
@@ -130,7 +121,26 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
 
             var service = new SessionService();
-            Session session = service.Create(options);
+            Session session;
+            try
+            {
+                session = service.Create(options);
+            }
+            catch (StripeException ex) when (IsLocalCheckoutFallbackEnabled())
+            {
+                _logger.LogWarning(ex, "Stripe pay-now session creation failed for order {OrderId}. Using explicit demo/staging payment fallback.", OrderVM.OrderHeader.Id);
+                ApplyDemoPaymentFallback(OrderVM.OrderHeader.Id, OrderVM.OrderHeader.OrderStatus);
+
+                TempData["Success"] = "Payment recorded successfully.";
+                return RedirectToAction("PaymentConfirmation", "Order", new { orderHeaderid = OrderVM.OrderHeader.Id });
+            }
+            catch (StripeException ex)
+            {
+                _logger.LogWarning(ex, "Stripe pay-now session creation failed for order {OrderId}.", OrderVM.OrderHeader.Id);
+                TempData["error"] = "Payment processing is temporarily unavailable. Please try again later or contact support.";
+                return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
+            }
+
             _unitOfWork.OrderHeader.UpdateStripePaymentID(OrderVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
             _unitOfWork.Save();
 
@@ -156,8 +166,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             {
                 if (UseLocalStripeFallback())
                 {
-                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderid, orderHeader.OrderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
-                    _unitOfWork.Save();
+                    ApplyDemoPaymentFallback(orderHeaderid, orderHeader.OrderStatus);
                     return View(orderHeaderid);
                 }
 
@@ -168,7 +177,24 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 }
 
                 var service = new SessionService();
-                Session session = service.Get(orderHeader.SessionId);
+                Session session;
+                try
+                {
+                    session = service.Get(orderHeader.SessionId);
+                }
+                catch (StripeException ex) when (IsLocalCheckoutFallbackEnabled())
+                {
+                    _logger.LogWarning(ex, "Stripe payment verification failed for order {OrderId}. Using explicit demo/staging payment fallback.", orderHeaderid);
+                    ApplyDemoPaymentFallback(orderHeaderid, orderHeader.OrderStatus);
+                    return View(orderHeaderid);
+                }
+                catch (StripeException ex)
+                {
+                    _logger.LogWarning(ex, "Stripe payment verification failed for order {OrderId}.", orderHeaderid);
+                    TempData["error"] = "Payment verification is temporarily unavailable. Please review the order details or contact support.";
+                    return RedirectToAction("Details", "Order", new { orderId = orderHeaderid });
+                }
+
                 //checkthe stripe status
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
@@ -293,7 +319,20 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     };
 
                     var service = new RefundService();
-                    Refund refund = service.Create(options);
+                    try
+                    {
+                        Refund refund = service.Create(options);
+                    }
+                    catch (StripeException ex) when (IsLocalCheckoutFallbackEnabled())
+                    {
+                        _logger.LogWarning(ex, "Stripe refund failed for order {OrderId}. Using explicit demo/staging refund fallback.", OrderVM.OrderHeader.Id);
+                    }
+                    catch (StripeException ex)
+                    {
+                        _logger.LogWarning(ex, "Stripe refund failed for order {OrderId}.", OrderVM.OrderHeader.Id);
+                        TempData["error"] = "Refund processing is temporarily unavailable. Please review the payment configuration or contact support.";
+                        return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
+                    }
 
                     _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusRefunded);
                 }
@@ -372,19 +411,38 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         private bool HasStripeApiKey()
         {
-            return !string.IsNullOrWhiteSpace(_configuration["Stripe:SecretKey"]);
+            var secretKey = _configuration["Stripe:SecretKey"]?.Trim();
+            return !string.IsNullOrWhiteSpace(secretKey)
+                && (secretKey.StartsWith("sk_test_", StringComparison.Ordinal) ||
+                    secretKey.StartsWith("sk_live_", StringComparison.Ordinal));
+        }
+
+        private bool IsLocalCheckoutFallbackEnabled()
+        {
+            return _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback");
         }
 
         private bool UseLocalStripeFallback()
         {
-            return _environment.IsDevelopment()
-                && _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback")
-                && !HasStripeApiKey();
+            return IsLocalCheckoutFallbackEnabled() && !HasStripeApiKey();
         }
 
         private static string BuildLocalStripeId(string prefix, int orderId)
         {
             return $"{prefix}_{orderId}";
+        }
+
+        private void ApplyDemoPaymentFallback(int orderId, string? orderStatus)
+        {
+            // Demo/staging-only no-payment fallback. Enable this explicitly for non-commerce
+            // environments that must remain usable while Stripe is not configured.
+            _logger.LogInformation("Using explicit demo/staging payment fallback for order {OrderId}.", orderId);
+            _unitOfWork.OrderHeader.UpdateStripePaymentID(
+                orderId,
+                BuildLocalStripeId("local_demo_session", orderId),
+                BuildLocalStripeId("local_demo_pi", orderId));
+            _unitOfWork.OrderHeader.UpdateStatus(orderId, orderStatus ?? SD.StatusShipped, SD.PaymentStatusApproved);
+            _unitOfWork.Save();
         }
 
         private string? GetCurrentUserId()

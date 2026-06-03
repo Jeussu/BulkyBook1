@@ -7,9 +7,9 @@ Use this runbook to deploy the BulkyBook full ASP.NET Core MVC/Razor UI app to a
 Current staging artifacts prepared by this pass:
 
 - DB review script: `migrate-somee.sql`
-- Publish package folder: `publish-somee-20260602-154149`
+- Publish package folder: `publish-somee-fallback-fix`
 
-If you create a new package later, use a fresh timestamped folder and update the evidence notes. The existing `publish-somee` folder was not deleted or overwritten.
+If you create a new package later, use a fresh folder and update the evidence notes. Do not upload source folders or local test evidence to the web root.
 
 ## Required Somee Environment Variables
 
@@ -21,7 +21,7 @@ ConnectionStrings__DefaultConnection=<somee-ms-sql-connection-string>
 Database__AutoMigrate=false
 SeedData__EnableDemoData=false
 Application__BaseUrl=https://<your-somee-domain>
-Stripe__EnableLocalCheckoutFallback=false
+Stripe__EnableLocalCheckoutFallback=true
 Email__Provider=Smtp
 Email__Smtp__Host=smtp.gmail.com
 Email__Smtp__Port=587
@@ -44,10 +44,12 @@ Authentication__Facebook__AppSecret=<facebook-app-secret>
 ## Configuration Rules
 
 - Do not use `Email__Provider=LocalFile` on Somee. `LocalFile` only writes local `.html` files and never sends to Gmail or any real inbox.
-- Do not enable `Stripe__EnableLocalCheckoutFallback` on Somee.
+- `Stripe__EnableLocalCheckoutFallback=true` is allowed only for this personal Somee demo/staging site when real Stripe keys are not configured. It creates a no-payment demo order and must not be treated as production payment confirmation.
+- For real commerce or production payment testing, set `Stripe__EnableLocalCheckoutFallback=false` and configure valid Stripe test/live keys instead.
 - Do not enable `SeedData__EnableDemoData` in staging/production.
 - Do not enable `Database__AutoMigrate` in staging/production.
 - `Application__BaseUrl` must match the final HTTPS Somee domain.
+- If Stripe keys are configured and valid, the app uses normal Stripe checkout. If Stripe is missing/invalid and `Stripe__EnableLocalCheckoutFallback=true`, the app uses the explicit demo/staging fallback.
 - If Stripe is enabled, configure Stripe success/cancel URLs and dashboard settings for the Somee HTTPS domain.
 - If Facebook login is enabled, configure Facebook redirect/callback URLs for the Somee HTTPS domain.
 - Secrets must live in Somee host environment variables or protected hosting config, not in `appsettings.json`, docs, screenshots, or source code.
@@ -68,7 +70,7 @@ Do not run `dotnet ef database update` for Somee in this pass.
 2. Create the Somee MS SQL database.
 3. Configure the required Somee environment variables.
 4. Apply `migrate-somee.sql` manually after review.
-5. Upload the contents of `publish-somee-20260602-154149` to the Somee web root via FTP or File Manager.
+5. Upload the contents of `publish-somee-fallback-fix` to the Somee web root via FTP or File Manager.
 6. Restart the Somee app/site.
 7. Open `https://<your-somee-domain>`.
 8. Run `docs/deployment/SOMEE_STAGING_SMOKE_TEST_EXECUTION.md`.
@@ -125,4 +127,4 @@ Block upload or stop testing if any condition is found:
 - `wwwroot` static assets are missing.
 - Somee DB connection string is missing.
 - SMTP env vars are missing when Identity email is required.
-- Stripe is required but test keys/domain URLs are not configured.
+- Stripe is required but test keys/domain URLs are not configured and `Stripe__EnableLocalCheckoutFallback` is not intentionally enabled for demo/staging.

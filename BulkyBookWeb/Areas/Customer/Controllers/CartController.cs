@@ -213,13 +213,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 {
                     if (UseLocalStripeFallback())
                     {
-                        _logger.LogInformation("Using local checkout fallback for order {OrderId}.", ShoppingCartVM.OrderHeader.Id);
-                        _unitOfWork.OrderHeader.UpdateStripePaymentID(
-                            ShoppingCartVM.OrderHeader.Id,
-                            BuildLocalStripeId("local_demo_session", ShoppingCartVM.OrderHeader.Id),
-                            BuildLocalStripeId("local_demo_pi", ShoppingCartVM.OrderHeader.Id));
-                        _unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
-                        _unitOfWork.Save();
+                        ApplyDemoCheckoutFallback(userId, ShoppingCartVM.OrderHeader.Id);
                         transaction.Commit();
 
                         TempData["success"] = "Order placed successfully.";
@@ -260,7 +254,21 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     }
 
                     var service = new SessionService();
-                    Session session = service.Create(options);
+                    Session session;
+                    try
+                    {
+                        session = service.Create(options);
+                    }
+                    catch (Stripe.StripeException ex) when (IsLocalCheckoutFallbackEnabled())
+                    {
+                        _logger.LogWarning(ex, "Stripe checkout session creation failed for order {OrderId}. Using explicit demo/staging checkout fallback.", ShoppingCartVM.OrderHeader.Id);
+                        ApplyDemoCheckoutFallback(userId, ShoppingCartVM.OrderHeader.Id);
+                        transaction.Commit();
+
+                        TempData["success"] = "Order placed successfully.";
+                        return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+                    }
+
                     _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id ?? string.Empty, session.PaymentIntentId ?? string.Empty);
                     _unitOfWork.Save();
                     transaction.Commit();
@@ -424,19 +432,52 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         private bool HasStripeApiKey()
         {
-            return !string.IsNullOrWhiteSpace(_configuration["Stripe:SecretKey"]);
+            var secretKey = _configuration["Stripe:SecretKey"]?.Trim();
+            return !string.IsNullOrWhiteSpace(secretKey)
+                && (secretKey.StartsWith("sk_test_", StringComparison.Ordinal) ||
+                    secretKey.StartsWith("sk_live_", StringComparison.Ordinal));
+        }
+
+        private bool IsLocalCheckoutFallbackEnabled()
+        {
+            return _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback");
         }
 
         private bool UseLocalStripeFallback()
         {
-            return _environment.IsDevelopment()
-                && _configuration.GetValue<bool>("Stripe:EnableLocalCheckoutFallback")
-                && !HasStripeApiKey();
+            return IsLocalCheckoutFallbackEnabled() && !HasStripeApiKey();
         }
 
         private static string BuildLocalStripeId(string prefix, int orderId)
         {
             return $"{prefix}_{orderId}";
+        }
+
+        private void ApplyDemoCheckoutFallback(string userId, int orderId)
+        {
+            // Demo/staging-only no-payment fallback. This path is enabled by explicit configuration
+            // and must not be treated as production payment confirmation.
+            _logger.LogInformation("Using explicit demo/staging checkout fallback for order {OrderId}.", orderId);
+            _unitOfWork.OrderHeader.UpdateStripePaymentID(
+                orderId,
+                BuildLocalStripeId("local_demo_session", orderId),
+                BuildLocalStripeId("local_demo_pi", orderId));
+            _unitOfWork.OrderHeader.UpdateStatus(orderId, SD.StatusApproved, SD.PaymentStatusApproved);
+            ClearCartForUser(userId);
+            _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart, 0);
+        }
+
+        private void ClearCartForUser(string userId)
+        {
+            var shoppingCarts = _unitOfWork.ShoppingCart
+                .GetAll(u => u.ApplicationUserId == userId)
+                .ToList();
+
+            if (shoppingCarts.Any())
+            {
+                _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+            }
         }
 
         private void SyncCartSession(string userId)

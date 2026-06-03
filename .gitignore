@@ -369,3 +369,5 @@ FodyWeavers.xsd
 
 # Local deployment packages
 publish-somee*/
+publish-somee*.zip
+bulkybook-somee.zip

@@ -1,11 +1,18 @@
 @model BulkyBook.Models.ViewModels.ShoppingCartVM
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment
 @using System.Globalization
 @{
     var usdCulture = CultureInfo.GetCultureInfo("en-US");
     Func<double, string> usd = value => value.ToString("C", usdCulture);
     var checkoutItemCount = Model.ListCart.Sum(item => item.Count);
+    var stripeSecretKey = Configuration["Stripe:SecretKey"]?.Trim();
+    var hasStripeApiKey = !string.IsNullOrWhiteSpace(stripeSecretKey) &&
+        (stripeSecretKey.StartsWith("sk_test_", StringComparison.Ordinal) ||
+            stripeSecretKey.StartsWith("sk_live_", StringComparison.Ordinal));
+    var isDemoCheckoutFallbackEnabled = string.Equals(
+        Configuration["Stripe:EnableLocalCheckoutFallback"],
+        "true",
+        StringComparison.OrdinalIgnoreCase);
 }
 
 <form method="post" class="checkout-shell checkout-page-shell mt-4">
@@ -83,9 +90,8 @@
                 </div>
 
                 @if (Model.OrderHeader.ApplicationUser?.CompanyId.GetValueOrDefault() == 0 &&
-                    string.Equals(Environment.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase) &&
-                    string.Equals(Configuration["Stripe:EnableLocalCheckoutFallback"], "true", StringComparison.OrdinalIgnoreCase) &&
-                    string.IsNullOrWhiteSpace(Configuration["Stripe:SecretKey"]))
+                    isDemoCheckoutFallbackEnabled &&
+                    !hasStripeApiKey)
                 {
                     <div class="alert alert-info checkout-fallback-alert">
                         Online card payment is currently unavailable. You can still place the order for review.

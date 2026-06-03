@@ -11,7 +11,7 @@ Use host-level configuration or `web.config` environment variables. Do not put r
 | `Database__AutoMigrate` | `false` | Keep disabled; apply reviewed SQL manually. |
 | `SeedData__EnableDemoData` | `false` | Never seed local demo catalog/users in staging/production. |
 | `Application__BaseUrl` | `https://<your-somee-domain>` | Required for checkout redirect URLs. |
-| `Stripe__EnableLocalCheckoutFallback` | `false` | Keep local fallback disabled outside local development. |
+| `Stripe__EnableLocalCheckoutFallback` | `true` for personal demo/staging without Stripe; `false` for real commerce | Enables explicit no-payment checkout fallback when Stripe keys are missing/invalid. Do not use for real payment confirmation. |
 
 ## Optional Integrations
 
@@ -46,3 +46,4 @@ Use host-level configuration or `web.config` environment variables. Do not put r
 - Confirm no Stripe/Facebook/SMTP secret values are stored in committed files.
 - Confirm `Application__BaseUrl` uses the final HTTPS Somee domain.
 - Confirm `Email__Provider=Smtp` before expecting email in Gmail or any real inbox.
+- Confirm `Stripe__EnableLocalCheckoutFallback=true` only when the Somee site is a demo/staging site that may accept no-payment orders. Keep it `false` for real production commerce.
