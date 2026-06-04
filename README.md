@@ -14,7 +14,7 @@ The application includes a public storefront, shopping cart, checkout/order work
 | Area | Status | Notes |
 | --- | --- | --- |
 | Local demo | Ready | Runs on .NET 8 with SQL Server/LocalDB and local demo seed data. |
-| Somee staging/demo | Deployed/prepared | Demo domain: `https://vinh-bulkybook.somee.com`|https://mybulkybook.azurewebsites.net/; publish and SQL deployment artifacts are present in the repo. |
+| Somee staging/demo | Deployed/prepared | Demo domain: `https://vinh-bulkybook.somee.com` / https://mybulkybook.azurewebsites.net/; publish and SQL deployment artifacts are present in the repo. |
 | Production | Not production-ready | Requires payment hardening, stronger operational controls, and full production smoke evidence. |
 | Stripe payments | Demo/staging only unless hardened | Normal Stripe Checkout is supported with valid keys; demo fallback is available when `Stripe__EnableLocalCheckoutFallback=true`. |
 
