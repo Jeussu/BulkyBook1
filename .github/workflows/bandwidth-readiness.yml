@@ -28,8 +28,10 @@ jobs:
           $installer = Join-Path $env:RUNNER_TEMP 'dotnet-install.ps1'
           $runtimeRoot = Join-Path $env:RUNNER_TEMP 'dotnet-x86'
           Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile $installer
-          & $installer -Channel 8.0 -Runtime aspnetcore -Architecture x86 -InstallDir $runtimeRoot -NoPath
+          & pwsh -NoProfile -File $installer -Channel 8.0 -Runtime aspnetcore -Architecture x86 -InstallDir $runtimeRoot -NoPath
           if ($LASTEXITCODE -ne 0) { throw 'x86 runtime installation failed.' }
+          & (Join-Path $runtimeRoot 'dotnet.exe') --list-runtimes
+          if ($LASTEXITCODE -ne 0) { throw 'x86 runtime could not start.' }
           "DOTNET_ROOT_X86=$runtimeRoot" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Somee x86 native encoder and upload tests
         run: dotnet test BulkyBook.Tests/BulkyBook.Tests.csproj -c Release --arch x86 --logger trx
