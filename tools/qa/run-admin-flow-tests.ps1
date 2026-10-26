@@ -584,7 +584,8 @@ function Test-FieldSet {
 
 function New-TempPngFile {
     $path = Join-Path ([System.IO.Path]::GetTempPath()) ("bulkybook-qa-admin-{0}.png" -f [Guid]::NewGuid().ToString("N"))
-    $bytes = [Convert]::FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=")
+    # Complete, CRC-valid 8x12 PNG. The former fixture had invalid compressed image data.
+    $bytes = [Convert]::FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAIAAADQ/GvKAAAAFUlEQVR4nGNUsIpkwAaYsIoyjGQJAN9hAMsVaCiyAAAAAElFTkSuQmCC")
     [System.IO.File]::WriteAllBytes($path, $bytes)
     return $path
 }
@@ -909,7 +910,7 @@ try {
     Add-Result -Name "Product edit hidden Id exists" -Passed (Test-HtmlHasName -Html $productEdit.Body -Name "Product.Id") -Details "/Admin/Product/Upsert?id=$script:ResolvedProductId"
     Add-Result -Name "Product edit hidden ImageUrl exists" -Passed (Test-HtmlHasName -Html $productEdit.Body -Name "Product.ImageUrl") -Details "/Admin/Product/Upsert?id=$script:ResolvedProductId"
     Add-Result -Name "Product edit values render" -Passed ($productEdit.Body -match "Product.Title|name=""Product.Title""|name='Product.Title'") -Details "/Admin/Product/Upsert?id=$script:ResolvedProductId"
-    Add-Result -Name "Product edit uses modern PNG cover" -Passed ($productEdit.Body -match "/images/products/book-covers-modern/[^`"']+\.png") -Details "/Admin/Product/Upsert?id=$script:ResolvedProductId"
+    Add-Result -Name "Product edit uses optimized responsive preview" -Passed ($productEdit.Body -match "/images/products/optimized/" -and $productEdit.Body -match 'image/webp') -Details "/Admin/Product/Upsert?id=$script:ResolvedProductId"
 
     Run-ProductCrudIfRequested
 

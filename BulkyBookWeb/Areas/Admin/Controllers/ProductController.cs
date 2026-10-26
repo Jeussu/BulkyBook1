@@ -5,6 +5,7 @@ using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using BulkyBookWeb.Services;
 
 namespace BulkyBookWeb.Controllers;
 
@@ -31,14 +32,14 @@ public class ProductController : Controller
     };
 
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IWebHostEnvironment _hostEnvironment;
     private readonly ILogger<ProductController> _logger;
+    private readonly ProductImageStore _imageStore;
 
-    public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment, ILogger<ProductController> logger)
+    public ProductController(IUnitOfWork unitOfWork, ILogger<ProductController> logger, ProductImageStore imageStore)
     {
         _unitOfWork = unitOfWork;
-        _hostEnvironment = hostEnvironment;
         _logger = logger;
+        _imageStore = imageStore;
     }
 
     public IActionResult Index()
@@ -67,7 +68,8 @@ public class ProductController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Upsert(ProductVM obj, IFormFile? file)
+    [RequestSizeLimit(3 * 1024 * 1024)]
+    public async Task<IActionResult> Upsert(ProductVM obj, IFormFile? file)
     {
         var existingProduct = obj.Product.Id == 0
             ? null
@@ -101,42 +103,38 @@ public class ProductController : Controller
 
         if (file != null)
         {
-            var uploadDirectory = Path.Combine(_hostEnvironment.WebRootPath, "images", "products");
-            Directory.CreateDirectory(uploadDirectory);
-
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var targetPath = Path.Combine(uploadDirectory, fileName);
-
-            using (var fileStream = new FileStream(targetPath, FileMode.CreateNew))
+            try
             {
-                file.CopyTo(fileStream);
+                obj.Product.ImageUrl = await _imageStore.SaveAsync(file, HttpContext.RequestAborted);
             }
-
-            if (!string.IsNullOrWhiteSpace(existingProduct?.ImageUrl))
+            catch (Exception exception) when (exception is InvalidDataException or IOException or UnauthorizedAccessException)
             {
-                TryDeleteProductImage(existingProduct.ImageUrl);
+                _logger.LogWarning(exception, "Product image processing failed.");
+                ModelState.AddModelError("file", exception is InvalidDataException ? exception.Message : "The image could not be saved. Please try again.");
+                obj.CategoryList = GetCategoryList();
+                obj.CoverTypeList = GetCoverTypeList();
+                return View(obj);
             }
-
-            obj.Product.ImageUrl = $@"\images\products\{fileName}";
         }
         else if (!string.IsNullOrWhiteSpace(existingProduct?.ImageUrl))
         {
             obj.Product.ImageUrl = existingProduct.ImageUrl;
         }
 
-        if (obj.Product.Id == 0)
+        var creating = obj.Product.Id == 0;
+        try
         {
-            _unitOfWork.Product.Add(obj.Product);
-            TempData["success"] = "Product created successfully";
+            if (creating) _unitOfWork.Product.Add(obj.Product);
+            else _unitOfWork.Product.Update(obj.Product);
+            _unitOfWork.Save();
         }
-        else
+        catch
         {
-            _unitOfWork.Product.Update(obj.Product);
-            TempData["success"] = "Product updated successfully";
+            if (file != null) _imageStore.DeleteOwned(obj.Product.ImageUrl);
+            throw;
         }
-
-        _unitOfWork.Save();
+        if (file != null) TryDeleteProductImage(existingProduct?.ImageUrl);
+        TempData["success"] = creating ? "Product created successfully" : "Product updated successfully";
         return RedirectToAction("Index");
     }
 
@@ -170,10 +168,9 @@ public class ProductController : Controller
             return Json(new { success = false, message = "Product cannot be deleted because it is currently in a shopping cart. Mark it inactive instead." });
         }
 
-        TryDeleteProductImage(obj.ImageUrl);
-
         _unitOfWork.Product.Remove(obj);
         _unitOfWork.Save();
+        TryDeleteProductImage(obj.ImageUrl);
         return Json(new { success = true, message = "Delete Successful" });
     }
     #endregion
@@ -231,31 +228,5 @@ public class ProductController : Controller
         return true;
     }
 
-    private void TryDeleteProductImage(string? imageUrl)
-    {
-        if (string.IsNullOrWhiteSpace(imageUrl))
-        {
-            return;
-        }
-
-        var uploadDirectory = Path.GetFullPath(Path.Combine(_hostEnvironment.WebRootPath, "images", "products")) + Path.DirectorySeparatorChar;
-        var relativePath = imageUrl.TrimStart('\\', '/').Replace('/', Path.DirectorySeparatorChar);
-        if (relativePath.StartsWith(Path.Combine("images", "products", "book-covers"), StringComparison.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
-        var imagePath = Path.GetFullPath(Path.Combine(_hostEnvironment.WebRootPath, relativePath));
-
-        if (!imagePath.StartsWith(uploadDirectory, StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogWarning("Skipped product image delete outside upload directory. ImageUrl={ImageUrl}", imageUrl);
-            return;
-        }
-
-        if (System.IO.File.Exists(imagePath))
-        {
-            System.IO.File.Delete(imagePath);
-        }
-    }
+    private void TryDeleteProductImage(string? imageUrl) => _imageStore.DeleteOwned(imageUrl);
 }

@@ -561,7 +561,7 @@ try {
     Add-Result -Name "Product title detected" -Passed (-not [string]::IsNullOrWhiteSpace($script:ProductTitle)) -Details "$script:ProductTitle"
     Add-Result -Name "Add to Cart form exists" -Passed ($detailAnonymous.Body -match "ShoppingCart\.ProductId" -and $detailAnonymous.Body -match "ShoppingCart\.Count") -Details $detailPath
     Add-Result -Name "Detail anti-forgery token exists" -Passed (-not [string]::IsNullOrWhiteSpace((Get-AntiForgeryToken $detailAnonymous.Body))) -Details $detailPath
-    Add-Result -Name "Detail uses modern PNG cover" -Passed ($detailAnonymous.Body -match "/images/products/book-covers-modern/[^`"']+\.png") -Details $detailPath
+    Add-Result -Name "Detail uses optimized responsive cover" -Passed ($detailAnonymous.Body -match "/images/products/optimized/" -and $detailAnonymous.Body -match 'image/webp' -and $detailAnonymous.Body -match 'srcset=') -Details $detailPath
     Add-Result -Name "Detail has no old SVG cover path" -Passed (-not ($detailAnonymous.Body -match "/images/products/book-covers/[^`"']+\.svg")) -Details $detailPath
 
     Write-Section "B. Customer login"

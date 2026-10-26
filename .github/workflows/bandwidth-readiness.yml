@@ -1,0 +1,31 @@
+name: Bandwidth readiness
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore BulkyBook.sln
+      - name: Parse QA scripts
+        shell: pwsh
+        run: Get-ChildItem tools/qa/*.ps1 | ForEach-Object { [void][scriptblock]::Create((Get-Content -Raw $_.FullName)) }
+      - name: Release build
+        run: dotnet build BulkyBook.sln -c Release --no-restore
+      - name: Image and upload tests
+        run: dotnet test BulkyBook.Tests/BulkyBook.Tests.csproj -c Release --no-build --logger trx
+      - name: Somee x86 native encoder and upload tests
+        run: dotnet test BulkyBook.Tests/BulkyBook.Tests.csproj -c Release --arch x86 --logger trx
+      - name: Publish Somee x86 package
+        run: dotnet publish BulkyBookWeb/BulkyBookWeb.csproj -c Release -r win-x86 --self-contained false -o artifacts/publish -p:SourceRevisionId=${{ github.sha }}
+      - name: Validate package
+        shell: pwsh
+        run: ./tools/qa/run-deployment-readiness.ps1 -SkipPublish -PublishDir artifacts/publish

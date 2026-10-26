@@ -2,6 +2,7 @@ param(
     [string]$ProjectPath = "BulkyBookWeb\BulkyBookWeb.csproj",
     [string]$PublishDir = "",
     [string]$Configuration = "Release",
+    [string]$RuntimeIdentifier = "win-x86",
     [switch]$SkipPublish,
     [switch]$VerboseOutput
 )
@@ -81,7 +82,7 @@ function Test-ConfigValue {
         [object]$Expected
     )
 
-    Add-Result -Name $Name -Passed ($Actual -eq $Expected) -Details "Expected '$Expected', actual '$Actual'"
+    Add-Result -Name $Name -Passed ($Actual -eq $Expected) -Details "Required configuration state matched=$($Actual -eq $Expected)"
 }
 
 Write-Section "Project root"
@@ -90,7 +91,7 @@ Write-Host "Publish directory: $PublishDir"
 
 if (-not $SkipPublish) {
     Write-Section "Publish"
-    $publishArgs = @("publish", $WebProjectPath, "-c", $Configuration, "-o", $PublishDir)
+    $publishArgs = @("publish", $WebProjectPath, "-c", $Configuration, "-r", $RuntimeIdentifier, "--self-contained", "false", "-o", $PublishDir)
     if ($VerboseOutput) {
         Write-Host ("dotnet " + ($publishArgs -join " "))
     }
@@ -129,14 +130,10 @@ Test-PublishFile -RelativePath "wwwroot\js\product.js" -Label "product.js"
 Test-PublishFile -RelativePath "wwwroot\js\order.js" -Label "order.js"
 Test-PublishFile -RelativePath "wwwroot\js\company.js" -Label "company.js"
 
-$modernCoverDir = Join-Path $PublishDir "wwwroot\images\products\book-covers-modern"
-$modernCoverCount = 0
-if (Test-Path -LiteralPath $modernCoverDir) {
-    $modernCoverCount = (Get-ChildItem -LiteralPath $modernCoverDir -Filter *.png -File | Measure-Object).Count
-}
-Add-Result -Name "Modern PNG covers included" -Passed ($modernCoverCount -ge 20) -Details "PNG count=$modernCoverCount"
-Test-PublishFile -RelativePath "wwwroot\images\products\book-covers-modern\aspnet-core-mvc-fundamentals.png" -Label "Known modern cover 1"
-Test-PublishFile -RelativePath "wwwroot\images\products\book-covers-modern\system-design-notes.png" -Label "Known modern cover 2"
+Test-PublishFile -RelativePath "App_Data\product-image-manifest.json" -Label "Image URL compatibility manifest"
+& dotnet run --project (Join-Path $ProjectRoot "tools\BulkyBook.AssetTool") -c Release -- validate $PublishDir
+Add-Result -Name "Image decoding, dimensions, MIME, URL and byte budgets" -Passed ($LASTEXITCODE -eq 0) -Details "AssetTool validates every manifest rendition and public file; 50 KB thumbnails, 100 KB details"
+Add-Result -Name "Source maps excluded" -Passed (@(Get-ChildItem -LiteralPath (Join-Path $PublishDir "wwwroot") -Recurse -File -Filter *.map).Count -eq 0) -Details "Including Identity/RCL assets"
 
 Write-Section "Production config defaults"
 $productionSettings = Read-JsonFile -RelativePath "appsettings.Production.json"

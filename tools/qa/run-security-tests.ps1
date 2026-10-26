@@ -586,9 +586,9 @@ function Invoke-StaticSecurityScan {
     }
 
     $orderController = Get-Content -Path "BulkyBookWeb\Areas\Admin\Controllers\OrderController.cs" -Raw
-    $orderIndexStaffGate = [regex]::IsMatch($orderController, '(?s)\[Authorize\(Roles\s*=\s*SD\.Role_Admin\s*\+\s*","\s*\+\s*SD\.Role_Employee\)\]\s*public\s+IActionResult\s+Index\s*\(')
-    $orderGetAllStaffGate = [regex]::IsMatch($orderController, '(?s)\[HttpGet\]\s*\[Authorize\(Roles\s*=\s*SD\.Role_Admin\s*\+\s*","\s*\+\s*SD\.Role_Employee\)\]\s*public\s+IActionResult\s+GetAll\s*\(')
-    Add-Result -Name "Admin order list/API have staff role gate" -Passed ($orderIndexStaffGate -and $orderGetAllStaffGate) -Details "Order Index and GetAll should not expose admin management pages/data to ordinary customers."
+    $orderAuthentication = $orderController -match '\[Authorize\]'
+    $orderOwnershipFilter = $orderController -match 'GetAll\(u => u\.ApplicationUserId == userId'
+    Add-Result -Name "Order list/API require authentication and customer ownership" -Passed ($orderAuthentication -and $orderOwnershipFilter -and $orderController -match 'CanAccessOrder') -Details "Customers use My Orders; staff retain management access. Dynamic checks verify ownership below."
 
     $rawMatches = Select-String -Path "BulkyBookWeb\Areas\**\*.cshtml","BulkyBookWeb\Views\**\*.cshtml" -Pattern "Html.Raw" -ErrorAction SilentlyContinue
     $unsafeRaw = @($rawMatches | Where-Object { $_.Line -notmatch "SafeHtml\.Sanitize|JsonSerializer\.Serialize" })
@@ -598,7 +598,8 @@ function Invoke-StaticSecurityScan {
     Add-Result -Name "Product upload extension allowlist exists" -Passed ($productController -match "AllowedImageExtensions" -and $productController -match "\.jpg" -and $productController -match "\.png" -and $productController -match "\.webp") -Details "ProductController upload extension checks"
     Add-Result -Name "Product upload content type allowlist exists" -Passed ($productController -match "AllowedImageContentTypes" -and $productController -match "image/jpeg" -and $productController -match "image/png") -Details "ProductController upload content-type checks"
     Add-Result -Name "Product upload size limit exists" -Passed ($productController -match "MaxImageBytes" -and $productController -match "2 \* 1024 \* 1024") -Details "ProductController upload size checks"
-    Add-Result -Name "Product upload filename/path safety exists" -Passed ($productController -match "Guid\.NewGuid" -and $productController -match "Path\.GetFullPath" -and $productController -match "StartsWith\(uploadDirectory") -Details "Random upload names and delete path containment"
+    $imageStore = Get-Content -Path "BulkyBookWeb\Services\ProductImageStore.cs" -Raw
+    Add-Result -Name "Product upload filename/path safety exists" -Passed ($productController -match '_imageStore.SaveAsync' -and $imageStore -match "Guid\.NewGuid" -and $imageStore -match "Path\.GetFullPath" -and $imageStore -match 'StartsWith\(root' -and $imageStore -match 'DeleteOwned') -Details "Generated names, contained paths, and owned-set deletion; negative cases are exercised by unit tests"
 
     foreach ($jsPath in @("BulkyBookWeb\wwwroot\js\product.js", "BulkyBookWeb\wwwroot\js\company.js")) {
         if (Test-Path $jsPath) {
@@ -657,14 +658,20 @@ function Run-CustomerChecks {
         @{ Name = "Customer denied Product Upsert"; Url = "/Admin/Product/Upsert"; Marker = "Create Product|Update Product" },
         @{ Name = "Customer denied Category Index"; Url = "/Admin/Category/Index"; Marker = "Category List" },
         @{ Name = "Customer denied Company Index"; Url = "/Admin/Company/Index"; Marker = "Company List" },
-        @{ Name = "Customer denied Order Index"; Url = "/Admin/Order/Index"; Marker = "Order Management|Order List" },
-        @{ Name = "Customer denied Order Details"; Url = "/Admin/Order/Details?orderId=$OrderId"; Marker = "Order Details" },
-        @{ Name = "Customer denied Order GetAll"; Url = "/Admin/Order/GetAll?status=all"; Marker = '"data"' }
+        @{ Name = "Customer denied another customer's Order Details"; Url = "/Admin/Order/Details?orderId=$OrderId"; Marker = "Order Details" }
     )
 
     foreach ($target in $customerDeniedTargets) {
         Test-AdminDenied -Name $target.Name -Response (Invoke-Get $target.Url) -AdminMarker $target.Marker
     }
+
+    $ownIndex = Invoke-Get "/Admin/Order/Index"
+    Add-Result -Name "Customer My Orders loads" -Passed ($ownIndex.StatusCode -eq 200 -and $ownIndex.Body -match 'My Orders') -Details "HTTP $($ownIndex.StatusCode)"
+    $ownResponse = Invoke-Get "/Admin/Order/GetAll?status=all"
+    $ownJson = Get-JsonBody $ownResponse
+    $hasData = $null -ne $ownJson -and $ownJson.PSObject.Properties.Name -contains 'data'
+    $foreignRows = @(if ($hasData) { $ownJson.data | Where-Object { $_.applicationUser.email -ne $script:CustomerEmail } } else { 'invalid response' })
+    Add-Result -Name "Customer order API returns only owned rows" -Passed ($ownResponse.StatusCode -eq 200 -and $hasData -and $foreignRows.Count -eq 0) -Details "No returned row may belong to another customer"
 
     $detail = Invoke-Get "/Customer/Home/Details?productId=$ProductId"
     $postWithoutToken = Invoke-PostForm -PathOrUrl "/Customer/Home/Details?productId=$ProductId" -Fields @{

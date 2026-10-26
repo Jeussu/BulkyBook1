@@ -30,7 +30,7 @@
     <section class="row g-4 align-items-start">
         <div class="col-12 col-lg-5">
             <div class="book-detail-cover">
-                <img src="@product.ImageUrl" alt="@product.Title" />
+                <product-image image-url="@product.ImageUrl" alt="@product.Title" variant="detail" loading="eager" sizes="(max-width: 767px) calc(100vw - 96px), 420px"></product-image>
             </div>
             <div class="book-detail-facts mt-3">
                 <div>
@@ -125,7 +125,7 @@
             {
                 <div class="col-12 col-sm-6 col-md-3">
                     <a class="related-book" asp-action="Details" asp-route-productId="@related.Id">
-                        <img src="@related.ImageUrl" alt="@related.Title" />
+                        <product-image image-url="@related.ImageUrl" alt="@related.Title" sizes="(max-width: 575px) 240px, 180px"></product-image>
                         <span>@related.Title</span>
                         <small>@related.Category?.Name</small>
                     </a>

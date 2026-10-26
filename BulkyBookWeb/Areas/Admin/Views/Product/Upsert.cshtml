@@ -152,7 +152,7 @@
             <div class="admin-cover-preview">
                 @if (!string.IsNullOrWhiteSpace(Model.Product.ImageUrl))
                 {
-                    <img src="@Model.Product.ImageUrl" alt="Current product cover" />
+                    <product-image image-url="@Model.Product.ImageUrl" alt="Current product cover" variant="detail" sizes="300px"></product-image>
                 }
                 else
                 {
