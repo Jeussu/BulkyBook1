@@ -22,6 +22,15 @@ jobs:
         run: dotnet build BulkyBook.sln -c Release --no-restore
       - name: Image and upload tests
         run: dotnet test BulkyBook.Tests/BulkyBook.Tests.csproj -c Release --no-build --logger trx
+      - name: Install x86 ASP.NET Core runtime
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'dotnet-install.ps1'
+          $runtimeRoot = Join-Path $env:RUNNER_TEMP 'dotnet-x86'
+          Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile $installer
+          & $installer -Channel 8.0 -Runtime aspnetcore -Architecture x86 -InstallDir $runtimeRoot -NoPath
+          if ($LASTEXITCODE -ne 0) { throw 'x86 runtime installation failed.' }
+          "DOTNET_ROOT_X86=$runtimeRoot" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Somee x86 native encoder and upload tests
         run: dotnet test BulkyBook.Tests/BulkyBook.Tests.csproj -c Release --arch x86 --logger trx
       - name: Publish Somee x86 package
