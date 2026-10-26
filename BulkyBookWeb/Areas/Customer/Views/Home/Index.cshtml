@@ -25,9 +25,9 @@
     </div>
     <div class="hero-cover-showcase catalog-hero__feature" aria-hidden="true">
         <div class="catalog-hero__mat">
-            <img class="hero-cover hero-cover-back" src="/images/products/book-covers-modern/clean-architecture-with-dotnet.png" alt="" />
-            <img class="hero-cover hero-cover-mid" src="/images/products/book-covers-modern/microservices-with-aspnet-core.png" alt="" />
-            <img class="hero-cover hero-cover-front" src="/images/products/book-covers-modern/practical-devops-for-developers.png" alt="" />
+            <product-image class="hero-cover hero-cover-back" image-url="/images/products/book-covers-modern/clean-architecture-with-dotnet.png" alt="" loading="eager" sizes="112px" hide-on-mobile="true"></product-image>
+            <product-image class="hero-cover hero-cover-mid" image-url="/images/products/book-covers-modern/microservices-with-aspnet-core.png" alt="" loading="eager" sizes="112px" hide-on-mobile="true"></product-image>
+            <product-image class="hero-cover hero-cover-front" image-url="/images/products/book-covers-modern/practical-devops-for-developers.png" alt="" loading="eager" sizes="132px" hide-on-mobile="true"></product-image>
         </div>
     </div>
 </section>
@@ -118,7 +118,7 @@ else
             <div class="col-sm-6 col-lg-3 d-flex">
                 <article class="book-card card h-100 w-100 shadow-sm">
                     <div class="book-card-cover">
-                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" loading="lazy" />
+                        <product-image image-url="@product.ImageUrl" class="card-img-top" alt="@product.Title" sizes="144px"></product-image>
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="product-meta-row d-flex gap-2 flex-wrap mb-2">

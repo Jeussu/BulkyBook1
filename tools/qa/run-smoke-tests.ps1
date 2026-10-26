@@ -273,7 +273,7 @@ function Assert-HtmlChecks {
     )
 
     if ($RequireModernCover) {
-        $checks += @{ Label = "$Name has modern cover path"; Passed = ($body -match "/images/products/book-covers-modern/") }
+        $checks += @{ Label = "$Name has optimized cover path"; Passed = ($body -match "/images/products/optimized/") }
     }
 
     foreach ($check in $checks) {
@@ -353,7 +353,10 @@ try {
     )
 
     foreach ($cover in $covers) {
-        Assert-Status -Name "Cover asset $cover" -Path "/images/products/book-covers-modern/$cover" -AllowedStatusCodes @(200) | Out-Null
+        $legacy = Assert-Status -Name "Cover compatibility $cover" -Path "/images/products/book-covers-modern/$cover" -AllowedStatusCodes @(308)
+        $safeTarget = $legacy.Location -match '^/images/products/optimized/bundled/[a-f0-9]{24}-600\.jpg$'
+        Add-Result -Name "Cover redirect target $cover" -Passed $safeTarget -Details "Must remain on the first-party optimized path"
+        if ($safeTarget) { Assert-Status -Name "Optimized cover $cover" -Path $legacy.Location -AllowedStatusCodes @(200) | Out-Null }
     }
 
     Write-Section "Static assets"

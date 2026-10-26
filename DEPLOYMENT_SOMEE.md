@@ -82,9 +82,11 @@ Add that URI in the Facebook Developer Console. Use HTTPS, configure test users 
 
 ## File Upload Notes
 
-Product uploads are stored under `wwwroot/images/products` on the hosting filesystem. This is acceptable for a small Somee staging/portfolio demo, but free hosting storage is limited. Move uploads to durable object storage before production use.
+Product uploads are decoded and bounded once, then stored as six JPEG/WebP renditions under `wwwroot/images/products/optimized/uploads/<generated-id>`. Metadata is stored under `App_Data/product-images`. Preserve both locations across deployments and rollback. Upload originals are never retained publicly. Inputs are limited to 2 MiB, 4096 pixels per edge, 8 megapixels, and one frame.
 
-Modern PNG demo covers under `wwwroot/images/products/book-covers-modern` should be included in publish output. Legacy SVG/JPG assets may still exist for compatibility, but rendered catalog/detail paths should use the modern PNG assets.
+Original demo imagery is retained outside the web root under `assets/product-images/originals`. Publish the generated `wwwroot/images/products/optimized/bundled` assets and `App_Data/product-image-manifest.json`. The manifest preserves all 61 known historical raster/SVG URLs through redirects without rewriting database rows. Razor selects optimized responsive renditions directly. Do not publish local user uploads, raw historical JPGs, source maps, or debug symbols.
+
+The bandwidth remediation and backup-first deployment procedure is documented in [Somee Bandwidth Remediation](docs/deployment/SOMEE_BANDWIDTH_REMEDIATION.md). Never start a suspended site merely to obtain deployment access before a recoverable backup exists.
 
 ## Publish Package Validation
 
@@ -99,7 +101,9 @@ The script publishes to a unique temp folder by default and checks:
 - `web.config` exists and targets `BulkyBookWeb.dll`.
 - `appsettings.Development.json` is excluded.
 - `appsettings.Production.json` is present.
-- `site.css`, admin JavaScript files, and 20 modern PNG covers are included.
+- `site.css`, admin JavaScript files, the compatibility manifest, and all optimized renditions are included.
+- all images decode, match their real extensions/dimensions/content hashes, and meet 50,000-byte thumbnail and 100,000-byte detail budgets.
+- source maps, native debug symbols, and development/local upload artifacts are excluded.
 - production defaults keep `Database:AutoMigrate=false`, `SeedData:EnableDemoData=false`, and `Stripe:EnableLocalCheckoutFallback=false`.
 - obvious local/demo credentials, LocalDB strings, and Stripe/Facebook/SMTP secrets are not present in text publish artifacts.
 

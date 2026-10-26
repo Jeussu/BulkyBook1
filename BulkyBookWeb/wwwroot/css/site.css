@@ -3621,3 +3621,7 @@ table.dataTable tbody tr:hover {
         max-width: 86%;
     }
 }
+
+/* Keep the existing image layout when a responsive picture wraps it. */
+.product-picture { display: contents; }
+.product-picture > img { height: auto; }

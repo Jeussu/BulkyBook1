@@ -202,7 +202,7 @@ Authentication__Facebook__AppSecret=<facebook-app-secret>
 - Real Stripe production use requires valid keys, webhook signature validation, idempotency, and full payment reconciliation.
 - Money fields need a future production-grade decimal/payment review before real commerce use.
 - Somee free hosting can have storage, runtime, sleeping, and reliability limitations.
-- Uploaded product images are stored on the web server filesystem.
+- Uploaded product images are processed into bounded JPEG/WebP renditions on the web server filesystem; upload files and their protected metadata must be preserved during deployment.
 - Secrets must never be committed to source control.
 
 ## Useful Docs

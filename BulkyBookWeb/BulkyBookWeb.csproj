@@ -4,13 +4,39 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseAppHost>false</UseAppHost>
     <UserSecretsId>ea68281a-532a-4e4a-8241-8e061314a771</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="App_Data/**" />
+    <Content Include="App_Data/product-image-manifest.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <Content Update="wwwroot/**/*.map" CopyToPublishDirectory="Never" />
+    <Content Update="wwwroot/images/products/optimized/uploads/**;wwwroot/images/products/*.jpg;wwwroot/images/products/*.jpeg;wwwroot/images/products/*.png;wwwroot/images/products/*.gif;wwwroot/images/products/*.webp;wwwroot/images/products/book-covers/**/*.svg" CopyToPublishDirectory="Never" />
     <Content Update="appsettings.Development.json">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <Target Name="RemoveSourceMapsFromPublish" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.map'" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Razor class libraries copy static assets through a separate publish target. -->
+  <Target Name="TrimPublishedLibrarySources" AfterTargets="Publish">
+    <ItemGroup>
+      <PublishedSourceMaps Include="$(PublishDir)wwwroot/**/*.map" />
+      <PublishedDebugSymbols Include="$(PublishDir)**/*.pdb" />
+      <PublishedLibrarySources Include="$(PublishDir)wwwroot/lib/**/*.js;$(PublishDir)wwwroot/Identity/lib/**/*.js;$(PublishDir)wwwroot/Identity/lib/**/*.css"
+                               Exclude="$(PublishDir)wwwroot/**/*.min.js;$(PublishDir)wwwroot/**/*.min.css" />
+    </ItemGroup>
+    <Delete Files="@(PublishedSourceMaps);@(PublishedLibrarySources);@(PublishedDebugSymbols)" />
+  </Target>
+
+  <ItemGroup>
+    <Content Include="ThirdPartyNotices/*" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

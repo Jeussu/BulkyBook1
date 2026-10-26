@@ -1,0 +1,2320 @@
+{
+  "/images/lawn_leaf.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/302b04e262016ef9d2915b47-160.jpg",
+      "Width": 160,
+      "Height": 101,
+      "Bytes": 6355
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/e65a31fa5118968ec6add235-160.webp",
+      "Width": 160,
+      "Height": 101,
+      "Bytes": 6478
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/b67479cd12519beba3d4ef73-320.jpg",
+      "Width": 320,
+      "Height": 203,
+      "Bytes": 28176
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/45083f43174b595e7f66ab0d-320.webp",
+      "Width": 320,
+      "Height": 203,
+      "Bytes": 29850
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/fe39e18be70978bd53766dcd-600.jpg",
+      "Width": 600,
+      "Height": 380,
+      "Bytes": 83486
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/398e2a7e079f112766e49b9e-600.webp",
+      "Width": 600,
+      "Height": 380,
+      "Bytes": 87274
+    }
+  },
+  "/images/products/02acb298-f940-4a95-a064-3401c12ecb72.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/265fd029b981c35a652ed022-160.jpg",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 6414
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/0c6e178efbfafc45f2f8a608-160.webp",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 5490
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/215fb98d9e54c964f5b7686f-320.jpg",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 19395
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/23f1d4fdf89ae34225354c59-320.webp",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 15408
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/bae1fb4291ce60e582acb957-600.jpg",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 54960
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/ee3cf479c8d86179a2453a34-600.webp",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 41882
+    }
+  },
+  "/images/products/0a78204b-6de5-4a88-9f3e-e5b6fa03ef25.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/bf468b662d55c41fc7ddeac1-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 11386
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/352b635f08b236a6fb49adea-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 9378
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/84b145bf7bbf498b6cca8237-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 33648
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/cd1c7f77e2011e912b2947a6-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 25036
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/bfbdf191116569b8a33222b4-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 93991
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/5014976ba16986ddb5af183d-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 65200
+    }
+  },
+  "/images/products/0ba168a8-6817-432d-9db6-00970140a7eb.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/2add8f2f7ced5020edd55274-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 7120
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/5328b020cb77497baa8cddef-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6700
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/cb9eb40e621b0a1e6aab8964-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 21983
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/e48fbd421ee8d6cb1cb5f4c0-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 19662
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c8ab2c0cf79d2dc9029c610e-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 60508
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/2f97310b7f9cb26d415529bb-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 51428
+    }
+  },
+  "/images/products/2d3d80b1-d941-4495-8bcc-007732999b60.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/9fcc3cd1256ffab5c1804215-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5806
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/1dfcbcc4b7c395aac60b7dfd-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5000
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/9cdc4123dea034eebea6b835-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 17403
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/1c4ad66bf69fe605cbcdad1b-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 14570
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/436413e30a1d43b035368c89-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 49321
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/3db7652632757ef423ba8046-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 38392
+    }
+  },
+  "/images/products/2f9ab1b8-e343-4c1e-8aad-6fd063c886ff.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/91c396cc7aa48bcba358fc53-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3891
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/60cd99eb97704c6d4743382e-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3060
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/436f3cbad4acacc90abae34d-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 11444
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/e379ea9f41e7dfafa111c4d3-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 8566
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/7813ec6e2e2ba8cc13604534-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 29970
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/a3aaf3e77f3ec0dffe31c19a-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 19984
+    }
+  },
+  "/images/products/3928e4b0-c869-4fc4-83b5-fda66b959513.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/078b0e5571775c763d9e122c-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 4778
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/d3a21a9c448bb6edb52fdba9-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3902
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ef2d3fa5e554c7ce967f7943-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 13952
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/0d4c8eec84f4e0808b31a06f-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 10802
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/26626355e077176770006e67-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 38550
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/73c8bf37ca44de9f44ec8fc8-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 27932
+    }
+  },
+  "/images/products/472230df-1d33-43e5-947e-b5455b3d87f4.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/7359515103f6b2122fd5b5ab-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6200
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/41206a782f8fcc94966b50c6-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5636
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/676d01156e8dc275b0f7e250-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 21424
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/9361e01998c4d32d86740df0-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 19414
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/cf9c8a64cb0c5e436d627810-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 66452
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/cc872ec0f0b094453a9babf9-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 59010
+    }
+  },
+  "/images/products/4c6e2d10-f5ce-4e65-93ed-77b555e86b61.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/6088999b23615b3336108987-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6932
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/7d8dd2c63e3b0b35cc964ada-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6656
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/618a0f912cc015f87a2de296-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 23816
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/5aa6e845bb0083d9f6c0da61-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 23144
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/ffbfb29883f00144556988d1-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 72133
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/865e1f50e5917c3586d91e69-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 67420
+    }
+  },
+  "/images/products/53f7359f-df8a-4a08-967a-90a2bbd00d26.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/58f1ee5848b08e2e252bdba9-160.jpg",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 7029
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/400f21d76d7194b5e15f3427-160.webp",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 6498
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/968d1d6d9c8ee1a2871f29a4-320.jpg",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 21557
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/03814e48f0d1269d74fcf360-320.webp",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 19290
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/dcf22575f45c3a1d996e6aa5-600.jpg",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 60843
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/33393728d0a5f1beade7534d-600.webp",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 50914
+    }
+  },
+  "/images/products/6700b67c-8820-4191-b829-9c8046fc2dd8.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/9fcc3cd1256ffab5c1804215-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5806
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/1dfcbcc4b7c395aac60b7dfd-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5000
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/9cdc4123dea034eebea6b835-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 17403
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/1c4ad66bf69fe605cbcdad1b-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 14570
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/436413e30a1d43b035368c89-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 49321
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/3db7652632757ef423ba8046-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 38392
+    }
+  },
+  "/images/products/8ef513b7-4ae4-4181-8bfe-c12095b96147.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/55a780257855a40022ee70e0-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6388
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/fc13668a243b20648869873a-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5706
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/2652c8c3774d17d6f25695da-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 19126
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/7893cc6255ec1d9f27f6e3c0-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 16810
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/0e9739229eec131ab1937659-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 53516
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/9a5d71efa8c8fb6a63c9a56f-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 46084
+    }
+  },
+  "/images/products/9c157586-efc3-4971-8d5c-bdd81f0d615f.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/3a41f959e94cbb0e68526649-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 7140
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/275e2869047b08835ec18378-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6820
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/be2cd0ffe3cc7a72282d9ac1-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 24603
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/d6ef4e450fe08c2a158e6e79-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 22820
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/2019fdbc22adea160928accb-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 74922
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/c1272e76851a251c841bf550-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 68930
+    }
+  },
+  "/images/products/a11c47e0-e04b-4580-8a98-e4719ac2b2dd.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/74312ce482b0a164e73ba493-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3280
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/eb10a244113b1bf11e4cb7c8-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 2328
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/de316161b5faa4c17429ee74-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 9585
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/24295b6b1b5a2e28071b2bd6-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 6844
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/69b60c08fbc5c57fcb2dd971-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 26229
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/4af0ab400bfa6d813746c566-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 17662
+    }
+  },
+  "/images/products/a2fd21f6-182f-4df4-ab98-5300f2d78bc2.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/58f1ee5848b08e2e252bdba9-160.jpg",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 7029
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/400f21d76d7194b5e15f3427-160.webp",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 6498
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/968d1d6d9c8ee1a2871f29a4-320.jpg",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 21557
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/03814e48f0d1269d74fcf360-320.webp",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 19290
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/dcf22575f45c3a1d996e6aa5-600.jpg",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 60843
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/33393728d0a5f1beade7534d-600.webp",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 50914
+    }
+  },
+  "/images/products/a8a86994-905e-43e5-ba5e-25131dbf8b8b.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/265fd029b981c35a652ed022-160.jpg",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 6414
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/0c6e178efbfafc45f2f8a608-160.webp",
+      "Width": 160,
+      "Height": 107,
+      "Bytes": 5490
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/215fb98d9e54c964f5b7686f-320.jpg",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 19395
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/23f1d4fdf89ae34225354c59-320.webp",
+      "Width": 320,
+      "Height": 213,
+      "Bytes": 15408
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/bae1fb4291ce60e582acb957-600.jpg",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 54960
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/ee3cf479c8d86179a2453a34-600.webp",
+      "Width": 600,
+      "Height": 400,
+      "Bytes": 41882
+    }
+  },
+  "/images/products/bf7098ff-eb0e-4a04-8fff-f2e5e71dd2a9.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/2add8f2f7ced5020edd55274-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 7120
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/5328b020cb77497baa8cddef-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6700
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/cb9eb40e621b0a1e6aab8964-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 21983
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/e48fbd421ee8d6cb1cb5f4c0-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 19662
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c8ab2c0cf79d2dc9029c610e-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 60508
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/2f97310b7f9cb26d415529bb-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 51428
+    }
+  },
+  "/images/products/book-covers-modern/aspnet-core-mvc-fundamentals.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/f19b7ac8940fa8fc7313219d-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7633
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/287e9aa78539fc0358b57ea3-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4552
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/4a219113d35626aaaaca4d7f-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19487
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/dac6bc566c4a03d022e02d61-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11104
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c8696e88715c11f79b981cde-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 48389
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/62d4d7e027e3e37284fd6b7a-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 23318
+    }
+  },
+  "/images/products/book-covers-modern/azure-app-service-deployment.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/033ea412c17b645a3e3126e4-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10492
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/6bed68adc095e4d16fa03f1e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6990
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/a4c9111d83c8741120097be3-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 27561
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/177ccb2eac308b7250af9496-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 15316
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/b6300f173bc1ae8baa5edd07-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 67835
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/4ded46fa17cdd625e2741707-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 32158
+    }
+  },
+  "/images/products/book-covers-modern/clean-architecture-with-dotnet.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/7fe0ee1012d001c963120e7b-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7750
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/de074ab88adcec0817768cda-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4248
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/2c8c7a8888202270620c039d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19022
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/3876b7a2ac929edce6f23434-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10192
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/d7913a994aac60ded432d9ad-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 46462
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/a252d26bbf5a667ecaf15bb4-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 20586
+    }
+  },
+  "/images/products/book-covers-modern/cloud-native-dotnet.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/39858cbd40e52bebdf5bccdf-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 12288
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/c9fa482c5159254cd908aa75-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8326
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/706dcdd514507041b409a737-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31518
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/e1d8390257264b82fac62aae-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18506
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/a4bc474dab5bf6bf97129a5b-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 76859
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/1178a17d0dafdefdb26460ad-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 40102
+    }
+  },
+  "/images/products/book-covers-modern/data-structures-in-csharp.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/1014a959f83ee6242721ca46-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6910
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/97da024a07452fb9e93858d1-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3800
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ca2de789acc0f9a463d9b7bd-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 16980
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/f18070b1f0472f86f043abfc-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9454
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c1690e161fb61445641e9cbd-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 42181
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/fde74a5ef5b6f8c9827a1437-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19916
+    }
+  },
+  "/images/products/book-covers-modern/debugging-production-apps.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/63cc7930c45195362bdddf62-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7371
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/d4c421b3bdc88f7614b53035-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4000
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/463d902383dc3d265f321ed4-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18189
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/a1ee8a2c751fcda732ed71d6-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9610
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/7de3f1bae02110df7aa4f9dc-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44388
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/880475e72ed2fabd5bf7fc6c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19618
+    }
+  },
+  "/images/products/book-covers-modern/docker-for-dotnet-developers.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/55011b2af3206fdc0dc81cf3-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 11985
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/dc02892c00bc9578f0785b05-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 9134
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ae77397e0274b9aacc61154d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 37933
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/cfafe8ab752a013c35ab401e-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 28468
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/eccd8aab06c57ac8c227d9dc-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 88151
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/eb02eabebc2ea4efaed4245d-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 73810
+    }
+  },
+  "/images/products/book-covers-modern/domain-driven-design-basics.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/73c79934aeb52d223f237b61-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10810
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/f1eca329a1244a270cc7b9d4-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7320
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/1a67593ef143d3e48d350cd3-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31725
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b904280aee96deba86616939-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18956
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/22b2bfd0449d43242b9af01f-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 79620
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/656aa886627fe0945f4bf868-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 41038
+    }
+  },
+  "/images/products/book-covers-modern/e-commerce-patterns.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/0f2c1d5e263a713e697f641d-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10325
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/03b9f635d61a2ef23b1a7e1b-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7612
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/e3314ce7e2bc330d1eef4a34-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31459
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b526c2dcdfa16b925ae7e8fd-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18644
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c97e70bb12761949185b68a0-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 80557
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/00bca713ca3689aac120385b-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 43396
+    }
+  },
+  "/images/products/book-covers-modern/ef-core-in-action.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/0594c385a2cc9393eae7d6b7-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10320
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/ae00e4b6be09d0115e1ad8c2-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8856
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/bea0663764e7df842cbffe55-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 35641
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/dd42d595a85b80aa61a6c9b9-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 28866
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/3e8008cb604cb9ea832e24e4-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 90080
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/28e95380fd004d0b45a07759-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 91302
+    }
+  },
+  "/images/products/book-covers-modern/git-and-github-workflow.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/ba2a65592c494f08d820da0e-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7430
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/b7457891e365b7d9b62d602e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4360
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/a8e031afda6e6a19d8489825-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18839
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/3e104448fc5986f8fba6f3f9-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10734
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/1d61a1e8d00556cee28092c7-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44802
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/2571e2853a1e367d367d35c2-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22168
+    }
+  },
+  "/images/products/book-covers-modern/identity-and-security-aspnet-core.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/648479a7e42d072c43453b3f-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7816
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/2f62ac4ef187b13d271e16ab-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4392
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/6e40880673220bee6b0bcd65-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19262
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/51ab6d75fa843158ccbe1f64-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10928
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/e81f7ccaf451588e0268c451-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47134
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/5870a298430c7258a49930e0-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22596
+    }
+  },
+  "/images/products/book-covers-modern/javascript-for-razor-developers.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/bc93c97194a123d46395da42-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7805
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/9e89357cdf0c69dbe3081e1b-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4668
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/163c6d22fb0c2c4d3ae9769d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 20292
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/167deb455db38282b9514436-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11548
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/26d63b7bcbba29ef5edfc9bf-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 50629
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/0e9e681505d81670d3d84695-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 23540
+    }
+  },
+  "/images/products/book-covers-modern/microservices-with-aspnet-core.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/d24b178f25f36fa316e7a0d6-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7879
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/8e0ca9a30e0f69a93fb2db80-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4478
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/5d5467b9c38d738d6bbdfa01-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19521
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b4bf9c50a4565aa8152826a0-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11182
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/6db6a9eb4f9cfe22143ba06a-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47336
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/d318570d9c9cd4c60a52cd6c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22914
+    }
+  },
+  "/images/products/book-covers-modern/practical-csharp-12.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/08b82d0b259d77f54fe60c09-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 5956
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/235637e428bcdc314726e308-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3240
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/b34e5329d4ee90cd2119c1ab-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 14803
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/c3819484dc4a44294350fac1-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 7790
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/df1af31b2d08b5212a876e15-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 36043
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/31306b8898f6633a67aa1f94-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 16584
+    }
+  },
+  "/images/products/book-covers-modern/practical-devops-for-developers.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/1debd7fa985864601400129b-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 11706
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/ac847449aa09e2a787d4ff7e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8528
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/25fb96047e7231a84deb078c-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 32465
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/902cd7cdf38b850812ccb15d-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 20612
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/548cf3630ed16aa4b7459688-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 83533
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/29857488ac9163b54f67171d-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44300
+    }
+  },
+  "/images/products/book-covers-modern/refactoring-legacy-code.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/5d0f66535bd67e5f933d6638-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7121
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/e7e8b5a4d77604da7caaabd8-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3932
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/42c99f2148958b6010aa88bf-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18350
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/9001dd66d72fde05609ad755-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9596
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/d1f688a84a4bb7bb1916891b-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44040
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/f128c9a840d13ee3a35dff1c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19636
+    }
+  },
+  "/images/products/book-covers-modern/sql-server-for-developers.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/5d07ad5d62945871b75f8a40-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7638
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/052c2d8dc469c20834184e6c-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4442
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/e25b7c068bec610826c1c9fa-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19499
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/5b2a6a3223b8ed48f1c8fa71-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10770
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/16d938ba3cab0756c03e4a40-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47425
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/ec0b01d756ada37a894dc61c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22982
+    }
+  },
+  "/images/products/book-covers-modern/stripe-payments-for-dotnet.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/bae86de4bb17c6871df1b312-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7222
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/cc9daf2058aef7dceaeb6f3e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3878
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/cc46c2c46919da9cb2dcc570-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 17880
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/22a63ca271b1cb98a62be21a-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9426
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c28b71720f5d16248f44077f-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44016
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/95184f9a704520961d87b82f-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19610
+    }
+  },
+  "/images/products/book-covers-modern/system-design-notes.png": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/87e56abecc965d8387c771fc-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6848
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/90acd57a472dbbfbeef995bd-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3724
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ee2242f9cf77c21651d885a4-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 17376
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/6f0c05eef88e58f492d30fa8-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9338
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/3bdb1cd28cf20c0eb3b77bf5-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 42981
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/bf721393efb715f428ba4c9a-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19086
+    }
+  },
+  "/images/products/book-covers/aspnet-core-mvc-fundamentals.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/f19b7ac8940fa8fc7313219d-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7633
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/287e9aa78539fc0358b57ea3-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4552
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/4a219113d35626aaaaca4d7f-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19487
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/dac6bc566c4a03d022e02d61-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11104
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c8696e88715c11f79b981cde-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 48389
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/62d4d7e027e3e37284fd6b7a-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 23318
+    }
+  },
+  "/images/products/book-covers/azure-app-service-deployment.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/033ea412c17b645a3e3126e4-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10492
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/6bed68adc095e4d16fa03f1e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6990
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/a4c9111d83c8741120097be3-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 27561
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/177ccb2eac308b7250af9496-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 15316
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/b6300f173bc1ae8baa5edd07-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 67835
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/4ded46fa17cdd625e2741707-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 32158
+    }
+  },
+  "/images/products/book-covers/clean-architecture-with-dotnet.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/7fe0ee1012d001c963120e7b-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7750
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/de074ab88adcec0817768cda-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4248
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/2c8c7a8888202270620c039d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19022
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/3876b7a2ac929edce6f23434-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10192
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/d7913a994aac60ded432d9ad-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 46462
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/a252d26bbf5a667ecaf15bb4-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 20586
+    }
+  },
+  "/images/products/book-covers/cloud-native-dotnet.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/39858cbd40e52bebdf5bccdf-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 12288
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/c9fa482c5159254cd908aa75-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8326
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/706dcdd514507041b409a737-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31518
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/e1d8390257264b82fac62aae-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18506
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/a4bc474dab5bf6bf97129a5b-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 76859
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/1178a17d0dafdefdb26460ad-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 40102
+    }
+  },
+  "/images/products/book-covers/data-structures-in-csharp.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/1014a959f83ee6242721ca46-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6910
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/97da024a07452fb9e93858d1-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3800
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ca2de789acc0f9a463d9b7bd-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 16980
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/f18070b1f0472f86f043abfc-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9454
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c1690e161fb61445641e9cbd-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 42181
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/fde74a5ef5b6f8c9827a1437-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19916
+    }
+  },
+  "/images/products/book-covers/debugging-production-apps.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/63cc7930c45195362bdddf62-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7371
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/d4c421b3bdc88f7614b53035-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4000
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/463d902383dc3d265f321ed4-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18189
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/a1ee8a2c751fcda732ed71d6-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9610
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/7de3f1bae02110df7aa4f9dc-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44388
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/880475e72ed2fabd5bf7fc6c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19618
+    }
+  },
+  "/images/products/book-covers/docker-for-dotnet-developers.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/55011b2af3206fdc0dc81cf3-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 11985
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/dc02892c00bc9578f0785b05-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 9134
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ae77397e0274b9aacc61154d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 37933
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/cfafe8ab752a013c35ab401e-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 28468
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/eccd8aab06c57ac8c227d9dc-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 88151
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/eb02eabebc2ea4efaed4245d-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 73810
+    }
+  },
+  "/images/products/book-covers/domain-driven-design-basics.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/73c79934aeb52d223f237b61-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10810
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/f1eca329a1244a270cc7b9d4-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7320
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/1a67593ef143d3e48d350cd3-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31725
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b904280aee96deba86616939-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18956
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/22b2bfd0449d43242b9af01f-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 79620
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/656aa886627fe0945f4bf868-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 41038
+    }
+  },
+  "/images/products/book-covers/e-commerce-patterns.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/0f2c1d5e263a713e697f641d-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10325
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/03b9f635d61a2ef23b1a7e1b-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7612
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/e3314ce7e2bc330d1eef4a34-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 31459
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b526c2dcdfa16b925ae7e8fd-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18644
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c97e70bb12761949185b68a0-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 80557
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/00bca713ca3689aac120385b-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 43396
+    }
+  },
+  "/images/products/book-covers/ef-core-in-action.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/0594c385a2cc9393eae7d6b7-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 10320
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/ae00e4b6be09d0115e1ad8c2-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8856
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/bea0663764e7df842cbffe55-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 35641
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/dd42d595a85b80aa61a6c9b9-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 28866
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/3e8008cb604cb9ea832e24e4-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 90080
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/28e95380fd004d0b45a07759-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 91302
+    }
+  },
+  "/images/products/book-covers/git-and-github-workflow.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/ba2a65592c494f08d820da0e-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7430
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/b7457891e365b7d9b62d602e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4360
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/a8e031afda6e6a19d8489825-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18839
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/3e104448fc5986f8fba6f3f9-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10734
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/1d61a1e8d00556cee28092c7-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44802
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/2571e2853a1e367d367d35c2-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22168
+    }
+  },
+  "/images/products/book-covers/identity-and-security-aspnet-core.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/648479a7e42d072c43453b3f-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7816
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/2f62ac4ef187b13d271e16ab-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4392
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/6e40880673220bee6b0bcd65-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19262
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/51ab6d75fa843158ccbe1f64-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10928
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/e81f7ccaf451588e0268c451-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47134
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/5870a298430c7258a49930e0-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22596
+    }
+  },
+  "/images/products/book-covers/javascript-for-razor-developers.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/bc93c97194a123d46395da42-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7805
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/9e89357cdf0c69dbe3081e1b-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4668
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/163c6d22fb0c2c4d3ae9769d-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 20292
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/167deb455db38282b9514436-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11548
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/26d63b7bcbba29ef5edfc9bf-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 50629
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/0e9e681505d81670d3d84695-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 23540
+    }
+  },
+  "/images/products/book-covers/microservices-with-aspnet-core.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/d24b178f25f36fa316e7a0d6-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7879
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/8e0ca9a30e0f69a93fb2db80-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4478
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/5d5467b9c38d738d6bbdfa01-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19521
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/b4bf9c50a4565aa8152826a0-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 11182
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/6db6a9eb4f9cfe22143ba06a-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47336
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/d318570d9c9cd4c60a52cd6c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22914
+    }
+  },
+  "/images/products/book-covers/practical-csharp-12.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/08b82d0b259d77f54fe60c09-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 5956
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/235637e428bcdc314726e308-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3240
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/b34e5329d4ee90cd2119c1ab-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 14803
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/c3819484dc4a44294350fac1-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 7790
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/df1af31b2d08b5212a876e15-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 36043
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/31306b8898f6633a67aa1f94-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 16584
+    }
+  },
+  "/images/products/book-covers/practical-devops-for-developers.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/1debd7fa985864601400129b-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 11706
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/ac847449aa09e2a787d4ff7e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 8528
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/25fb96047e7231a84deb078c-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 32465
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/902cd7cdf38b850812ccb15d-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 20612
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/548cf3630ed16aa4b7459688-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 83533
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/29857488ac9163b54f67171d-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44300
+    }
+  },
+  "/images/products/book-covers/refactoring-legacy-code.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/5d0f66535bd67e5f933d6638-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7121
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/e7e8b5a4d77604da7caaabd8-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3932
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/42c99f2148958b6010aa88bf-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 18350
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/9001dd66d72fde05609ad755-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9596
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/d1f688a84a4bb7bb1916891b-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44040
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/f128c9a840d13ee3a35dff1c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19636
+    }
+  },
+  "/images/products/book-covers/sql-server-for-developers.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/5d07ad5d62945871b75f8a40-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7638
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/052c2d8dc469c20834184e6c-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 4442
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/e25b7c068bec610826c1c9fa-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 19499
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/5b2a6a3223b8ed48f1c8fa71-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 10770
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/16d938ba3cab0756c03e4a40-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 47425
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/ec0b01d756ada37a894dc61c-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 22982
+    }
+  },
+  "/images/products/book-covers/stripe-payments-for-dotnet.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/bae86de4bb17c6871df1b312-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 7222
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/cc9daf2058aef7dceaeb6f3e-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3878
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/cc46c2c46919da9cb2dcc570-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 17880
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/22a63ca271b1cb98a62be21a-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9426
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/c28b71720f5d16248f44077f-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 44016
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/95184f9a704520961d87b82f-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19610
+    }
+  },
+  "/images/products/book-covers/system-design-notes.svg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/87e56abecc965d8387c771fc-160.jpg",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 6848
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/90acd57a472dbbfbeef995bd-160.webp",
+      "Width": 160,
+      "Height": 240,
+      "Bytes": 3724
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/ee2242f9cf77c21651d885a4-320.jpg",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 17376
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/6f0c05eef88e58f492d30fa8-320.webp",
+      "Width": 320,
+      "Height": 480,
+      "Bytes": 9338
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/3bdb1cd28cf20c0eb3b77bf5-600.jpg",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 42981
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/bf721393efb715f428ba4c9a-600.webp",
+      "Width": 600,
+      "Height": 900,
+      "Bytes": 19086
+    }
+  },
+  "/images/products/c6781543-56e7-4df5-8588-7c65dcfc9d21.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/a864712f1684771124bc62fa-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 7388
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/3447faf7e7cb108e10be7981-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6970
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/93e30ad022ced3a527f44712-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 24646
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/2031507ae99a4251c815b2da-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 23332
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/a383418a0e50ce0615c2d652-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 76800
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/4a8d2c94faf4a88cb3a2226d-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 71478
+    }
+  },
+  "/images/products/ca079f07-7040-4ccc-b6c5-a12f811f8948.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/74312ce482b0a164e73ba493-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3280
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/eb10a244113b1bf11e4cb7c8-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 2328
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/de316161b5faa4c17429ee74-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 9585
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/24295b6b1b5a2e28071b2bd6-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 6844
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/69b60c08fbc5c57fcb2dd971-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 26229
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/4af0ab400bfa6d813746c566-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 17662
+    }
+  },
+  "/images/products/cb75a115-f10f-4934-801a-4ffd3222f9ec.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/7d3a9d8977666d5181234038-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 3037
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/2f4ecf3e22acac9c5be34231-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 2190
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/484cece08ff6b51dd3fa5f6e-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 7603
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/4319e78ebc806aed9727e615-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 5178
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/e27171555872d967bf9ca760-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 18658
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/9607f13a7fa86b595d94a204-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 12300
+    }
+  },
+  "/images/products/cee3a282-6d8b-4ca4-bf97-91c93f955373.jpg": {
+    "SmallJpeg": {
+      "Url": "/images/products/optimized/bundled/55a780257855a40022ee70e0-160.jpg",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 6388
+    },
+    "SmallWebp": {
+      "Url": "/images/products/optimized/bundled/fc13668a243b20648869873a-160.webp",
+      "Width": 160,
+      "Height": 90,
+      "Bytes": 5706
+    },
+    "ThumbnailJpeg": {
+      "Url": "/images/products/optimized/bundled/2652c8c3774d17d6f25695da-320.jpg",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 19126
+    },
+    "ThumbnailWebp": {
+      "Url": "/images/products/optimized/bundled/7893cc6255ec1d9f27f6e3c0-320.webp",
+      "Width": 320,
+      "Height": 180,
+      "Bytes": 16810
+    },
+    "DetailJpeg": {
+      "Url": "/images/products/optimized/bundled/0e9739229eec131ab1937659-600.jpg",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 53516
+    },
+    "DetailWebp": {
+      "Url": "/images/products/optimized/bundled/9a5d71efa8c8fb6a63c9a56f-600.webp",
+      "Width": 600,
+      "Height": 338,
+      "Bytes": 46084
+    }
+  }
+}
